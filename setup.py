@@ -15,6 +15,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/banesullivan/scooby",
+    install_requires=['psutil',]
     packages=setuptools.find_packages(),
     classifiers=(
         "Programming Language :: Python",

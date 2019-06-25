@@ -18,16 +18,15 @@ environment reporting when debugging. Simply add `scooby` to your dependencies
 and implement a function to have `scooby` report on the aspects of the
 environment you care most about.
 
-Is `scooby` unable to detect aspects of an environment that you'd like to know?
-We absolutely welcome feature requests and pull requests, so let us know what
-you think!
+If `scooby` is unable to detect aspects of an environment that you'd like to
+know, please share this with us as a feature requests or pull requests.
 
 This work is derived from [Dieter Werthmuller](https://github.com/prisae)'s work
 towards creating a version reporting tool for the [empymod](https://github.com/empymod/)
 and [SimPEG](https://github.com/simpeg/) projects.
-This package has been altered to create a lightweight, pure Python
-implementation with no non-standard dependencies so that it can easily be used
-as an environment reporting tool in any Python library with minimal impact.
+This package has been altered to create a lightweight implementation so that it
+can easily be used as an environment reporting tool in any Python library with
+minimal impact.
 
 ## Usage
 
