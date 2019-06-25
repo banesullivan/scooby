@@ -93,7 +93,7 @@ class PythonInfo:
             module = importlib.import_module(name)
         except ImportError:
             if not optional:
-                logging.warning('Could not import module `{}`. This will be ignored.'.format(name))
+                logging.warning('RUH-ROH! Could not import module `{}`. This will be skipped.'.format(name))
             module = None
         return module
 
@@ -106,7 +106,7 @@ class PythonInfo:
         if not isinstance(module, ModuleType):
             if optional:
                 return
-            raise TypeError('Module passed is not a module.')
+            raise TypeError('RUH-ROH! Module passed is not a module.')
         self._packages[name] = module
         return
 
@@ -123,7 +123,7 @@ class PythonInfo:
 
     def add_packages(self, packages, optional=False):
         if not isinstance(packages, (list, tuple)):
-            raise TypeError('You must pass a list of packages or package names.')
+            raise TypeError('RUH-ROH! You must pass a list of packages or package names.')
         for pckg in packages:
             if isinstance(pckg, str):
                 self._add_package_by_name(pckg, optional=optional)
@@ -132,7 +132,7 @@ class PythonInfo:
             elif pckg is None:
                 pass
             elif not optional:
-                raise TypeError('Cannot add package from type ({})'.format(type(pckg)))
+                raise TypeError('RUH-ROH! Cannot add package from type ({})'.format(type(pckg)))
 
 
     @property
@@ -154,7 +154,7 @@ class PythonInfo:
             name = pckg.__name__
             module = pckg
         else:
-            raise TypeError('Cannot fetch version from type ({})'.format(type(pckg)))
+            raise TypeError('RUH-ROH! Cannot fetch version from type ({})'.format(type(pckg)))
         # Now get the version info from the module
         try:
             attr = VERSION_ATTRIBUTES[name]
@@ -163,7 +163,7 @@ class PythonInfo:
             try:
                 version = module.__version__
             except AttributeError:
-                logging.warning('Varsion attribute for `{}` is unknown.'.format(name))
+                logging.warning('RUH-ROH! Version attribute for `{}` is unknown.'.format(name))
                 version = 'unknown'
         return version
 
