@@ -2,6 +2,7 @@ import importlib
 import logging
 import multiprocessing
 import platform
+import psutil
 import sys
 import textwrap
 import time
@@ -67,7 +68,7 @@ class Versions:
     def __init__(self, core=('numpy', 'scipy',),
                        optional=('IPython', 'matplotlib',),
                        additional=None,
-                       ncol=4, text_width=54):
+                       ncol=3, text_width=54):
         """Initiate and add packages and number of columns to self."""
         self.ncol = int(ncol)
         self.text_width = int(text_width)
@@ -141,11 +142,30 @@ class Versions:
                 raise TypeError('Cannot add package from type ({})'.format(type(pckg)))
 
     @property
-    def platform(self):
+    def system(self):
         """Returns the system/OS name, e.g. ``'Linux'``, ``'Windows'``, or
         ``'Java'``. An empty string is returned if the value cannot be
         determined."""
         return platform.system()
+
+
+    @property
+    def platform(self):
+        return platform.platform()
+
+
+    @property
+    def machine(self):
+        """Returns the machine type, e.g. 'i386'
+        An empty string is returned if the value cannot be determined.
+        """
+        return platform.machine()
+
+
+    @property
+    def architecture(self):
+        """bit architecture used for the executable"""
+        return platform.architecture()[0]
 
 
     @property
@@ -156,11 +176,18 @@ class Versions:
 
 
     @property
+    def total_ram(self):
+        return '{:.1f} GB'.format(psutil.virtual_memory().total / (1024.0 ** 3))
+
+
+    @property
+    def available_ram(self):
+        return '{:.1f} GB'.format(psutil.virtual_memory().available / (1024.0 ** 3))
+
+
+    @property
     def sys_version(self):
-        text = '\n'
-        for txt in textwrap.wrap(sys.version, self.text_width-4):
-            text += '  '+txt+'\n'
-        return text
+        return sys.version
 
 
     def get_version(self, pckg):
@@ -198,29 +225,40 @@ class Versions:
         text = '\n' + self.text_width*'-' + '\n'
 
         # Date and time info as title
-        text += time.strftime('  %a %b %d %H:%M:%S %Y %Z\n\n')
+        text += time.strftime('  Date: %a %b %d %H:%M:%S %Y %Z')
+        text += '\n  Platform: ' + self.platform + '\n'
 
-        # OS and CPUs
-        text += '{:>15}'.format(self.platform)+' : OS\n'
+        text += '\n'
+
+        ############ Platform/OS details ############
         text += '{:>15}'.format(self.cpu_count)+' : CPU(s)\n'
+        text += '{:>15}'.format(self.machine)+' : Machine\n'
+        text += '{:>15}'.format(self.architecture)+' : Architecture\n'
+        text += '{:>15}'.format(self.total_ram)+' : RAM\n'
+
+        ############ Python details ############
+        text += '\n'
+        for txt in textwrap.wrap(sys.version, self.text_width-4):
+            text += '  '+txt+'\n'
+
+        text += '\n'
 
         # Loop over packages
         for name in self._packages.keys():
             text += '{:>15} : {}\n'.format(self.get_version(name), name)
 
-        # sys.version
-        text += self.sys_version
-
+        ############ MKL details ############
         # mkl version
         if mklinfo:
             text += '\n'
             for txt in textwrap.wrap(mklinfo, self.text_width-4):
                 text += '  '+txt+'\n'
 
-        # Finish
+        ############ Finish ############
         text += self.text_width*'-'
 
         return text
+
 
     def _repr_html_(self):
         """HTML-rendered version information."""
@@ -264,12 +302,20 @@ class Versions:
         html = colspan(html, time.strftime('%a %b %d %H:%M:%S %Y %Z'),
                        self.ncol, 0)
 
-        # OS and CPUs
+        ############ Platform/OS details ############
         html += "  <tr>\n"
-        html, i = cols(html, self.platform, 'OS', self.ncol, 0)
-        html, i = cols(html, self.cpu_count, 'CPU(s)',
-                       self.ncol, i)
+        html, i = cols(html, self.system, 'OS', self.ncol, 0)
+        html, i = cols(html, self.cpu_count, 'CPU(s)', self.ncol, i)
+        html, i = cols(html, self.machine, 'Machine', self.ncol, i)
+        html, i = cols(html, self.architecture, 'Architecture', self.ncol, i)
+        html, i = cols(html, self.total_ram, 'RAM', self.ncol, i)
+        # Finish row
+        html += "  </tr>\n"
 
+        ############ Python details ############
+        html = colspan(html, sys.version, self.ncol, 1)
+
+        html += "  <tr>\n"
         # Loop over packages
         for name in self._packages.keys():
             html, i = cols(html, self.get_version(name), name, self.ncol, i)
@@ -281,14 +327,11 @@ class Versions:
         # Finish row
         html += "  </tr>\n"
 
-        # sys.version
-        html = colspan(html, sys.version, self.ncol, 1)
-
-        # mkl version
+        ############ MKL details ############
         if mklinfo:
             html = colspan(html, mklinfo, self.ncol, 2)
 
-        # Finish table
+        ############ Finish ############
         html += "</table>"
 
         return html
