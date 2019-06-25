@@ -34,7 +34,8 @@ minimal impact.
 ```py
 >>> import scooby
 >>> scooby.investigate()
-
+```
+```txt
 ------------------------------------------------------
   Date: Tue Jun 25 16:17:46 2019 MDT
   Platform: Darwin-18.5.0-x86_64-i386-64bit
@@ -64,7 +65,8 @@ keyword argument:
 
 ```py
 >>> scooby.investigate(additional='pyvista')
-
+```
+```txt
 ------------------------------------------------------
   Date: Tue Jun 25 16:18:01 2019 MDT
   Platform: Darwin-18.5.0-x86_64-i386-64bit
@@ -94,7 +96,8 @@ Or maybe you want a whole bunch of additional packages:
 
 ```py
 >>> scooby.investigate(additional=['pyvista', 'vtk', 'appdirs',])
-
+```
+```txt
 ------------------------------------------------------
   Date: Tue Jun 25 16:18:16 2019 MDT
   Platform: Darwin-18.5.0-x86_64-i386-64bit
