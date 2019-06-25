@@ -35,7 +35,7 @@ minimal impact.
 >>> import scooby
 >>> scooby.investigate()
 ```
-```txt
+```
 ------------------------------------------------------
   Date: Tue Jun 25 16:17:46 2019 MDT
   Platform: Darwin-18.5.0-x86_64-i386-64bit
@@ -66,7 +66,7 @@ keyword argument:
 ```py
 >>> scooby.investigate(additional='pyvista')
 ```
-```txt
+```
 ------------------------------------------------------
   Date: Tue Jun 25 16:18:01 2019 MDT
   Platform: Darwin-18.5.0-x86_64-i386-64bit
@@ -97,7 +97,7 @@ Or maybe you want a whole bunch of additional packages:
 ```py
 >>> scooby.investigate(additional=['pyvista', 'vtk', 'appdirs',])
 ```
-```txt
+```
 ------------------------------------------------------
   Date: Tue Jun 25 16:18:16 2019 MDT
   Platform: Darwin-18.5.0-x86_64-i386-64bit
@@ -118,6 +118,74 @@ Or maybe you want a whole bunch of additional packages:
          0.20.4 : pyvista
           8.2.0 : vtk
           1.4.3 : appdirs
+
+  Intel(R) Math Kernel Library Version 2018.0.3
+  Product Build 20180406 for Intel(R) 64
+  architecture applications
+------------------------------------------------------
+```
+
+
+Want to add a package to investigate but aren't sure if it is present,
+simply define the `optional` list in the arguments. Note that the default
+libraries of `numpy`, `scipy`, `IPython`, and `matplotlib` are defaults for
+optional argument, so you might want to put those in the `core` argument if
+you care about those.
+
+```py
+>>> scooby.investigate(core=['numpy', 'matplotlib'], optional=['foo', ])
+```
+```
+------------------------------------------------------
+  Date: Tue Jun 25 17:51:30 2019 MDT
+  Platform: Darwin-18.5.0-x86_64-i386-64bit
+
+             12 : CPU(s)
+         x86_64 : Machine
+          64bit : Architecture
+        32.0 GB : RAM
+
+  3.7.3 | packaged by conda-forge | (default, Mar 27
+  2019, 15:43:19)  [Clang 4.0.1
+  (tags/RELEASE_401/final)]
+
+         1.16.3 : numpy
+          3.1.0 : matplotlib
+
+  Intel(R) Math Kernel Library Version 2018.0.3
+  Product Build 20180406 for Intel(R) 64
+  architecture applications
+------------------------------------------------------
+```
+
+Since the `foo` package wasn't found and it's optional, nothing is reported.
+But what if you need some sort of error message that a package wasn't found?
+Then add your package to the `additional` list and Scooby will let you now it
+was not found but like any good pooch, Scooby will complete the investigation:
+
+```py
+>>> scooby.investigate(additional=['foo',])
+```
+```
+WARNING:root:RUH-ROH! Could not import module `foo`. This will be skipped.
+
+------------------------------------------------------
+  Date: Tue Jun 25 17:53:55 2019 MDT
+  Platform: Darwin-18.5.0-x86_64-i386-64bit
+
+             12 : CPU(s)
+         x86_64 : Machine
+          64bit : Architecture
+        32.0 GB : RAM
+
+  3.7.3 | packaged by conda-forge | (default, Mar 27
+  2019, 15:43:19)  [Clang 4.0.1
+  (tags/RELEASE_401/final)]
+
+         1.16.3 : numpy
+          1.3.0 : scipy
+          7.5.0 : IPython
+          3.1.0 : matplotlib
 
   Intel(R) Math Kernel Library Version 2018.0.3
   Product Build 20180406 for Intel(R) 64
