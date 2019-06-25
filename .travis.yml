@@ -14,10 +14,11 @@ install:
   - python -m pip install numpy scipy
 
 script:
-  - python -c "import scooby; print(scooby.Versions())"
-  - python -c "import scooby; print(scooby.Versions(core='numpy'))"
-  - python -c "import scooby; print(scooby.Versions(additional=['mock', 'foo']))"
-  - python -c "import scooby; print(scooby.Versions(additional=['foo']))"
+  - python -c "import scooby; print(scooby.investigate())"
+  - python -c "import scooby; print(scooby.investigate(core='numpy'))"
+  - python -c "import scooby; print(scooby.investigate(additional=['mock', 'foo']))"
+  - python -c "import scooby; print(scooby.investigate(additional=['foo',]))"
+  - python -c "import scooby, mock; print(scooby.investigate(additional=[mock,]))"
 
 notifications:
   email:
