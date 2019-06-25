@@ -2,25 +2,13 @@ import importlib
 import logging
 import multiprocessing
 import platform
-import psutil
 import sys
 import textwrap
 import time
 from types import ModuleType
 
+from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
-
-try:
-    import mkl
-except ImportError:
-    mkl = False
-
-# Get mkl info, if available
-if mkl:
-    mklinfo = mkl.get_version_string()
-else:
-    mklinfo = False
-
 
 
 class PlatformInfo:
@@ -64,12 +52,7 @@ class PlatformInfo:
 
     @property
     def total_ram(self):
-        return '{:.1f} GB'.format(psutil.virtual_memory().total / (1024.0 ** 3))
-
-
-    @property
-    def available_ram(self):
-        return '{:.1f} GB'.format(psutil.virtual_memory().available / (1024.0 ** 3))
+        return TOTAL_RAM
 
 
 
@@ -267,9 +250,9 @@ class Versions(PlatformInfo, PythonInfo):
 
         ############ MKL details ############
         # mkl version
-        if mklinfo:
+        if MKL_INFO:
             text += '\n'
-            for txt in textwrap.wrap(mklinfo, self.text_width-4):
+            for txt in textwrap.wrap(MKL_INFO, self.text_width-4):
                 text += '  '+txt+'\n'
 
         ############ Finish ############
@@ -346,8 +329,8 @@ class Versions(PlatformInfo, PythonInfo):
         html += "  </tr>\n"
 
         ############ MKL details ############
-        if mklinfo:
-            html = colspan(html, mklinfo, self.ncol, 2)
+        if MKL_INFO:
+            html = colspan(html, MKL_INFO, self.ncol, 2)
 
         ############ Finish ############
         html += "</table>"

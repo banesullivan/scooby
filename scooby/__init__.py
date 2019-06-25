@@ -1,5 +1,6 @@
-from scooby.versions import Versions
+from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
+from scooby.versions import Versions
 
 
 def investigate(core=None,
