@@ -5,7 +5,15 @@
 A Great Dane turned Python environment detective
 
 Scooby has rich formatting for Jupyter notebooks and rich text formatting for
-just about every other environment.
+just about every other environment. We designed this module to be lightweight
+such that it could easily be added as a dependency to Python projects for
+environment reporting when debugging. Simply add `scooby` to your dependencies
+and implement a function to have `scooby` report on the aspects of the
+environment you care most about.
+
+Is `scooby` unable to detect aspects of an environment that you'd like to know?
+We absolutely welcome feature requests and pull requests, so let us know what
+you think!
 
 This work is derived from [Dieter Werthmuller](https://github.com/prisae)'s work
 towards creating a version reporting tool for the [empymod](https://github.com/empymod/)
@@ -14,7 +22,7 @@ This package has been altered to create a lightweight, pure Python
 implementation with no non-standard dependencies so that it can easily be used
 as an environment reporting tool in any Python library with minimal impact.
 
-## Useage
+## Usage
 
 This is a toolset to easily report your Python environment's package versions
 and hardware resources. Usage is simply:
