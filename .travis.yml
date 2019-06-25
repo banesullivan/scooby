@@ -30,7 +30,7 @@ deploy:
     user: banesullivan
     distributions: sdist
     on:
-      repo: banesullivan/scoopy
+      repo: banesullivan/scooby
       branch: master
       tags: true
       python: 3.6
