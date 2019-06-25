@@ -7,7 +7,7 @@ except ImportError:
 if psutil:
     TOTAL_RAM = '{:.1f} GB'.format(psutil.virtual_memory().total / (1024.0 ** 3))
 else:
-    TOTAL_RAM = 'unknown'
+    TOTAL_RAM = False
 
 try:
     import mkl

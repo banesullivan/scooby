@@ -52,7 +52,9 @@ class PlatformInfo:
 
     @property
     def total_ram(self):
-        return TOTAL_RAM
+        if TOTAL_RAM:
+            return TOTAL_RAM
+        return 'unknown'
 
 
 
@@ -235,7 +237,8 @@ class Versions(PlatformInfo, PythonInfo):
         text += '{:>15}'.format(self.cpu_count)+' : CPU(s)\n'
         text += '{:>15}'.format(self.machine)+' : Machine\n'
         text += '{:>15}'.format(self.architecture)+' : Architecture\n'
-        text += '{:>15}'.format(self.total_ram)+' : RAM\n'
+        if TOTAL_RAM:
+            text += '{:>15}'.format(self.total_ram)+' : RAM\n'
 
         ############ Python details ############
         text += '\n'
@@ -309,7 +312,8 @@ class Versions(PlatformInfo, PythonInfo):
         html, i = cols(html, self.cpu_count, 'CPU(s)', self.ncol, i)
         html, i = cols(html, self.machine, 'Machine', self.ncol, i)
         html, i = cols(html, self.architecture, 'Architecture', self.ncol, i)
-        html, i = cols(html, self.total_ram, 'RAM', self.ncol, i)
+        if TOTAL_RAM:
+            html, i = cols(html, self.total_ram, 'RAM', self.ncol, i)
         # Finish row
         html += "  </tr>\n"
 
