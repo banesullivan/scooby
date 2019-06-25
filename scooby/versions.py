@@ -59,6 +59,10 @@ class Versions:
 
     Parameters
     ----------
+    core : list(ModuleType), list(str)
+        The core packages to list first
+
+    optional
     add_pckg : packages, optional
         Package or list of packages to add to output information (must be
         imported beforehand).
@@ -89,54 +93,56 @@ class Versions:
         # Update packages
         self.add_packages(core)
         # Optional packages
-        self.add_packages(optional)
+        self.add_packages(optional, optional=True)
         # Additional packages
         self.add_packages(additional)
 
 
     @staticmethod
-    def _safe_import_by_name(name):
+    def _safe_import_by_name(name, optional=False):
         try:
             module = importlib.import_module(name)
         except ((ImportError, ModuleNotFoundError)):
-            logging.warning('Could not import module `{}`. This will be mocked.'.format(name))
+            if not optional:
+                logging.warning('Could not import module `{}`. This will be ignored.'.format(name))
             module = mock.Mock()
-            sys.modules[name] = module
         return module
 
 
-    def _add_package(self, module, name=None):
+    def _add_package(self, module, name=None, optional=False):
         """Internal helper to update the packages dictionary with a module
         """
         if name is None or not isinstance(name, str):
             name = module.__name__
         if not isinstance(module, ModuleType):
+            if optional:
+                return
             raise TypeError('Module passed is not a module.')
         self._packages[name] = module
         return
 
 
-    def _add_package_by_name(self, name):
+    def _add_package_by_name(self, name, optional=False):
         """Internal helper to add a module to the internal list of packages.
         Returns True if succesful, false if unsuccesful."""
-        module = Versions._safe_import_by_name(name)
+        module = Versions._safe_import_by_name(name, optional=optional)
         if not isinstance(module, mock.Mock):
-            self._add_package(module, name)
+            self._add_package(module, name, optional=optional)
             return True
         return False
 
 
-    def add_packages(self, packages):
+    def add_packages(self, packages, optional=False):
         if not isinstance(packages, (list, tuple)):
             raise TypeError('You must pass a list of packages or package names.')
         for pckg in packages:
             if isinstance(pckg, str):
-                self._add_package_by_name(pckg)
+                self._add_package_by_name(pckg, optional=optional)
             elif isinstance(pckg, ModuleType):
-                self._add_package(pckg)
+                self._add_package(pckg, optional=optional)
             elif pckg is None:
                 pass
-            else:
+            elif not optional:
                 raise TypeError('Cannot add package from type ({})'.format(type(pckg)))
 
     @property
