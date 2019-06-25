@@ -70,28 +70,26 @@ class Versions:
                        ncol=4, text_width=54):
         """Initiate and add packages and number of columns to self."""
         self.ncol = int(ncol)
-        self.text_width = text_width
-
-        # Mandatory packages
+        self.text_width = int(text_width)
         self._packages = {}
 
-        # MAke sure arguments are good
+        # Make sure arguments are good
         def safety(x):
             if x is None or len(x) < 1:
                 return []
             elif isinstance(x, str):
                 return [x,]
-            else:
-                return list(x)
+            return list(x)
+
         core = safety(core)
         optional = safety(optional)
         additional = safety(additional)
 
-        # Update packages
+        # First listed packages
         self.add_packages(core)
-        # Optional packages
+        # Optional packages to appear after the core
         self.add_packages(optional, optional=True)
-        # Additional packages
+        # Additional packages: these are user specified
         self.add_packages(additional)
 
 
