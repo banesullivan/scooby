@@ -1,5 +1,7 @@
 # scooby
 
+[![Build Status](https://travis-ci.org/banesullivan/scooby.svg?branch=master)](https://travis-ci.org/banesullivan/scooby)
+
 A Great Dane turned Python environment detective
 
 Scooby has rich formatting for Jupyter notebooks and rich text formatting for
