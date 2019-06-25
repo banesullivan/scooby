@@ -22,56 +22,64 @@ else:
     mklinfo = False
 
 
-class Versions:
-    r"""Print date, time, and version information.
 
-    Print date, time, and package version information in any environment
-    (Jupyter notebook, IPython console, Python console, QT console), either as
-    html-table (notebook) or as plain text (anywhere).
-
-    Always shown are the OS, number of CPU(s), ``numpy``, ``scipy``,
-    ``sys.version``, and time/date.
-
-    Additionally shown are, if they can be imported, ``IPython`` and
-    ``matplotlib``. It also shows MKL information, if available.
-
-    All modules provided in ``add_pckg`` are also shown. They have to be
-    imported before ``versions`` is called.
-
-    This script was heavily inspired by:
-
-        - ipynbtools.py from qutip https://github.com/qutip
-        - watermark.py from https://github.com/rasbt/watermark
-
-
-    Parameters
-    ----------
-    core : list(ModuleType), list(str)
-        The core packages to list first.
-
-    optional : list(ModuleType), list(str)
-        A list of packages to list if they are available. If not available,
-        no warnings or error will be thrown.
-
-    additional : list(ModuleType), list(str)
-        List of packages or package names to add to output information.
-
-    ncol : int, optional
-        Number of package-columns in html table; only has effect if
-        ``mode='HTML'`` or ``mode='html'``. Defaults to 3.
-
-    text_width : int, optional
-        The text width for non-HTML display modes
-
+class PlatformInfo:
+    """Aninternal helper class to make accessing details about the computer
+    platform a bit easier
     """
+
+    @property
+    def system(self):
+        """Returns the system/OS name, e.g. ``'Linux'``, ``'Windows'``, or
+        ``'Java'``. An empty string is returned if the value cannot be
+        determined."""
+        return platform.system()
+
+
+    @property
+    def platform(self):
+        return platform.platform()
+
+
+    @property
+    def machine(self):
+        """Returns the machine type, e.g. 'i386'
+        An empty string is returned if the value cannot be determined.
+        """
+        return platform.machine()
+
+
+    @property
+    def architecture(self):
+        """bit architecture used for the executable"""
+        return platform.architecture()[0]
+
+
+    @property
+    def cpu_count(self):
+        """Return the number of CPUs in the system. May raise
+        ``NotImplementedError``."""
+        return multiprocessing.cpu_count()
+
+
+    @property
+    def total_ram(self):
+        return '{:.1f} GB'.format(psutil.virtual_memory().total / (1024.0 ** 3))
+
+
+    @property
+    def available_ram(self):
+        return '{:.1f} GB'.format(psutil.virtual_memory().available / (1024.0 ** 3))
+
+
+
+class PythonInfo:
+    """An internal helper class to handle managing Python infromation and
+    package versions"""
 
     def __init__(self, core=('numpy', 'scipy',),
                        optional=('IPython', 'matplotlib',),
-                       additional=None,
-                       ncol=3, text_width=54):
-        """Initiate and add packages and number of columns to self."""
-        self.ncol = int(ncol)
-        self.text_width = int(text_width)
+                       additional=None):
         self._packages = {}
 
         # Make sure arguments are good
@@ -141,49 +149,6 @@ class Versions:
             elif not optional:
                 raise TypeError('Cannot add package from type ({})'.format(type(pckg)))
 
-    @property
-    def system(self):
-        """Returns the system/OS name, e.g. ``'Linux'``, ``'Windows'``, or
-        ``'Java'``. An empty string is returned if the value cannot be
-        determined."""
-        return platform.system()
-
-
-    @property
-    def platform(self):
-        return platform.platform()
-
-
-    @property
-    def machine(self):
-        """Returns the machine type, e.g. 'i386'
-        An empty string is returned if the value cannot be determined.
-        """
-        return platform.machine()
-
-
-    @property
-    def architecture(self):
-        """bit architecture used for the executable"""
-        return platform.architecture()[0]
-
-
-    @property
-    def cpu_count(self):
-        """Return the number of CPUs in the system. May raise
-        ``NotImplementedError``."""
-        return multiprocessing.cpu_count()
-
-
-    @property
-    def total_ram(self):
-        return '{:.1f} GB'.format(psutil.virtual_memory().total / (1024.0 ** 3))
-
-
-    @property
-    def available_ram(self):
-        return '{:.1f} GB'.format(psutil.virtual_memory().available / (1024.0 ** 3))
-
 
     @property
     def sys_version(self):
@@ -218,8 +183,61 @@ class Versions:
         return version
 
 
+
+class Versions(PlatformInfo, PythonInfo):
+    r"""Print date, time, and version information.
+
+    Print date, time, and package version information in any environment
+    (Jupyter notebook, IPython console, Python console, QT console), either as
+    html-table (notebook) or as plain text (anywhere).
+
+    Always shown are the OS, number of CPU(s), ``numpy``, ``scipy``,
+    ``sys.version``, and time/date.
+
+    Additionally shown are, if they can be imported, ``IPython`` and
+    ``matplotlib``. It also shows MKL information, if available.
+
+    All modules provided in ``add_pckg`` are also shown. They have to be
+    imported before ``versions`` is called.
+
+    This script was heavily inspired by:
+
+        - ipynbtools.py from qutip https://github.com/qutip
+        - watermark.py from https://github.com/rasbt/watermark
+
+
+    Parameters
+    ----------
+    core : list(ModuleType), list(str)
+        The core packages to list first.
+
+    optional : list(ModuleType), list(str)
+        A list of packages to list if they are available. If not available,
+        no warnings or error will be thrown.
+
+    additional : list(ModuleType), list(str)
+        List of packages or package names to add to output information.
+
+    ncol : int, optional
+        Number of package-columns in html table; only has effect if
+        ``mode='HTML'`` or ``mode='html'``. Defaults to 3.
+
+    text_width : int, optional
+        The text width for non-HTML display modes
+
+    """
+    def __init__(self, core=None,
+                       optional=('numpy', 'scipy', 'IPython', 'matplotlib',),
+                       additional=None,
+                       ncol=3, text_width=54):
+        PythonInfo.__init__(self, core=core, optional=optional,
+                            additional=additional)
+        self.ncol = int(ncol)
+        self.text_width = int(text_width)
+
+
     def __repr__(self):
-        r"""Plain-text version information."""
+        """Plain-text version information."""
 
         # Width for text-version
         text = '\n' + self.text_width*'-' + '\n'

@@ -33,7 +33,7 @@ as an environment reporting tool in any Python library with minimal impact.
 
 ```py
 >>> import scooby
->>> scooby.Versions()
+>>> scooby.investigate()
 
 ------------------------------------------------------
   Date: Tue Jun 25 16:17:46 2019 MDT
@@ -63,7 +63,7 @@ But you can also add addtional packages too if you'd like via the `addtional`
 keyword argument:
 
 ```py
->>> scooby.Versions(additional='pyvista')
+>>> scooby.investigate(additional='pyvista')
 
 ------------------------------------------------------
   Date: Tue Jun 25 16:18:01 2019 MDT
@@ -93,7 +93,7 @@ keyword argument:
 Or maybe you want a whole bunch of additional packages:
 
 ```py
->>> scooby.Versions(additional=['pyvista', 'vtk', 'appdirs',])
+>>> scooby.investigate(additional=['pyvista', 'vtk', 'appdirs',])
 
 ------------------------------------------------------
   Date: Tue Jun 25 16:18:16 2019 MDT
