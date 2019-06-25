@@ -1,1 +1,31 @@
+# Compiled source #
+###################
 *.pyc
+*.pyd
+*.so
+*.o
+
+# Pip generated folders #
+#########################
+*.egg-info/
+build/
+dist/
+
+# Mac
+.DS_Store
+
+# testing coverage and cache
+.pytest_cache/
+tests/.coverage
+tests/htmlcov/
+
+# windows
+test.bat
+
+# Jupyter notebook cache
+**/.ipynb_checkpoints
+
+# Code coverage results
+htmlcov
+.coverage
+*,cover
