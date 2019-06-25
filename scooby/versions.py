@@ -11,6 +11,9 @@ import multiprocessing
 from types import ModuleType
 
 
+from scooby.knowledge import VERSION_ATTRIBUTES
+
+
 # Optional modules
 try:
     import IPython
@@ -159,9 +162,32 @@ class Versions:
         return text
 
 
-    @staticmethod
-    def _get_version(name):
-        return ''
+    def get_version(self, pckg):
+        """Get the version of a package by passing the package or it's name"""
+        # First, fetch the module and its name
+        if isinstance(pckg, str):
+            name = pckg
+            try:
+                module = self._packages[name]
+            except KeyError:
+                # This could raise an error if module not found
+                module = Versions._safe_import_by_name(pckg)
+        elif isinstance(pckg, ModuleType):
+            name = pckg.__name__
+            module = pckg
+        else:
+            raise TypeError('Cannot fetch version from type ({})'.format(type(pckg)))
+        # Now get the version info from the module
+        try:
+            attr = VERSION_ATTRIBUTES[name]
+            version = getattr(module, attr)
+        except (KeyError, AttributeError):
+            try:
+                version = module.__version__
+            except AttributeError:
+                logging.warning('Varsion attribute for `{}` is unknown.'.format(name))
+                version = 'unknown'
+        return version
 
 
     def __repr__(self):
@@ -178,8 +204,8 @@ class Versions:
         text += '{:>15}'.format(self.cpu_count)+' : CPU(s)\n'
 
         # Loop over packages
-        for name, pckg in self._packages.items():
-            text += '{:>15} : {}\n'.format(pckg.__version__, name)
+        for name in self._packages.keys():
+            text += '{:>15} : {}\n'.format(self.get_version(name), name)
 
         # sys.version
         text += self.sys_version
@@ -244,8 +270,8 @@ class Versions:
                        self.ncol, i)
 
         # Loop over packages
-        for name, pckg in self._packages.items():
-            html, i = cols(html, pckg.__version__, name, self.ncol, i)
+        for name in self._packages.keys():
+            html, i = cols(html, self.get_version(name), name, self.ncol, i)
         # Fill up the row
         while i % self.ncol != 0:
             html += "    <td style= " + border + "></td>\n"
