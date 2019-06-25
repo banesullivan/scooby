@@ -60,16 +60,21 @@ class Versions:
     Parameters
     ----------
     core : list(ModuleType), list(str)
-        The core packages to list first
+        The core packages to list first.
 
-    optional
-    add_pckg : packages, optional
-        Package or list of packages to add to output information (must be
-        imported beforehand).
+    optional : list(ModuleType), list(str)
+        A list of packages to list if they are available. If not available,
+        no warnings or error will be thrown.
+
+    additional : list(ModuleType), list(str)
+        List of packages or package names to add to output information.
 
     ncol : int, optional
         Number of package-columns in html table; only has effect if
         ``mode='HTML'`` or ``mode='html'``. Defaults to 3.
+
+    text_width : int, optional
+        The text width for non-HTML display modes
 
     """
 
