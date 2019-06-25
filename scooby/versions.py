@@ -14,15 +14,6 @@ from types import ModuleType
 from scooby.knowledge import VERSION_ATTRIBUTES
 
 
-# Optional modules
-try:
-    import IPython
-except ImportError:
-    IPython = False
-try:
-    import matplotlib
-except ImportError:
-    matplotlib = False
 try:
     import mkl
 except ImportError:

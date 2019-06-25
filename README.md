@@ -5,8 +5,8 @@ A Great Dane turned Python environment detective
 Scooby has rich formatting for Jupyter notebooks and rich text formatting for
 just about every other environment.
 
-This work is derived from [@prisae](https://github.com/prisae)'s work towards
-creating a version reporting tool for the [empymod](https://github.com/empymod/)
+This work is derived from [Dieter Werthmüller](https://github.com/prisae)'s work
+towards creating a version reporting tool for the [empymod](https://github.com/empymod/)
 and [SimPEG](https://github.com/simpeg/) projects.
 This package has been altered to create a lightweight, pure Python
 implementation with no non-standard dependencies so that it can easily be used
