@@ -99,7 +99,7 @@ class Versions:
     def _safe_import_by_name(name, optional=False):
         try:
             module = importlib.import_module(name)
-        except ((ImportError, ModuleNotFoundError)):
+        except ImportError:
             if not optional:
                 logging.warning('Could not import module `{}`. This will be ignored.'.format(name))
             module = None
