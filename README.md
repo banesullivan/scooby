@@ -9,6 +9,8 @@ A Great Dane turned Python environment detective
 This is a toolset to easily report your Python environment's package versions
 and hardware resources.
 
+![Jupyter Notebook Formatting](./assets/jupyter.png)
+
 Scooby has HTML formatting for Jupyter notebooks and rich text formatting for
 just about every other environment. We designed this module to be lightweight
 such that it could easily be added as a dependency to Python projects for
@@ -34,18 +36,22 @@ as an environment reporting tool in any Python library with minimal impact.
 >>> scooby.Versions()
 
 ------------------------------------------------------
-  Tue Jun 25 13:10:46 2019 MDT
+  Date: Tue Jun 25 16:17:46 2019 MDT
+  Platform: Darwin-18.5.0-x86_64-i386-64bit
 
-         Darwin : OS
              12 : CPU(s)
-         1.16.3 : numpy
-          1.3.0 : scipy
-          7.5.0 : IPython
-          3.1.0 : matplotlib
+         x86_64 : Machine
+          64bit : Architecture
+        32.0 GB : RAM
 
   3.7.3 | packaged by conda-forge | (default, Mar 27
   2019, 15:43:19)  [Clang 4.0.1
   (tags/RELEASE_401/final)]
+
+         1.16.3 : numpy
+          1.3.0 : scipy
+          7.5.0 : IPython
+          3.1.0 : matplotlib
 
   Intel(R) Math Kernel Library Version 2018.0.3
   Product Build 20180406 for Intel(R) 64
@@ -60,19 +66,23 @@ keyword argument:
 >>> scooby.Versions(additional='pyvista')
 
 ------------------------------------------------------
-  Tue Jun 25 13:13:37 2019 MDT
+  Date: Tue Jun 25 16:18:01 2019 MDT
+  Platform: Darwin-18.5.0-x86_64-i386-64bit
 
-         Darwin : OS
              12 : CPU(s)
+         x86_64 : Machine
+          64bit : Architecture
+        32.0 GB : RAM
+
+  3.7.3 | packaged by conda-forge | (default, Mar 27
+  2019, 15:43:19)  [Clang 4.0.1
+  (tags/RELEASE_401/final)]
+
          1.16.3 : numpy
           1.3.0 : scipy
           7.5.0 : IPython
           3.1.0 : matplotlib
          0.20.4 : pyvista
-
-  3.7.3 | packaged by conda-forge | (default, Mar 27
-  2019, 15:43:19)  [Clang 4.0.1
-  (tags/RELEASE_401/final)]
 
   Intel(R) Math Kernel Library Version 2018.0.3
   Product Build 20180406 for Intel(R) 64
@@ -86,10 +96,18 @@ Or maybe you want a whole bunch of additional packages:
 >>> scooby.Versions(additional=['pyvista', 'vtk', 'appdirs',])
 
 ------------------------------------------------------
-  Tue Jun 25 13:14:52 2019 MDT
+  Date: Tue Jun 25 16:18:16 2019 MDT
+  Platform: Darwin-18.5.0-x86_64-i386-64bit
 
-         Darwin : OS
              12 : CPU(s)
+         x86_64 : Machine
+          64bit : Architecture
+        32.0 GB : RAM
+
+  3.7.3 | packaged by conda-forge | (default, Mar 27
+  2019, 15:43:19)  [Clang 4.0.1
+  (tags/RELEASE_401/final)]
+
          1.16.3 : numpy
           1.3.0 : scipy
           7.5.0 : IPython
@@ -97,10 +115,6 @@ Or maybe you want a whole bunch of additional packages:
          0.20.4 : pyvista
           8.2.0 : vtk
           1.4.3 : appdirs
-
-  3.7.3 | packaged by conda-forge | (default, Mar 27
-  2019, 15:43:19)  [Clang 4.0.1
-  (tags/RELEASE_401/final)]
 
   Intel(R) Math Kernel Library Version 2018.0.3
   Product Build 20180406 for Intel(R) 64
