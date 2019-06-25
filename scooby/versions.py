@@ -1,18 +1,13 @@
 import importlib
-import mock
 import logging
-import sys
-import time
-import scipy
-import textwrap
-import platform
-import numpy as np
 import multiprocessing
+import platform
+import sys
+import textwrap
+import time
 from types import ModuleType
 
-
 from scooby.knowledge import VERSION_ATTRIBUTES
-
 
 try:
     import mkl
@@ -107,7 +102,7 @@ class Versions:
         except ((ImportError, ModuleNotFoundError)):
             if not optional:
                 logging.warning('Could not import module `{}`. This will be ignored.'.format(name))
-            module = mock.Mock()
+            module = None
         return module
 
 
@@ -128,7 +123,7 @@ class Versions:
         """Internal helper to add a module to the internal list of packages.
         Returns True if succesful, false if unsuccesful."""
         module = Versions._safe_import_by_name(name, optional=optional)
-        if not isinstance(module, mock.Mock):
+        if module is not None:
             self._add_package(module, name, optional=optional)
             return True
         return False
