@@ -90,7 +90,13 @@ class Versions:
         self._packages = {}
 
         # MAke sure arguments are good
-        safety = lambda x: [] if x is None or len(x) < 1 else list(x)
+        def safety(x):
+            if x is None or len(x) < 1:
+                return []
+            elif isinstance(x, str):
+                return [x,]
+            else:
+                return list(x)
         core = safety(core)
         optional = safety(optional)
         additional = safety(additional)
