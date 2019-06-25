@@ -6,7 +6,10 @@
 
 A Great Dane turned Python environment detective
 
-Scooby has rich formatting for Jupyter notebooks and rich text formatting for
+This is a toolset to easily report your Python environment's package versions
+and hardware resources.
+
+Scooby has HTML formatting for Jupyter notebooks and rich text formatting for
 just about every other environment. We designed this module to be lightweight
 such that it could easily be added as a dependency to Python projects for
 environment reporting when debugging. Simply add `scooby` to your dependencies
@@ -25,9 +28,6 @@ implementation with no non-standard dependencies so that it can easily be used
 as an environment reporting tool in any Python library with minimal impact.
 
 ## Usage
-
-This is a toolset to easily report your Python environment's package versions
-and hardware resources. Usage is simply:
 
 ```py
 >>> import scooby
