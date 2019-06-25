@@ -9,7 +9,8 @@ A Great Dane turned Python environment detective
 This is a toolset to easily report your Python environment's package versions
 and hardware resources.
 
-![Jupyter Notebook Formatting](./assets/jupyter.png)
+
+![Jupyter Notebook Formatting](https://github.com/banesullivan/scooby/raw/master/assets/jupyter.png)
 
 Scooby has HTML formatting for Jupyter notebooks and rich text formatting for
 just about every other environment. We designed this module to be lightweight
