@@ -1,6 +1,8 @@
 # scooby
 
 [![Build Status](https://travis-ci.org/banesullivan/scooby.svg?branch=master)](https://travis-ci.org/banesullivan/scooby)
+[![PyPI Status](https://img.shields.io/pypi/v/scooby.svg?logo=python&logoColor=white)](https://pypi.org/project/scooby/)
+
 
 A Great Dane turned Python environment detective
 
