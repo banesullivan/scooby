@@ -69,10 +69,10 @@ class PythonInfo:
 
         # Make sure arguments are good
         def safety(x):
-            if x is None or len(x) < 1:
-                return []
-            elif isinstance(x, str):
+            if isinstance(x, (str, ModuleType)):
                 return [x,]
+            elif x is None or len(x) < 1:
+                return []
             return list(x)
 
         core = safety(core)
