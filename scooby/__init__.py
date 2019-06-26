@@ -1,6 +1,6 @@
 from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
-from scooby.versions import Versions
+from scooby.report import Report
 
 
 def investigate(core=None,
@@ -9,7 +9,7 @@ def investigate(core=None,
                 ncol=3, text_width=54):
     """
     Have Scooby investigate the active Python environment. This returns a
-    :class:`scooby.Versions` object which displays the system information
+    :class:`scooby.Report` object which displays the system information
     when a ``__repr__`` method is called (through outputting or printing).
 
     Parameters
@@ -32,7 +32,7 @@ def investigate(core=None,
         The text width for non-HTML display modes
 
     """
-    versions = Versions(core=core, optional=optional, additional=additional,
+    versions = Report(core=core, optional=optional, additional=additional,
                         ncol=ncol, text_width=text_width)
     return versions
 

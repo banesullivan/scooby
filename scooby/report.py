@@ -114,7 +114,7 @@ class PythonInfo:
     def _add_package_by_name(self, name, optional=False):
         """Internal helper to add a module to the internal list of packages.
         Returns True if succesful, false if unsuccesful."""
-        module = Versions._safe_import_by_name(name, optional=optional)
+        module = Report._safe_import_by_name(name, optional=optional)
         if module is not None:
             self._add_package(module, name, optional=optional)
             return True
@@ -149,7 +149,7 @@ class PythonInfo:
                 module = self._packages[name]
             except KeyError:
                 # This could raise an error if module not found
-                module = Versions._safe_import_by_name(pckg)
+                module = Report._safe_import_by_name(pckg)
         elif isinstance(pckg, ModuleType):
             name = pckg.__name__
             module = pckg
@@ -169,7 +169,7 @@ class PythonInfo:
 
 
 
-class Versions(PlatformInfo, PythonInfo):
+class Report(PlatformInfo, PythonInfo):
     r"""Print date, time, and version information.
 
     Print date, time, and package version information in any environment
