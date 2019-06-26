@@ -1,4 +1,4 @@
-# scooby
+# Scooby
 
 [![Build Status](https://travis-ci.org/banesullivan/scooby.svg?branch=master)](https://travis-ci.org/banesullivan/scooby)
 [![PyPI Status](https://img.shields.io/pypi/v/scooby.svg?logo=python&logoColor=white)](https://pypi.org/project/scooby/)
@@ -9,6 +9,11 @@ A Great Dane turned Python environment detective
 This is a toolset to easily report your Python environment's package versions
 and hardware resources.
 
+Installation from [PyPI](https://pypi.org/project/scooby/):
+
+```bash
+pip install scooby
+```
 
 ![Jupyter Notebook Formatting](https://github.com/banesullivan/scooby/raw/master/assets/jupyter.png)
 
