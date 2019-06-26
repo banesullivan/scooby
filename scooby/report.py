@@ -70,8 +70,8 @@ class PythonInfo:
     def __init__(self, core=('numpy', 'scipy',),
                        optional=('IPython', 'matplotlib',),
                        additional=None):
-        self._packages = {}
-        self._failures = {}
+        self._packages = {} # Holds name of packages and their version
+        self._failures = {} # Holds failures and reason
 
         # Make sure arguments are good
         def safety(x):
@@ -112,7 +112,7 @@ class PythonInfo:
             if optional:
                 return
             raise TypeError('RUH-ROH! Module passed is not a module.')
-        self._packages[name] = module
+        self._packages[name] = self.get_version(module)
         return
 
 
@@ -150,11 +150,8 @@ class PythonInfo:
         # First, fetch the module and its name
         if isinstance(pckg, str):
             name = pckg
-            try:
-                module = self._packages[name]
-            except KeyError:
-                # This could raise an error if module not found
-                module = self._safe_import_by_name(pckg)
+            # This could raise an error if module not found
+            module = self._safe_import_by_name(pckg)
         elif isinstance(pckg, ModuleType):
             name = pckg.__name__
             module = pckg
@@ -180,6 +177,14 @@ class PythonInfo:
         elif in_ipython():
             return 'IPython'
         return 'Python'
+
+
+    @property
+    def packages(self):
+        """Return versions of all packages (available and unavailable/unknown)"""
+        packages = dict(self._packages)
+        packages.update(self._failures)
+        return packages
 
 
 
@@ -264,8 +269,8 @@ class Report(PlatformInfo, PythonInfo):
         text += '\n'
 
         # Loop over packages
-        for name in self._packages.keys():
-            text += '{:>15} : {}\n'.format(self.get_version(name), name)
+        for name, version in self._packages.items():
+            text += '{:>15} : {}\n'.format(version, name)
 
         # Show failures:
         if len(self._failures) > 0:
@@ -348,8 +353,8 @@ class Report(PlatformInfo, PythonInfo):
 
         html += "  <tr>\n"
         # Loop over packages
-        for name in self._packages.keys():
-            html, i = cols(html, self.get_version(name), name, self.ncol, i)
+        for name, version in self._packages.items():
+            html, i = cols(html, version, name, self.ncol, i)
         # Loop over failed packages
         for name, result in self._failures.items():
             html, i = cols(html, result, name, self.ncol, i)

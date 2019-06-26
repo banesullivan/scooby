@@ -55,6 +55,11 @@ else:
 
 ### Generating Reports
 
+Use Scooby's `investigate` method to generate `Report` objects. These objects
+have representation methods implemented so that if outputted, they show
+a nicely formatted report but you could also capture the report as an object
+itself.
+
 ```py
 >>> import scooby
 >>> scooby.investigate()
