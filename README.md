@@ -197,3 +197,11 @@ WARNING:root:RUH-ROH! Could not import module `foo`. This will be skipped.
   architecture applications
 ------------------------------------------------------
 ```
+
+
+## Optional Requirements
+
+The following are a list of optional requirements and their purpose:
+
+- `psutil`: report total RAM in GB
+- `mkl`: report Intel(R) Math Kernel Library version
