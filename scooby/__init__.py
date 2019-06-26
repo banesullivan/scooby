@@ -41,4 +41,4 @@ def investigate(core=None,
 __author__ = 'Dieter Werthmuller & Bane Sullivan'
 __license__ = 'MIT'
 __copyright__ = '2019, Dieter Werthmuller & Bane Sullivan'
-__version__ = '0.0.2'
+__version__ = '0.1.0'
