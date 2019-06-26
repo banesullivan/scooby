@@ -9,7 +9,7 @@ with open("README.md", "r") as f:
 setuptools.setup(
     name="scooby",
     version=__version__,
-    author="Dieter Werthmuller & Bane Sullivan",
+    author="Dieter Werthmüller & Bane Sullivan",
     author_email="info@pyvista.org",
     description="A Great Dane turned Python environment detective",
     long_description=long_description,
