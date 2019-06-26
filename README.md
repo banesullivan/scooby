@@ -27,7 +27,7 @@ environment you care most about.
 If `scooby` is unable to detect aspects of an environment that you'd like to
 know, please share this with us as a feature requests or pull requests.
 
-This work is derived from [Dieter Werthmuller](https://github.com/prisae)'s work
+This work is derived from [Dieter Werthmüller](https://github.com/prisae)'s work
 towards creating a version reporting tool for the [empymod](https://github.com/empymod/)
 and [SimPEG](https://github.com/simpeg/) projects.
 This package has been altered to create a lightweight implementation so that it

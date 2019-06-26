@@ -1,3 +1,4 @@
+# coding=utf-8
 from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
 from scooby.mysteries import in_ipython, in_jupyter
@@ -38,7 +39,7 @@ def investigate(core=None,
     return versions
 
 
-__author__ = 'Dieter Werthmuller & Bane Sullivan'
+__author__ = 'Dieter Werthmüller & Bane Sullivan'
 __license__ = 'MIT'
-__copyright__ = '2019, Dieter Werthmuller & Bane Sullivan'
+__copyright__ = '2019, Dieter Werthmüller & Bane Sullivan'
 __version__ = '0.1.1'
