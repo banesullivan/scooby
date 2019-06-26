@@ -5,7 +5,12 @@ Tools fo solving common mysteries.
 def in_ipython():
     """Mystery: are we in an IPython environment?
 
-    Retruns
+    Note
+    ----
+    This will return ``True`` in Jupyter environments, so be sure to check
+    :func:`scooby.in_jupyter` first
+
+    Returns
     -------
     bool : True if in an IPython environment
     """
@@ -19,7 +24,7 @@ def in_ipython():
 def in_jupyter():
     """Mystery: are we in a Jupyter environment?
 
-    Retruns
+    Returns
     -------
     bool : True if in a Jupyter environment
     """
