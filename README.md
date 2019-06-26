@@ -9,7 +9,7 @@ A Great Dane turned Python environment detective
 This is a toolset to easily report your Python environment's package versions
 and hardware resources.
 
-Installation from [PyPI](https://pypi.org/project/scooby/):
+Install from [PyPI](https://pypi.org/project/scooby/):
 
 ```bash
 pip install scooby
