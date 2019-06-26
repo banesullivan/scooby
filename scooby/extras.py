@@ -13,9 +13,15 @@ try:
     import mkl
 except ImportError:
     mkl = False
+try:
+    import numexpr
+except ImportError:
+    numexpr = False
 
-# Get mkl info, if available
+# Get mkl info from numexpr or mkl, if available
 if mkl:
     MKL_INFO = mkl.get_version_string()
+elif numexpr:
+    MKL_INFO = numexpr.get_vml_version()
 else:
     MKL_INFO = False
