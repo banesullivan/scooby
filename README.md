@@ -36,6 +36,25 @@ minimal impact.
 
 ## Usage
 
+### Solving Mysteries
+
+Are you struggling with the mystery of whether or not code is being executed in
+IPython, Jupyter, or normal Python? Try using some of Scooby's investigative
+functions to solve these kinds of mysteries:
+
+```py
+import scooby
+
+if scooby.in_jupyter():
+    # Do Jupyter stuff
+elif scooby.in_ipython():
+    # Do IPython stuff
+else:
+    # Do normal, boring Python stuff
+```
+
+### Generating Reports
+
 ```py
 >>> import scooby
 >>> scooby.investigate()
