@@ -1,5 +1,6 @@
 from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
+from scooby.mysteries import in_ipython, in_jupyter
 from scooby.report import Report
 
 
