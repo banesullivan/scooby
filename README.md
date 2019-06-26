@@ -191,10 +191,8 @@ was not found but like any good pooch, Scooby will complete the investigation:
 >>> scooby.investigate(additional=['foo',])
 ```
 ```
-WARNING:root:RUH-ROH! Could not import module `foo`. This will be skipped.
-
 ------------------------------------------------------
-  Date: Tue Jun 25 17:53:55 2019 MDT
+  Date: Tue Jun 25 21:23:56 2019 MDT
   Platform: Darwin-18.5.0-x86_64-i386-64bit
 
              12 : CPU(s)
@@ -210,6 +208,11 @@ WARNING:root:RUH-ROH! Could not import module `foo`. This will be skipped.
           1.3.0 : scipy
           7.5.0 : IPython
           3.1.0 : matplotlib
+
+  RUH-ROH! These modules were either unavailable or
+  the version attribute is unknown:
+
+    unavailable : foo
 
   Intel(R) Math Kernel Library Version 2018.0.3
   Product Build 20180406 for Intel(R) 64

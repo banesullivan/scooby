@@ -10,6 +10,10 @@ from types import ModuleType
 from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
 
+UNAVAILABLE_MSG = 'unavailable'
+VERSION_UNKNOWN_MSG = 'unknown'
+FAILURE_MESSAGE = 'RUH-ROH! These modules were either unavailable or the version attribute is unknown:'
+
 
 class PlatformInfo:
     """Aninternal helper class to make accessing details about the computer
@@ -66,6 +70,7 @@ class PythonInfo:
                        optional=('IPython', 'matplotlib',),
                        additional=None):
         self._packages = {}
+        self._failures = {}
 
         # Make sure arguments are good
         def safety(x):
@@ -87,13 +92,12 @@ class PythonInfo:
         self.add_packages(additional)
 
 
-    @staticmethod
-    def _safe_import_by_name(name, optional=False):
+    def _safe_import_by_name(self, name, optional=False):
         try:
             module = importlib.import_module(name)
         except ImportError:
             if not optional:
-                logging.warning('RUH-ROH! Could not import module `{}`. This will be skipped.'.format(name))
+                self._failures[name] = UNAVAILABLE_MSG
             module = None
         return module
 
@@ -114,7 +118,7 @@ class PythonInfo:
     def _add_package_by_name(self, name, optional=False):
         """Internal helper to add a module to the internal list of packages.
         Returns True if succesful, false if unsuccesful."""
-        module = Report._safe_import_by_name(name, optional=optional)
+        module = self._safe_import_by_name(name, optional=optional)
         if module is not None:
             self._add_package(module, name, optional=optional)
             return True
@@ -149,7 +153,7 @@ class PythonInfo:
                 module = self._packages[name]
             except KeyError:
                 # This could raise an error if module not found
-                module = Report._safe_import_by_name(pckg)
+                module = self._safe_import_by_name(pckg)
         elif isinstance(pckg, ModuleType):
             name = pckg.__name__
             module = pckg
@@ -163,8 +167,8 @@ class PythonInfo:
             try:
                 version = module.__version__
             except AttributeError:
-                logging.warning('RUH-ROH! Version attribute for `{}` is unknown.'.format(name))
-                version = 'unknown'
+                self._failures[name] = VERSION_UNKNOWN_MSG
+                return
         return version
 
 
@@ -251,6 +255,16 @@ class Report(PlatformInfo, PythonInfo):
         for name in self._packages.keys():
             text += '{:>15} : {}\n'.format(self.get_version(name), name)
 
+        # Show failures:
+        if len(self._failures) > 0:
+            text += '\n'
+            for txt in textwrap.wrap(FAILURE_MESSAGE, self.text_width-4):
+                text += '  '+txt+'\n'
+            # Loop over failed packages
+            text += '\n'
+            for name, result in self._failures.items():
+                text += '{:>15} : {}\n'.format(result, name)
+
         ############ MKL details ############
         # mkl version
         if MKL_INFO:
@@ -324,6 +338,9 @@ class Report(PlatformInfo, PythonInfo):
         # Loop over packages
         for name in self._packages.keys():
             html, i = cols(html, self.get_version(name), name, self.ncol, i)
+        # Loop over failed packages
+        for name, result in self._failures.items():
+            html, i = cols(html, result, name, self.ncol, i)
         # Fill up the row
         while i % self.ncol != 0:
             html += "    <td style= " + border + "></td>\n"
