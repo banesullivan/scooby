@@ -20,6 +20,7 @@ script:
   - python -c "import scooby; print(scooby.investigate(additional=['foo',]))"
   - python -c "import scooby, mock; print(scooby.investigate(additional=[mock,]))"
   - python -c "import scooby, mock; print(scooby.investigate(additional=mock))"
+  - python -c "import scooby, mock; print(scooby.investigate(additional=mock)._repr_html_())"
 
 notifications:
   email:
