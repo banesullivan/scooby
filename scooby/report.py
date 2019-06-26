@@ -353,11 +353,8 @@ class Report(PlatformInfo, PythonInfo):
 
         html += "  <tr>\n"
         # Loop over packages
-        for name, version in self._packages.items():
+        for name, version in self.packages.items():
             html, i = cols(html, version, name, self.ncol, i)
-        # Loop over failed packages
-        for name, result in self._failures.items():
-            html, i = cols(html, result, name, self.ncol, i)
         # Fill up the row
         while i % self.ncol != 0:
             html += "    <td style= " + border + "></td>\n"
