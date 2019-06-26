@@ -9,6 +9,7 @@ from types import ModuleType
 
 from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
+from scooby.mysteries import in_ipython, in_jupyter
 
 UNAVAILABLE_MSG = 'unavailable'
 VERSION_UNKNOWN_MSG = 'unknown'
@@ -172,9 +173,18 @@ class PythonInfo:
         return version
 
 
+    @property
+    def python_environment(self):
+        if in_jupyter():
+            return 'Jupyter'
+        elif in_ipython():
+            return 'IPython'
+        return 'Python'
+
+
 
 class Report(PlatformInfo, PythonInfo):
-    r"""Print date, time, and version information.
+    """Print date, time, and version information.
 
     Print date, time, and package version information in any environment
     (Jupyter notebook, IPython console, Python console, QT console), either as
@@ -249,6 +259,8 @@ class Report(PlatformInfo, PythonInfo):
         for txt in textwrap.wrap(sys.version, self.text_width-4):
             text += '  '+txt+'\n'
 
+        text += '\n'
+        text += '{:>15}'.format(self.python_environment)+' : Environment\n'
         text += '\n'
 
         # Loop over packages
