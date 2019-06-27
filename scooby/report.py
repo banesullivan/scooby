@@ -9,7 +9,7 @@ from types import ModuleType
 
 from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
-from scooby.mysteries import in_ipython, in_jupyter
+from scooby.mysteries import in_ipython, in_ipykernel
 
 UNAVAILABLE_MSG = 'unavailable'
 VERSION_UNKNOWN_MSG = 'unknown'
@@ -172,7 +172,7 @@ class PythonInfo:
 
     @property
     def python_environment(self):
-        if in_jupyter():
+        if in_ipykernel():
             return 'Jupyter'
         elif in_ipython():
             return 'IPython'

@@ -1,7 +1,7 @@
 # coding=utf-8
 from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
-from scooby.mysteries import in_ipython, in_jupyter
+from scooby.mysteries import in_ipython, in_ipykernel
 from scooby.report import Report
 
 

@@ -8,7 +8,7 @@ def in_ipython():
     Note
     ----
     This will return ``True`` in Jupyter environments, so be sure to check
-    :func:`scooby.in_jupyter` first
+    :func:`scooby.in_ipykernel` first
 
     Returns
     -------
@@ -21,8 +21,14 @@ def in_ipython():
         return False
 
 
-def in_jupyter():
-    """Mystery: are we in a Jupyter environment?
+def in_ipykernel():
+    """Mystery: are we in a ipykernel (most likely Jupyter) environment?
+
+    Warning
+    -------
+    There is no way to tell if the code is being executed in Jupyter or IPython,
+    but this method has a high likely hood of being True if in a Jupyter
+    notebook and not IPython.
 
     Returns
     -------

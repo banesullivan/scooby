@@ -45,7 +45,7 @@ functions to solve these kinds of mysteries:
 ```py
 import scooby
 
-if scooby.in_jupyter():
+if scooby.in_ipykernel():
     # Do Jupyter stuff
 elif scooby.in_ipython():
     # Do IPython stuff
