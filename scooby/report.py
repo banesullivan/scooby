@@ -61,6 +61,10 @@ class PlatformInfo:
             return TOTAL_RAM
         return 'unknown'
 
+    @property
+    def date(self):
+        return time.strftime('%a %b %d %H:%M:%S %Y %Z')
+
 
 
 class PythonInfo:
@@ -247,8 +251,22 @@ class Report(PlatformInfo, PythonInfo):
         text = '\n' + self.text_width*'-' + '\n'
 
         # Date and time info as title
-        text += time.strftime('  Date: %a %b %d %H:%M:%S %Y %Z')
-        text += '\n  Platform: ' + self.platform + '\n'
+        date_text = '  Date: '
+        mult = 0
+        indent = len(date_text)
+        for txt in textwrap.wrap(self.date, self.text_width-indent):
+            date_text += ' '*mult + txt + '\n'
+            mult = indent
+        text += date_text
+
+        # Platform info
+        platform_text = '  Platform: '
+        mult = 0
+        indent = len(platform_text)
+        for txt in textwrap.wrap(self.platform, self.text_width-indent):
+            platform_text += ' '*mult + txt + '\n'
+            mult = indent
+        text += platform_text
 
         text += '\n'
 
@@ -334,7 +352,7 @@ class Report(PlatformInfo, PythonInfo):
         html = "<table style='border: 3px solid #ddd;'>\n"
 
         # Date and time info as title
-        html = colspan(html, time.strftime('%a %b %d %H:%M:%S %Y %Z'),
+        html = colspan(html, self.date,
                        self.ncol, 0)
 
         ############ Platform/OS details ############
