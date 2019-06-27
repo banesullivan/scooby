@@ -233,7 +233,7 @@ class Report(PlatformInfo, PythonInfo):
     def __init__(self, core=None,
                        optional=('numpy', 'scipy', 'IPython', 'matplotlib',),
                        additional=None,
-                       ncol=3, text_width=54):
+                       ncol=3, text_width=80):
         PythonInfo.__init__(self, core=core, optional=optional,
                             additional=additional)
         self.ncol = int(ncol)
