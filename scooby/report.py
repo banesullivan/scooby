@@ -371,6 +371,7 @@ class Report(PlatformInfo, PythonInfo):
 
         html += "  <tr>\n"
         # Loop over packages
+        i = 0  # Reset count for rows.
         for name, version in self.packages.items():
             html, i = cols(html, version, name, self.ncol, i)
         # Fill up the row
