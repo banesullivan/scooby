@@ -77,6 +77,7 @@ class PythonInfo:
                        additional=None):
         self._packages = {} # Holds name of packages and their version
         self._failures = {} # Holds failures and reason
+        self._packages['scooby'] = scooby.__version__
 
         # Make sure arguments are good
         def safety(x):
@@ -250,9 +251,6 @@ class Report(PlatformInfo, PythonInfo):
 
         # Width for text-version
         text = '\n' + self.text_width*'-' + '\n'
-
-        text += "  Looks like we've got another mystery on our hands!\n"
-        text += "  Scooby {} reporting for duty!\n".format(scooby.__version__)
 
         # Date and time info as title
         date_text = '  Date: '
