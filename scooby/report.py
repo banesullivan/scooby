@@ -7,6 +7,7 @@ import textwrap
 import time
 from types import ModuleType
 
+import scooby
 from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
 from scooby.mysteries import in_ipython, in_ipykernel
@@ -249,6 +250,9 @@ class Report(PlatformInfo, PythonInfo):
 
         # Width for text-version
         text = '\n' + self.text_width*'-' + '\n'
+
+        text += "  Looks like we've got another mystery on our hands!\n"
+        text += "  Scooby {} reporting for duty!\n".format(scooby.__version__)
 
         # Date and time info as title
         date_text = '  Date: '
