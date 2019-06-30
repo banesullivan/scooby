@@ -14,15 +14,15 @@ install:
   - python -m pip install numpy scipy
 
 script:
-  - python -c "import scooby; print(scooby.investigate())"
-  - python -c "import scooby; print(scooby.investigate(core='numpy'))"
-  - python -c "import scooby; print(scooby.investigate(additional=['mock', 'foo']))"
-  - python -c "import scooby; print(scooby.investigate(additional=['foo',]))"
-  - python -c "import scooby, mock; print(scooby.investigate(additional=[mock,]))"
-  - python -c "import scooby, mock; print(scooby.investigate(additional=mock))"
-  - python -c "import scooby, mock; print(scooby.investigate(additional=mock)._repr_html_())"
+  - python -c "import scooby; print(scooby.Report())"
+  - python -c "import scooby; print(scooby.Report(core='numpy'))"
+  - python -c "import scooby; print(scooby.Report(additional=['mock', 'foo']))"
+  - python -c "import scooby; print(scooby.Report(additional=['foo',]))"
+  - python -c "import scooby, mock; print(scooby.Report(additional=[mock,]))"
+  - python -c "import scooby, mock; print(scooby.Report(additional=mock))"
+  - python -c "import scooby, mock; print(scooby.Report(additional=mock)._repr_html_())"
   # Test sorting
-  - python -c "import scooby; print(scooby.investigate(additional=['collections', 'foo', 'aaa'], sort=True))"
+  - python -c "import scooby; print(scooby.Report(additional=['collections', 'foo', 'aaa'], sort=True))"
 
 notifications:
   email:

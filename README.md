@@ -6,8 +6,9 @@
 
 A Great Dane turned Python environment detective
 
-This is a toolset to easily report your Python environment's package versions
-and hardware resources.
+This is a lightweight toolset to easily report your Python environment's
+package versions and hardware resources.
+
 
 Install from [PyPI](https://pypi.org/project/scooby/):
 
@@ -27,12 +28,19 @@ environment you care most about.
 If `scooby` is unable to detect aspects of an environment that you'd like to
 know, please share this with us as a feature requests or pull requests.
 
-This work is derived from [Dieter Werthmüller](https://github.com/prisae)'s work
-towards creating a version reporting tool for the [empymod](https://github.com/empymod/)
-and [SimPEG](https://github.com/simpeg/) projects.
-This package has been altered to create a lightweight implementation so that it
-can easily be used as an environment reporting tool in any Python library with
-minimal impact.
+
+
+
+
+
+The scooby reporting is derived from the versioning-scripts created by [Dieter
+Werthmüller](https://github.com/prisae) for
+[empymod](https://empymod.github.io), [emg3d](https://empymod.github.io), and
+the [SimPEG](https://github.com/simpeg/) framework. It was heavily inspired by
+`ipynbtools.py` from [qutip](https://github.com/qutip) and
+[`watermark.py`](https://github.com/rasbt/watermark). This package has been
+altered to create a lightweight implementation so that it can easily be used as
+an environment reporting tool in any Python library with minimal impact.
 
 ## Usage
 
@@ -55,180 +63,169 @@ else:
 
 ### Generating Reports
 
-Use Scooby's `investigate` method to generate `Report` objects. These objects
-have representation methods implemented so that if outputted, they show
-a nicely formatted report but you could also capture the report as an object
-itself.
+Use Scooby's `Report` objects. These objects have representation methods
+implemented so that if outputted, they show a nicely formatted report but you
+could also capture the report as an object itself.
 
 ```py
 >>> import scooby
->>> scooby.investigate()
+>>> scooby.Report()
 ```
 ```
-------------------------------------------------------
-  Date: Tue Jun 25 16:17:46 2019 MDT
-  Platform: Darwin-18.5.0-x86_64-i386-64bit
+--------------------------------------------------------------
+  Date: Sun Jun 30 14:18:44 2019 CEST
 
-             12 : CPU(s)
+          Linux : OS
+              4 : CPU(s)
          x86_64 : Machine
           64bit : Architecture
-        32.0 GB : RAM
+         7.7 GB : RAM
+        IPython : Environment
 
-  3.7.3 | packaged by conda-forge | (default, Mar 27
-  2019, 15:43:19)  [Clang 4.0.1
-  (tags/RELEASE_401/final)]
+  Python 3.7.3 (default, Mar 27 2019, 22:11:17) [GCC 7.3.0]
 
          1.16.3 : numpy
-          1.3.0 : scipy
+          1.2.1 : scipy
           7.5.0 : IPython
-          3.1.0 : matplotlib
+          3.0.3 : matplotlib
+          0.2.2 : scooby
 
-  Intel(R) Math Kernel Library Version 2018.0.3
-  Product Build 20180406 for Intel(R) 64
-  architecture applications
-------------------------------------------------------
+  Intel(R) Math Kernel Library Version 2019.0.3 Product
+  Build 20190125 for Intel(R) 64 architecture applications
+--------------------------------------------------------------
 ```
 
 But you can also add addtional packages too if you'd like via the `addtional`
 keyword argument:
 
 ```py
->>> scooby.investigate(additional='pyvista')
+>>> scooby.Report(additional='pyvista')
 ```
 ```
-------------------------------------------------------
-  Date: Tue Jun 25 16:18:01 2019 MDT
-  Platform: Darwin-18.5.0-x86_64-i386-64bit
+--------------------------------------------------------------
+  Date: Sun Jun 30 14:18:44 2019 CEST
 
-             12 : CPU(s)
+          Linux : OS
+              4 : CPU(s)
          x86_64 : Machine
           64bit : Architecture
-        32.0 GB : RAM
+         7.7 GB : RAM
+        IPython : Environment
 
-  3.7.3 | packaged by conda-forge | (default, Mar 27
-  2019, 15:43:19)  [Clang 4.0.1
-  (tags/RELEASE_401/final)]
+  Python 3.7.3 (default, Mar 27 2019, 22:11:17) [GCC 7.3.0]
 
+         0.20.2 : pyvista
          1.16.3 : numpy
-          1.3.0 : scipy
+          1.2.1 : scipy
           7.5.0 : IPython
-          3.1.0 : matplotlib
-         0.20.4 : pyvista
+          3.0.3 : matplotlib
+          0.2.2 : scooby
 
-  Intel(R) Math Kernel Library Version 2018.0.3
-  Product Build 20180406 for Intel(R) 64
-  architecture applications
-------------------------------------------------------
+  Intel(R) Math Kernel Library Version 2019.0.3 Product
+  Build 20190125 for Intel(R) 64 architecture applications
+--------------------------------------------------------------
 ```
 
 Or maybe you want a whole bunch of additional packages:
 
 ```py
->>> scooby.investigate(additional=['pyvista', 'vtk', 'appdirs',])
+>>> scooby.Report(additional=['pyvista', 'vtk', 'appdirs',])
 ```
 ```
-------------------------------------------------------
-  Date: Tue Jun 25 16:18:16 2019 MDT
-  Platform: Darwin-18.5.0-x86_64-i386-64bit
+--------------------------------------------------------------
+  Date: Sun Jun 30 14:18:44 2019 CEST
 
-             12 : CPU(s)
+          Linux : OS
+              4 : CPU(s)
          x86_64 : Machine
           64bit : Architecture
-        32.0 GB : RAM
+         7.7 GB : RAM
+        IPython : Environment
 
-  3.7.3 | packaged by conda-forge | (default, Mar 27
-  2019, 15:43:19)  [Clang 4.0.1
-  (tags/RELEASE_401/final)]
+  Python 3.7.3 (default, Mar 27 2019, 22:11:17) [GCC 7.3.0]
 
-         1.16.3 : numpy
-          1.3.0 : scipy
-          7.5.0 : IPython
-          3.1.0 : matplotlib
-         0.20.4 : pyvista
-          8.2.0 : vtk
+         0.20.2 : pyvista
+          8.1.2 : vtk
           1.4.3 : appdirs
+         1.16.3 : numpy
+          1.2.1 : scipy
+          7.5.0 : IPython
+          3.0.3 : matplotlib
+          0.2.2 : scooby
 
-  Intel(R) Math Kernel Library Version 2018.0.3
-  Product Build 20180406 for Intel(R) 64
-  architecture applications
-------------------------------------------------------
+  Intel(R) Math Kernel Library Version 2019.0.3 Product
+  Build 20190125 for Intel(R) 64 architecture applications
+--------------------------------------------------------------
 ```
 
 
-Want to add a package to investigate but aren't sure if it is present,
-simply define the `optional` list in the arguments. Note that the default
-libraries of `numpy`, `scipy`, `IPython`, and `matplotlib` are defaults for
-optional argument, so you might want to put those in the `core` argument if
-you care about those.
+Want to add a package to investigate but aren't sure if it is present, simply
+define the `optional` list in the arguments. Note that the default libraries of
+`numpy`, `scipy`, `IPython`, and `matplotlib` (and `scooby`) are defaults for
+optional argument, so you might want to put those in the `core` argument if you
+care about those.
 
 ```py
->>> scooby.investigate(core=['numpy', 'matplotlib'], optional=['foo', ])
+>>> scooby.Report(core=['numpy', 'matplotlib'], optional=['foo', ])
 ```
 ```
-------------------------------------------------------
-  Date: Tue Jun 25 17:51:30 2019 MDT
-  Platform: Darwin-18.5.0-x86_64-i386-64bit
+--------------------------------------------------------------
+  Date: Sun Jun 30 14:23:24 2019 CEST
 
-             12 : CPU(s)
+          Linux : OS
+              4 : CPU(s)
          x86_64 : Machine
           64bit : Architecture
-        32.0 GB : RAM
+         7.7 GB : RAM
+        IPython : Environment
 
-  3.7.3 | packaged by conda-forge | (default, Mar 27
-  2019, 15:43:19)  [Clang 4.0.1
-  (tags/RELEASE_401/final)]
+  Python 3.7.3 (default, Mar 27 2019, 22:11:17)  [GCC 7.3.0]
 
          1.16.3 : numpy
-          3.1.0 : matplotlib
+          3.0.3 : matplotlib
 
-  Intel(R) Math Kernel Library Version 2018.0.3
-  Product Build 20180406 for Intel(R) 64
-  architecture applications
-------------------------------------------------------
+  Intel(R) Math Kernel Library Version 2019.0.3 Product
+  Build 20190125 for Intel(R) 64 architecture applications
+--------------------------------------------------------------
 ```
 
 Since the `foo` package wasn't found and it's optional, nothing is reported.
 But what if you need some sort of error message that a package wasn't found?
-Then add your package to the `additional` list and Scooby will let you now it
-was not found but like any good pooch, Scooby will complete the investigation:
+Then add your package to the `additional` list and Scooby will report it, just
+with a `NA`:
 
 ```py
->>> scooby.investigate(additional=['foo',])
+>>> scooby.Report(additional=['foo',])
 ```
 ```
-------------------------------------------------------
-  Date: Tue Jun 25 21:23:56 2019 MDT
-  Platform: Darwin-18.5.0-x86_64-i386-64bit
+--------------------------------------------------------------
+  Date: Sun Jun 30 14:23:50 2019 CEST
 
-             12 : CPU(s)
+          Linux : OS
+              4 : CPU(s)
          x86_64 : Machine
           64bit : Architecture
-        32.0 GB : RAM
+         7.7 GB : RAM
+        IPython : Environment
 
-  3.7.3 | packaged by conda-forge | (default, Mar 27
-  2019, 15:43:19)  [Clang 4.0.1
-  (tags/RELEASE_401/final)]
+  Python 3.7.3 (default, Mar 27 2019, 22:11:17)  [GCC 7.3.0]
 
+             NA : foo
          1.16.3 : numpy
-          1.3.0 : scipy
+          1.2.1 : scipy
           7.5.0 : IPython
-          3.1.0 : matplotlib
+          3.0.3 : matplotlib
+          0.2.2 : scooby
 
-  RUH-ROH! These modules were either unavailable or
-  the version attribute is unknown:
-
-    unavailable : foo
-
-  Intel(R) Math Kernel Library Version 2018.0.3
-  Product Build 20180406 for Intel(R) 64
-  architecture applications
-------------------------------------------------------
+  Intel(R) Math Kernel Library Version 2019.0.3 Product
+  Build 20190125 for Intel(R) 64 architecture applications
+--------------------------------------------------------------
 ```
 
 
 ## Optional Requirements
 
-The following are a list of optional requirements and their purpose:
+The following is a list of optional requirements and their purpose:
 
 - `psutil`: report total RAM in GB
 - `mkl`: report Intel(R) Math Kernel Library version

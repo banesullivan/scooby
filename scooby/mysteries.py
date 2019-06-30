@@ -1,21 +1,17 @@
 """
-Tools fo solving common mysteries.
+Tools for solving common mysteries.
 """
+
 
 def in_ipython():
     """Mystery: are we in an IPython environment?
-
-    Note
-    ----
-    This will return ``True`` in Jupyter environments, so be sure to check
-    :func:`scooby.in_ipykernel` first
 
     Returns
     -------
     bool : True if in an IPython environment
     """
     try:
-        _ = __IPYTHON__
+        __IPYTHON__
         return True
     except NameError:
         return False
@@ -26,18 +22,20 @@ def in_ipykernel():
 
     Warning
     -------
-    There is no way to tell if the code is being executed in Jupyter or IPython,
-    but this method has a high likely hood of being True if in a Jupyter
-    notebook and not IPython.
+    There is no way to tell if the code is being executed in a notebook
+    (Jupyter Notebook or Jupyter Lab) or a kernel is used but executed in a
+    QtConsole, or in an IPython console, or any other frontend GUI. However, if
+    `in_ipykernel` returns True, you are most likely in a Jupyter Notebook/Lab,
+    just keep it in mind that there are other possibilities.
 
     Returns
     -------
-    bool : True if in a Jupyter environment
+    bool : True if using an ipykernel
     """
-    notebook = False
+    ipykernel = False
     if in_ipython():
         try:
-            notebook = type(get_ipython()).__module__.startswith('ipykernel.')
+            ipykernel = type(get_ipython()).__module__.startswith('ipykernel.')
         except NameError:
             pass
-    return notebook
+    return ipykernel
