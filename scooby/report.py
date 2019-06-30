@@ -116,8 +116,7 @@ class PythonInfo:
             if optional:
                 return
             raise TypeError('RUH-ROH! Module passed is not a module.')
-        self._packages[name] = self.get_version(module)
-        return
+        return self.get_version(module)
 
 
     def _add_package_by_name(self, name, optional=False):
@@ -125,8 +124,7 @@ class PythonInfo:
         Returns True if succesful, false if unsuccesful."""
         module = self._safe_import_by_name(name, optional=optional)
         if module is not None:
-            self._add_package(module, name, optional=optional)
-            return True
+            return self._add_package(module, name, optional=optional)
         return False
 
 
@@ -170,7 +168,10 @@ class PythonInfo:
                 version = module.__version__
             except AttributeError:
                 self._failures[name] = VERSION_UNKNOWN_MSG
-                return
+                if name in self._packages:
+                    del self._packages[name]
+                return VERSION_UNKNOWN_MSG
+        self._packages[name] = version
         return version
 
 

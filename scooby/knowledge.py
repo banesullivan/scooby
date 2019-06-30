@@ -7,4 +7,5 @@ common packages in the Python stack that have something other than a
 VERSION_ATTRIBUTES = {
     'vtk' : 'VTK_VERSION',
     'vtkmodules.all' : 'VTK_VERSION',
+    'PyQt5' : 'Qt.PYQT_VERSION_STR',
 }
