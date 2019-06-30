@@ -1,7 +1,8 @@
+# coding=utf-8
+
 # These are our default optional packages to investigate
 SCOOBY_PACKAGES = ['numpy', 'scipy', 'IPython', 'matplotlib']
 
-# coding=utf-8
 from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
 from scooby.mysteries import in_ipython, in_ipykernel
