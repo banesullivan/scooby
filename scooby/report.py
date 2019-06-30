@@ -12,15 +12,14 @@ from scooby.mysteries import in_ipykernel, in_ipython
 
 
 class PlatformInfo:
-    """Aninternal helper class to make accessing details about the computer
-    platform a bit easier
-    """
+    """Internal helper class to access details about the computer platform."""
 
     @property
     def system(self):
-        """Returns the system/OS name, e.g. ``'Linux'``, ``'Windows'``, or
-        ``'Java'``. An empty string is returned if the value cannot be
-        determined."""
+        """Returns the system/OS name.
+        E.g. ``'Linux'``, ``'Windows'``, or ``'Java'``. An empty string is
+        returned if the value cannot be determined.
+        """
         return platform.system()
 
     @property
@@ -41,12 +40,16 @@ class PlatformInfo:
 
     @property
     def cpu_count(self):
-        """Return the number of CPUs in the system. May raise
-        ``NotImplementedError``."""
+        """Return the number of CPUs in the system.
+        """
         return multiprocessing.cpu_count()
 
     @property
     def total_ram(self):
+        """Return total RAM info.
+
+        If not available, returns 'unknown'.
+        """
         if TOTAL_RAM:
             return TOTAL_RAM
         return 'unknown'
@@ -57,17 +60,16 @@ class PlatformInfo:
 
 
 class PythonInfo:
-    """An internal helper class to handle managing Python information and
-    package versions"""
+    """Internal helper class to access Python info and package versions."""
 
     def __init__(self, additional, core, optional, sort):
         self._packages = {}  # Holds name of packages and their version
         self._sort = sort
 
         # Add packages in the following order:
-        self.add_packages(additional)              # Provided by the user
-        self.add_packages(core)                    # Provided by a module dev
-        self.add_packages(optional, optional=True) # Optional packages
+        self.add_packages(additional)               # Provided by the user
+        self.add_packages(core)                     # Provided by a module dev
+        self.add_packages(optional, optional=True)  # Optional packages
 
     def add_packages(self, packages, optional=False):
         """Add all packages to list; optional ones only if available."""
@@ -97,9 +99,10 @@ class PythonInfo:
 
         elif isinstance(pckg, ModuleType):  # Case 2: pckg is module; get name
 
+            # Get the name of the package.
             try:
-                name = module.__name__
-            except:
+                name = pckg.__name__
+            except AttributeError:
                 name = str(pckg).split("'")[1]
 
         else:
@@ -140,7 +143,8 @@ class PythonInfo:
     @property
     def packages(self):
         """Return versions of all packages
-        (available and unavailable/unknown)"""
+        (available and unavailable/unknown)
+        """
         packages = dict(self._packages)
         if self._sort:
             packages = sort_dictionary(packages)
@@ -182,7 +186,7 @@ class Report(PlatformInfo, PythonInfo):
 
         # Set default optional packages to investigate
         if optional is None:
-            optional = ['numpy', 'scipy', 'IPython', 'whatever', 'matplotlib', 'scooby']
+            optional = ['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']
 
         PythonInfo.__init__(self, additional=additional, core=core,
                             optional=optional, sort=sort)
@@ -215,7 +219,8 @@ class Report(PlatformInfo, PythonInfo):
 
         # ########## Python details ############
         text += '\n'
-        for txt in textwrap.wrap('Python '+sys.version, self.text_width-4):
+        for txt in textwrap.wrap(
+                'Python '+self.sys_version, self.text_width-4):
             text += '  '+txt+'\n'
         text += '\n'
 
@@ -228,7 +233,6 @@ class Report(PlatformInfo, PythonInfo):
             text += '{:>15} : {}\n'.format(version, name)
 
         # ########## MKL details ############
-        # mkl version
         if MKL_INFO:
             text += '\n'
             for txt in textwrap.wrap(MKL_INFO, self.text_width-4):
@@ -295,7 +299,7 @@ class Report(PlatformInfo, PythonInfo):
         html += "  </tr>\n"
 
         # ########## Python details ############
-        html = colspan(html, 'Python '+sys.version, self.ncol, 1)
+        html = colspan(html, 'Python '+self.sys_version, self.ncol, 1)
 
         html += "  <tr>\n"
         # Loop over packages

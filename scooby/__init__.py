@@ -15,10 +15,10 @@ Werthmüller for ``empymod``, ``emg3d``, and the ``SimPEG`` framework
 ``watermark.py`` from https://github.com/rasbt/watermark.
 """
 
-from scooby.extras import MKL_INFO, TOTAL_RAM, sort_dictionary
-from scooby.knowledge import VERSION_ATTRIBUTES
-from scooby.mysteries import in_ipython, in_ipykernel
 from scooby.report import Report
+from scooby.mysteries import in_ipython, in_ipykernel
+
+__all__ = ['Report', 'in_ipython', 'in_ipykernel']
 
 
 __author__ = 'Dieter Werthmüller & Bane Sullivan'
