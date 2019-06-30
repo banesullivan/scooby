@@ -214,7 +214,7 @@ was not found but like any good pooch, Scooby will complete the investigation:
           7.5.0 : IPython
           3.1.0 : matplotlib
 
-  RUH-ROH! These modules were either unavailable or
+  These modules were either unavailable or
   the version attribute is unknown:
 
     unavailable : foo

@@ -89,7 +89,7 @@ class PythonInfo:
         if not isinstance(module, ModuleType):
             if optional:
                 return
-            raise TypeError('RUH-ROH! Module passed is not a module.')
+            raise TypeError('Module passed is not a module.')
         return self.get_version(module)
 
     def _add_package_by_name(self, name, optional=False):
@@ -119,7 +119,7 @@ class PythonInfo:
             elif pckg is None:
                 pass
             elif not optional:
-                raise TypeError("RUH-ROH! Cannot add package from type "
+                raise TypeError("Cannot add package from type "
                                 "({})".format(type(pckg)))
 
     @property
@@ -137,7 +137,7 @@ class PythonInfo:
             name = pckg.__name__
             module = pckg
         else:
-            raise TypeError("RUH-ROH! Cannot fetch version from type "
+            raise TypeError("Cannot fetch version from type "
                             "({})".format(type(pckg)))
         # Now get the version info from the module
         version = get_from_knowledge_base(module, name=name)
@@ -227,20 +227,10 @@ class Report(PlatformInfo, PythonInfo):
         for txt in textwrap.wrap(self.date, self.text_width-indent):
             date_text += ' '*mult + txt + '\n'
             mult = indent
-        text += date_text
-
-        # Platform info
-        platform_text = '  Platform: '
-        mult = 0
-        indent = len(platform_text)
-        for txt in textwrap.wrap(self.platform, self.text_width-indent):
-            platform_text += ' '*mult + txt + '\n'
-            mult = indent
-        text += platform_text
-
-        text += '\n'
+        text += date_text+'\n'
 
         # ########## Platform/OS details ############
+        text += '{:>15}'.format(self.system)+' : OS\n'
         text += '{:>15}'.format(self.cpu_count)+' : CPU(s)\n'
         text += '{:>15}'.format(self.machine)+' : Machine\n'
         text += '{:>15}'.format(self.architecture)+' : Architecture\n'
@@ -249,11 +239,9 @@ class Report(PlatformInfo, PythonInfo):
 
         # ########## Python details ############
         text += '\n'
+        text +=  'Environment: {}'.format(self.python_environment)+'; Python'
         for txt in textwrap.wrap(sys.version, self.text_width-4):
-            text += '  '+txt+'\n'
-
-        text += '\n'
-        text += '{:>15}'.format(self.python_environment)+' : Environment\n'
+            text += ' '+txt+'\n'
         text += '\n'
 
         # Loop over packages
@@ -268,7 +256,7 @@ class Report(PlatformInfo, PythonInfo):
         if len(self._failures) > 0:
             text += '\n'
             failure_message = (
-                    "RUH-ROH! These modules were either unavailable or the "
+                    "These modules were either unavailable or the "
                     "version attribute is unknown:"
                     )
 
@@ -349,7 +337,11 @@ class Report(PlatformInfo, PythonInfo):
         html += "  </tr>\n"
 
         # ########## Python details ############
-        html = colspan(html, sys.version, self.ncol, 1)
+        html = colspan(
+            html,
+            'Environment: '+self.python_environment+'; Python '+sys.version,
+            self.ncol,
+            1)
 
         html += "  <tr>\n"
         # Loop over packages
