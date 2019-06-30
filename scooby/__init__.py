@@ -1,49 +1,24 @@
 # coding=utf-8
+"""
+A Great Dane turned Python environment detective
+================================================
 
-# These are our default optional packages to investigate
-SCOOBY_PACKAGES = ['numpy', 'scipy', 'IPython', 'matplotlib']
+A lightweight toolset to easily report your Python environment's package
+versions and hardware resources.
+
+History
+-------
+The scooby reporting is derived from the versioning-scripts created by Dieter
+Werthmüller for ``empymod``, ``emg3d``, and the ``SimPEG`` framework
+(https://empymod.github.io; https://simpeg.xyz). It was heavily inspired by
+``ipynbtools.py`` from ``qutip`` (https://github.com/qutip) and
+``watermark.py`` from https://github.com/rasbt/watermark.
+"""
 
 from scooby.extras import MKL_INFO, TOTAL_RAM, sort_dictionary
 from scooby.knowledge import VERSION_ATTRIBUTES
 from scooby.mysteries import in_ipython, in_ipykernel
 from scooby.report import Report
-
-
-def investigate(core=None,
-                optional=SCOOBY_PACKAGES,
-                additional=None,
-                ncol=3, text_width=54, sort=False):
-    """
-    Have Scooby investigate the active Python environment. This returns a
-    :class:`scooby.Report` object which displays the system information
-    when a ``__repr__`` method is called (through outputting or printing).
-
-    Parameters
-    ----------
-    core : list(ModuleType), list(str)
-        The core packages to list first.
-
-    optional : list(ModuleType), list(str)
-        A list of packages to list if they are available. If not available,
-        no warnings or error will be thrown.
-
-    additional : list(ModuleType), list(str)
-        List of packages or package names to add to output information.
-
-    ncol : int, optional
-        Number of package-columns in html table; only has effect if
-        ``mode='HTML'`` or ``mode='html'``. Defaults to 3.
-
-    text_width : int, optional
-        The text width for non-HTML display modes
-
-    sort : bool, optional
-        Sort the packages when the report is shown
-
-    """
-    versions = Report(core=core, optional=optional, additional=additional,
-                        ncol=ncol, text_width=text_width, sort=sort)
-    return versions
 
 
 __author__ = 'Dieter Werthmüller & Bane Sullivan'
