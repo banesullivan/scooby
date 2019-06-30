@@ -62,7 +62,6 @@ class PythonInfo:
 
     def __init__(self, additional, core, optional, sort):
         self._packages = {}  # Holds name of packages and their version
-        self._failures = {}  # Holds failures and reason
         self._sort = sort
 
         # Additional packages provided by the user
@@ -76,8 +75,6 @@ class PythonInfo:
         try:
             module = importlib.import_module(name)
         except ImportError:
-            if not optional:
-                self._failures[name] = 'unavailable'
             module = None
         return module
 
@@ -89,16 +86,15 @@ class PythonInfo:
         if not isinstance(module, ModuleType):
             if optional:
                 return
-            raise TypeError('Module passed is not a module.')
-        return self.get_version(module)
+        return self.get_version(module, name)
 
     def _add_package_by_name(self, name, optional=False):
-        """Internal helper to add a module to the internal list of packages.
-        Returns True if successful, false if unsuccessful."""
+        """Internal helper to add a module by its name.
+
+        Add package `name` to the internal list of packages.
+        """
         module = self._safe_import_by_name(name, optional=optional)
-        if module is not None:
-            return self._add_package(module, name, optional=optional)
-        return False
+        return self._add_package(module, name, optional=optional)
 
     def add_packages(self, packages, optional=False):
         """Add all packages to list; optional ones only if available."""
@@ -127,30 +123,36 @@ class PythonInfo:
     def sys_version(self):
         return sys.version
 
-    def get_version(self, pckg):
+    def get_version(self, pckg, name):
         """Get the version of a package by passing the package or it's name"""
+
         # First, fetch the module and its name
         if isinstance(pckg, str):
             name = pckg
             # This could raise an error if module not found
-            module = self._safe_import_by_name(pckg)
+            pckg = self._safe_import_by_name(pckg)
+
         elif isinstance(pckg, ModuleType):
             name = pckg.__name__
-            module = pckg
+
+        elif pckg is None:
+            pass
+
         else:
             raise TypeError("Cannot fetch version from type "
                             "({})".format(type(pckg)))
 
         # Now get the version info from the module
-        version = get_from_knowledge_base(module, name=name)
-        if version is None:
-            try:
-                version = module.__version__
-            except AttributeError:
-                self._failures[name] = 'unknown'
-                if name in self._packages:
-                    del self._packages[name]
-                return self._failures[name]
+        if pckg is not None:
+            version = get_from_knowledge_base(pckg, name=name)
+            if version is None:
+                try:
+                    version = pckg.__version__
+                except AttributeError:
+                    version = 'NA'
+        else:
+            version = 'NA'
+
         # Add the version to the package reference
         self._packages[name] = version
         return version
@@ -168,7 +170,6 @@ class PythonInfo:
         """Return versions of all packages
         (available and unavailable/unknown)"""
         packages = dict(self._packages)
-        packages.update(self._failures)
         if self._sort:
             packages = sort_dictionary(packages)
         return packages
