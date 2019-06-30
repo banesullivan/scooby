@@ -3,7 +3,7 @@
 # These are our default optional packages to investigate
 SCOOBY_PACKAGES = ['numpy', 'scipy', 'IPython', 'matplotlib']
 
-from scooby.extras import MKL_INFO, TOTAL_RAM
+from scooby.extras import MKL_INFO, TOTAL_RAM, sort_dictionary
 from scooby.knowledge import VERSION_ATTRIBUTES
 from scooby.mysteries import in_ipython, in_ipykernel
 from scooby.report import Report
