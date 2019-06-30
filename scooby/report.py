@@ -91,6 +91,9 @@ class PythonInfo:
         optional = safety(optional)
         additional = safety(additional)
 
+        # Always show scooby as the very last package reported
+        additional.append('scooby')
+
         # First listed packages
         self.add_packages(core)
         # Optional packages to appear after the core

@@ -1,5 +1,5 @@
 # These are our default optional packages to investigate
-SCOOBY_PACKAGES = ['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']
+SCOOBY_PACKAGES = ['numpy', 'scipy', 'IPython', 'matplotlib']
 
 # coding=utf-8
 from scooby.extras import MKL_INFO, TOTAL_RAM
