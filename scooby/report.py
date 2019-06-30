@@ -78,7 +78,6 @@ class PythonInfo:
                        additional=None):
         self._packages = {} # Holds name of packages and their version
         self._failures = {} # Holds failures and reason
-        self._packages['scooby'] = scooby.__version__
 
         # Make sure arguments are good
         def safety(x):
