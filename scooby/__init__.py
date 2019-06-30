@@ -24,4 +24,4 @@ __all__ = ['Report', 'in_ipython', 'in_ipykernel']
 __author__ = 'Dieter Werthmüller & Bane Sullivan'
 __license__ = 'MIT'
 __copyright__ = '2019, Dieter Werthmüller & Bane Sullivan'
-__version__ = '0.2.2'
+__version__ = '0.3.0'
