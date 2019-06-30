@@ -8,7 +8,7 @@ import time
 from types import ModuleType
 
 from scooby.extras import MKL_INFO, TOTAL_RAM
-from scooby.knowledge import VERSION_ATTRIBUTES
+from scooby.knowledge import get_from_knowledge_base
 from scooby.mysteries import in_ipython, in_ipykernel
 
 UNAVAILABLE_MSG = 'unavailable'
@@ -160,10 +160,8 @@ class PythonInfo:
         else:
             raise TypeError('RUH-ROH! Cannot fetch version from type ({})'.format(type(pckg)))
         # Now get the version info from the module
-        try:
-            attr = VERSION_ATTRIBUTES[name]
-            version = getattr(module, attr)
-        except (KeyError, AttributeError):
+        version = get_from_knowledge_base(module, name=name)
+        if version is None:
             try:
                 version = module.__version__
             except AttributeError:
@@ -171,6 +169,7 @@ class PythonInfo:
                 if name in self._packages:
                     del self._packages[name]
                 return VERSION_UNKNOWN_MSG
+        # Add the version to the package reference
         self._packages[name] = version
         return version
 
