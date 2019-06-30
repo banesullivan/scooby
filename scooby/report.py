@@ -111,14 +111,14 @@ class PythonInfo:
 
         # Now get the version info from the module
         if pckg is None:
-            version = 'NA'
+            version = 'Could not import'
         else:
             version = get_from_knowledge_base(pckg, name=name)
             if version is None:
                 try:
                     version = pckg.__version__
                 except AttributeError:
-                    version = 'UNK'
+                    version = 'Version unknown'
 
         # Add the version to the package reference
         self._packages[name] = version
@@ -212,13 +212,13 @@ class Report(PlatformInfo, PythonInfo):
         text += date_text+'\n'
 
         # ########## Platform/OS details ############
-        text += '{:>15}'.format(self.system)+' : OS\n'
-        text += '{:>15}'.format(self.cpu_count)+' : CPU(s)\n'
-        text += '{:>15}'.format(self.machine)+' : Machine\n'
-        text += '{:>15}'.format(self.architecture)+' : Architecture\n'
+        text += '{:>18}'.format(self.system)+' : OS\n'
+        text += '{:>18}'.format(self.cpu_count)+' : CPU(s)\n'
+        text += '{:>18}'.format(self.machine)+' : Machine\n'
+        text += '{:>18}'.format(self.architecture)+' : Architecture\n'
         if TOTAL_RAM:
-            text += '{:>15}'.format(self.total_ram)+' : RAM\n'
-        text += '{:>15}'.format(self.python_environment)+' : Environment\n'
+            text += '{:>18}'.format(self.total_ram)+' : RAM\n'
+        text += '{:>18}'.format(self.python_environment)+' : Environment\n'
 
         # ########## Python details ############
         text += '\n'
@@ -233,7 +233,7 @@ class Report(PlatformInfo, PythonInfo):
         else:
             packages = self._packages
         for name, version in packages.items():
-            text += '{:>15} : {}\n'.format(version, name)
+            text += '{:>18} : {}\n'.format(version, name)
 
         # ########## MKL details ############
         if MKL_INFO:
