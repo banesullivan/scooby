@@ -72,27 +72,28 @@ could also capture the report as an object itself.
 >>> scooby.Report()
 ```
 ```
---------------------------------------------------------------
-  Date: Sun Jun 30 14:18:44 2019 CEST
+--------------------------------------------------------------------------------
+  Date: Sun Jun 30 12:51:42 2019 MDT
 
-          Linux : OS
-              4 : CPU(s)
-         x86_64 : Machine
-          64bit : Architecture
-         7.7 GB : RAM
-        IPython : Environment
+            Darwin : OS
+                12 : CPU(s)
+            x86_64 : Machine
+             64bit : Architecture
+           32.0 GB : RAM
+            Python : Environment
 
-  Python 3.7.3 (default, Mar 27 2019, 22:11:17) [GCC 7.3.0]
+  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
+  [Clang 4.0.1 (tags/RELEASE_401/final)]
 
-         1.16.3 : numpy
-          1.2.1 : scipy
-          7.5.0 : IPython
-          3.0.3 : matplotlib
-          0.2.2 : scooby
+            1.16.3 : numpy
+             1.3.0 : scipy
+             7.5.0 : IPython
+             3.1.0 : matplotlib
+             0.2.2 : scooby
 
-  Intel(R) Math Kernel Library Version 2019.0.3 Product
-  Build 20190125 for Intel(R) 64 architecture applications
---------------------------------------------------------------
+  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
+  Intel(R) 64 architecture applications
+--------------------------------------------------------------------------------
 ```
 
 But you can also add addtional packages too if you'd like via the `addtional`
@@ -102,28 +103,29 @@ keyword argument:
 >>> scooby.Report(additional='pyvista')
 ```
 ```
---------------------------------------------------------------
-  Date: Sun Jun 30 14:18:44 2019 CEST
+--------------------------------------------------------------------------------
+  Date: Sun Jun 30 12:52:14 2019 MDT
 
-          Linux : OS
-              4 : CPU(s)
-         x86_64 : Machine
-          64bit : Architecture
-         7.7 GB : RAM
-        IPython : Environment
+            Darwin : OS
+                12 : CPU(s)
+            x86_64 : Machine
+             64bit : Architecture
+           32.0 GB : RAM
+            Python : Environment
 
-  Python 3.7.3 (default, Mar 27 2019, 22:11:17) [GCC 7.3.0]
+  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
+  [Clang 4.0.1 (tags/RELEASE_401/final)]
 
-         0.20.2 : pyvista
-         1.16.3 : numpy
-          1.2.1 : scipy
-          7.5.0 : IPython
-          3.0.3 : matplotlib
-          0.2.2 : scooby
+            0.20.4 : pyvista
+            1.16.3 : numpy
+             1.3.0 : scipy
+             7.5.0 : IPython
+             3.1.0 : matplotlib
+             0.2.2 : scooby
 
-  Intel(R) Math Kernel Library Version 2019.0.3 Product
-  Build 20190125 for Intel(R) 64 architecture applications
---------------------------------------------------------------
+  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
+  Intel(R) 64 architecture applications
+--------------------------------------------------------------------------------
 ```
 
 Or maybe you want a whole bunch of additional packages:
@@ -132,30 +134,31 @@ Or maybe you want a whole bunch of additional packages:
 >>> scooby.Report(additional=['pyvista', 'vtk', 'appdirs',])
 ```
 ```
---------------------------------------------------------------
-  Date: Sun Jun 30 14:18:44 2019 CEST
+--------------------------------------------------------------------------------
+  Date: Sun Jun 30 12:52:37 2019 MDT
 
-          Linux : OS
-              4 : CPU(s)
-         x86_64 : Machine
-          64bit : Architecture
-         7.7 GB : RAM
-        IPython : Environment
+            Darwin : OS
+                12 : CPU(s)
+            x86_64 : Machine
+             64bit : Architecture
+           32.0 GB : RAM
+            Python : Environment
 
-  Python 3.7.3 (default, Mar 27 2019, 22:11:17) [GCC 7.3.0]
+  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
+  [Clang 4.0.1 (tags/RELEASE_401/final)]
 
-         0.20.2 : pyvista
-          8.1.2 : vtk
-          1.4.3 : appdirs
-         1.16.3 : numpy
-          1.2.1 : scipy
-          7.5.0 : IPython
-          3.0.3 : matplotlib
-          0.2.2 : scooby
+            0.20.4 : pyvista
+             8.2.0 : vtk
+             1.4.3 : appdirs
+            1.16.3 : numpy
+             1.3.0 : scipy
+             7.5.0 : IPython
+             3.1.0 : matplotlib
+             0.2.2 : scooby
 
-  Intel(R) Math Kernel Library Version 2019.0.3 Product
-  Build 20190125 for Intel(R) 64 architecture applications
---------------------------------------------------------------
+  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
+  Intel(R) 64 architecture applications
+--------------------------------------------------------------------------------
 ```
 
 
@@ -169,24 +172,25 @@ care about those.
 >>> scooby.Report(core=['numpy', 'matplotlib'], optional=['foo', ])
 ```
 ```
---------------------------------------------------------------
-  Date: Sun Jun 30 14:23:24 2019 CEST
+--------------------------------------------------------------------------------
+  Date: Sun Jun 30 12:52:58 2019 MDT
 
-          Linux : OS
-              4 : CPU(s)
-         x86_64 : Machine
-          64bit : Architecture
-         7.7 GB : RAM
-        IPython : Environment
+            Darwin : OS
+                12 : CPU(s)
+            x86_64 : Machine
+             64bit : Architecture
+           32.0 GB : RAM
+            Python : Environment
 
-  Python 3.7.3 (default, Mar 27 2019, 22:11:17)  [GCC 7.3.0]
+  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
+  [Clang 4.0.1 (tags/RELEASE_401/final)]
 
-         1.16.3 : numpy
-          3.0.3 : matplotlib
+            1.16.3 : numpy
+             3.1.0 : matplotlib
 
-  Intel(R) Math Kernel Library Version 2019.0.3 Product
-  Build 20190125 for Intel(R) 64 architecture applications
---------------------------------------------------------------
+  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
+  Intel(R) 64 architecture applications
+--------------------------------------------------------------------------------
 ```
 
 Since the `foo` package wasn't found and it's optional, nothing is reported.
@@ -198,28 +202,63 @@ with a `NA`:
 >>> scooby.Report(additional=['foo',])
 ```
 ```
---------------------------------------------------------------
-  Date: Sun Jun 30 14:23:50 2019 CEST
+--------------------------------------------------------------------------------
+  Date: Sun Jun 30 12:53:20 2019 MDT
 
-          Linux : OS
-              4 : CPU(s)
-         x86_64 : Machine
-          64bit : Architecture
-         7.7 GB : RAM
-        IPython : Environment
+            Darwin : OS
+                12 : CPU(s)
+            x86_64 : Machine
+             64bit : Architecture
+           32.0 GB : RAM
+            Python : Environment
 
-  Python 3.7.3 (default, Mar 27 2019, 22:11:17)  [GCC 7.3.0]
+  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
+  [Clang 4.0.1 (tags/RELEASE_401/final)]
 
-             NA : foo
-         1.16.3 : numpy
-          1.2.1 : scipy
-          7.5.0 : IPython
-          3.0.3 : matplotlib
-          0.2.2 : scooby
+  Could not import : foo
+            1.16.3 : numpy
+             1.3.0 : scipy
+             7.5.0 : IPython
+             3.1.0 : matplotlib
+             0.2.2 : scooby
 
-  Intel(R) Math Kernel Library Version 2019.0.3 Product
-  Build 20190125 for Intel(R) 64 architecture applications
---------------------------------------------------------------
+  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
+  Intel(R) 64 architecture applications
+--------------------------------------------------------------------------------
+```
+
+
+And you can also sort the packages alphabetically with the `sort` argument:
+
+```py
+>>> scooby.Report(additional=['pyvista', 'vtk', 'appdirs',], sort=True)
+```
+```
+--------------------------------------------------------------------------------
+  Date: Sun Jun 30 12:54:31 2019 MDT
+
+            Darwin : OS
+                12 : CPU(s)
+            x86_64 : Machine
+             64bit : Architecture
+           32.0 GB : RAM
+            Python : Environment
+
+  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
+  [Clang 4.0.1 (tags/RELEASE_401/final)]
+
+             1.4.3 : appdirs
+             7.5.0 : IPython
+             3.1.0 : matplotlib
+            1.16.3 : numpy
+            0.20.4 : pyvista
+             1.3.0 : scipy
+             0.2.2 : scooby
+             8.2.0 : vtk
+
+  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
+  Intel(R) 64 architecture applications
+--------------------------------------------------------------------------------
 ```
 
 
