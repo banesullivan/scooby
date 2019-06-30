@@ -65,12 +65,12 @@ class PythonInfo:
         self._failures = {}  # Holds failures and reason
         self._sort = sort
 
-        # First listed packages
-        self.add_packages(core)
-        # Optional packages to appear after the core
-        self.add_packages(optional, optional=True)
-        # Additional packages: these are user specified
+        # Additional packages provided by the user
         self.add_packages(additional)
+        # Core packages provided by a module dev
+        self.add_packages(core)
+        # Optional packages at the end
+        self.add_packages(optional, optional=True)
 
     def _safe_import_by_name(self, name, optional=False):
         try:
@@ -101,6 +101,7 @@ class PythonInfo:
         return False
 
     def add_packages(self, packages, optional=False):
+        """Add all packages to list; optional ones only if available."""
 
         # Make sure arguments are good
         if isinstance(packages, (str, ModuleType)):
@@ -139,6 +140,7 @@ class PythonInfo:
         else:
             raise TypeError("Cannot fetch version from type "
                             "({})".format(type(pckg)))
+
         # Now get the version info from the module
         version = get_from_knowledge_base(module, name=name)
         if version is None:
@@ -236,12 +238,12 @@ class Report(PlatformInfo, PythonInfo):
         text += '{:>15}'.format(self.architecture)+' : Architecture\n'
         if TOTAL_RAM:
             text += '{:>15}'.format(self.total_ram)+' : RAM\n'
+        text += '{:>15}'.format(self.python_environment)+' : Environment\n'
 
         # ########## Python details ############
         text += '\n'
-        text +=  'Environment: {}'.format(self.python_environment)+'; Python'
-        for txt in textwrap.wrap(sys.version, self.text_width-4):
-            text += ' '+txt+'\n'
+        for txt in textwrap.wrap('Python '+sys.version, self.text_width-4):
+            text += '  '+txt+'\n'
         text += '\n'
 
         # Loop over packages
@@ -251,25 +253,6 @@ class Report(PlatformInfo, PythonInfo):
             packages = self._packages
         for name, version in packages.items():
             text += '{:>15} : {}\n'.format(version, name)
-
-        # Show failures:
-        if len(self._failures) > 0:
-            text += '\n'
-            failure_message = (
-                    "These modules were either unavailable or the "
-                    "version attribute is unknown:"
-                    )
-
-            for txt in textwrap.wrap(failure_message, self.text_width-4):
-                text += '  '+txt+'\n'
-            # Loop over failed packages
-            text += '\n'
-            if self._sort:
-                packages = sort_dictionary(self._failures)
-            else:
-                packages = self._failures
-            for name, result in packages.items():
-                text += '{:>15} : {}\n'.format(result, name)
 
         # ########## MKL details ############
         # mkl version
@@ -333,15 +316,13 @@ class Report(PlatformInfo, PythonInfo):
         html, i = cols(html, self.architecture, 'Architecture', self.ncol, i)
         if TOTAL_RAM:
             html, i = cols(html, self.total_ram, 'RAM', self.ncol, i)
+        html, i = cols(
+                html, self.python_environment, 'Environment', self.ncol, i)
         # Finish row
         html += "  </tr>\n"
 
         # ########## Python details ############
-        html = colspan(
-            html,
-            'Environment: '+self.python_environment+'; Python '+sys.version,
-            self.ncol,
-            1)
+        html = colspan(html, 'Python '+sys.version, self.ncol, 1)
 
         html += "  <tr>\n"
         # Loop over packages
