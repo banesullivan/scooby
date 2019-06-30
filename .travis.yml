@@ -21,6 +21,8 @@ script:
   - python -c "import scooby, mock; print(scooby.investigate(additional=[mock,]))"
   - python -c "import scooby, mock; print(scooby.investigate(additional=mock))"
   - python -c "import scooby, mock; print(scooby.investigate(additional=mock)._repr_html_())"
+  # Test sorting
+  - python -c "import scooby; print(scooby.investigate(additional=['collections', 'foo', 'aaa'], sort=True))"
 
 notifications:
   email:

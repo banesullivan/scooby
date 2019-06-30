@@ -9,9 +9,9 @@ from types import ModuleType
 
 import scooby
 from scooby import SCOOBY_PACKAGES
-from scooby.extras import MKL_INFO, TOTAL_RAM
+from scooby.extras import MKL_INFO, TOTAL_RAM, sort_dictionary
 from scooby.knowledge import get_from_knowledge_base
-from scooby.mysteries import in_ipython, in_ipykernel
+from scooby.mysteries import in_ipykernel, in_ipython
 
 UNAVAILABLE_MSG = 'unavailable'
 VERSION_UNKNOWN_MSG = 'unknown'
@@ -75,9 +75,10 @@ class PythonInfo:
 
     def __init__(self, core=None,
                        optional=SCOOBY_PACKAGES,
-                       additional=None):
+                       additional=None, sort=False):
         self._packages = {} # Holds name of packages and their version
         self._failures = {} # Holds failures and reason
+        self._sort = sort
 
         # Make sure arguments are good
         def safety(x):
@@ -193,6 +194,8 @@ class PythonInfo:
         """Return versions of all packages (available and unavailable/unknown)"""
         packages = dict(self._packages)
         packages.update(self._failures)
+        if self._sort:
+            packages = sort_dictionary(packages)
         return packages
 
 
@@ -242,9 +245,9 @@ class Report(PlatformInfo, PythonInfo):
     def __init__(self, core=None,
                        optional=SCOOBY_PACKAGES,
                        additional=None,
-                       ncol=3, text_width=80):
+                       ncol=3, text_width=80, sort=False,):
         PythonInfo.__init__(self, core=core, optional=optional,
-                            additional=additional)
+                            additional=additional, sort=sort)
         self.ncol = int(ncol)
         self.text_width = int(text_width)
 
@@ -292,7 +295,11 @@ class Report(PlatformInfo, PythonInfo):
         text += '\n'
 
         # Loop over packages
-        for name, version in self._packages.items():
+        if self._sort:
+            packages = sort_dictionary(self._packages)
+        else:
+            packages = self._packages
+        for name, version in packages.items():
             text += '{:>15} : {}\n'.format(version, name)
 
         # Show failures:
@@ -302,7 +309,11 @@ class Report(PlatformInfo, PythonInfo):
                 text += '  '+txt+'\n'
             # Loop over failed packages
             text += '\n'
-            for name, result in self._failures.items():
+            if self._sort:
+                packages = sort_dictionary(self._failures)
+            else:
+                packages = self._failures
+            for name, result in packages.items():
                 text += '{:>15} : {}\n'.format(result, name)
 
         ############ MKL details ############
