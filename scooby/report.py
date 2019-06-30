@@ -110,12 +110,15 @@ class PythonInfo:
                             "({})".format(type(pckg)))
 
         # Now get the version info from the module
-        version = get_from_knowledge_base(pckg, name=name)
-        if version is None:
-            try:
-                version = pckg.__version__
-            except AttributeError:
-                version = 'NA'
+        if pckg is None:
+            version = 'NA'
+        else:
+            version = get_from_knowledge_base(pckg, name=name)
+            if version is None:
+                try:
+                    version = pckg.__version__
+                except AttributeError:
+                    version = 'UNK'
 
         # Add the version to the package reference
         self._packages[name] = version
