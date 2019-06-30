@@ -64,42 +64,15 @@ class PythonInfo:
         self._packages = {}  # Holds name of packages and their version
         self._sort = sort
 
-        # Additional packages provided by the user
-        self.add_packages(additional)
-        # Core packages provided by a module dev
-        self.add_packages(core)
-        # Optional packages at the end
-        self.add_packages(optional, optional=True)
-
-    def _safe_import_by_name(self, name, optional=False):
-        try:
-            module = importlib.import_module(name)
-        except ImportError:
-            module = None
-        return module
-
-    def _add_package(self, module, name=None, optional=False):
-        """Internal helper to update the packages dictionary with a module
-        """
-        if name is None or not isinstance(name, str):
-            name = module.__name__
-        if not isinstance(module, ModuleType):
-            if optional:
-                return
-        return self.get_version(module, name)
-
-    def _add_package_by_name(self, name, optional=False):
-        """Internal helper to add a module by its name.
-
-        Add package `name` to the internal list of packages.
-        """
-        module = self._safe_import_by_name(name, optional=optional)
-        return self._add_package(module, name, optional=optional)
+        # Add packages in the following order:
+        self.add_packages(additional)              # Provided by the user
+        self.add_packages(core)                    # Provided by a module dev
+        self.add_packages(optional, optional=True) # Optional packages
 
     def add_packages(self, packages, optional=False):
         """Add all packages to list; optional ones only if available."""
 
-        # Make sure arguments are good
+        # Ensure arguments are a list
         if isinstance(packages, (str, ModuleType)):
             pckgs = [packages, ]
         elif packages is None or len(packages) < 1:
@@ -109,53 +82,52 @@ class PythonInfo:
 
         # Loop over packages
         for pckg in pckgs:
-            if isinstance(pckg, str):
-                self._add_package_by_name(pckg, optional=optional)
-            elif isinstance(pckg, ModuleType):
-                self._add_package(pckg, optional=optional)
-            elif pckg is None:
-                pass
-            elif not optional:
-                raise TypeError("Cannot add package from type "
-                                "({})".format(type(pckg)))
+            self.get_version(pckg, optional)
 
-    @property
-    def sys_version(self):
-        return sys.version
-
-    def get_version(self, pckg, name):
+    def get_version(self, pckg, optional):
         """Get the version of a package by passing the package or it's name"""
 
-        # First, fetch the module and its name
-        if isinstance(pckg, str):
+        if isinstance(pckg, str):  # Case 1: pckg is a string; import it
             name = pckg
-            # This could raise an error if module not found
             pckg = self._safe_import_by_name(pckg)
 
-        elif isinstance(pckg, ModuleType):
-            name = pckg.__name__
+            # Return if we cannot load the module and it is an optional one
+            if pckg is None and optional:
+                return
 
-        elif pckg is None:
-            pass
+        elif isinstance(pckg, ModuleType):  # Case 2: pckg is module; get name
+
+            try:
+                name = module.__name__
+            except:
+                name = str(pckg).split("'")[1]
 
         else:
             raise TypeError("Cannot fetch version from type "
                             "({})".format(type(pckg)))
 
         # Now get the version info from the module
-        if pckg is not None:
-            version = get_from_knowledge_base(pckg, name=name)
-            if version is None:
-                try:
-                    version = pckg.__version__
-                except AttributeError:
-                    version = 'NA'
-        else:
-            version = 'NA'
+        version = get_from_knowledge_base(pckg, name=name)
+        if version is None:
+            try:
+                version = pckg.__version__
+            except AttributeError:
+                version = 'NA'
 
         # Add the version to the package reference
         self._packages[name] = version
-        return version
+
+    def _safe_import_by_name(self, name, optional=False):
+        """Import module `name`; returns None if it fails."""
+        try:
+            module = importlib.import_module(name)
+        except ImportError:
+            module = None
+        return module
+
+    @property
+    def sys_version(self):
+        return sys.version
 
     @property
     def python_environment(self):
@@ -210,7 +182,7 @@ class Report(PlatformInfo, PythonInfo):
 
         # Set default optional packages to investigate
         if optional is None:
-            optional = ['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']
+            optional = ['numpy', 'scipy', 'IPython', 'whatever', 'matplotlib', 'scooby']
 
         PythonInfo.__init__(self, additional=additional, core=core,
                             optional=optional, sort=sort)
