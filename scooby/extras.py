@@ -25,3 +25,11 @@ elif numexpr:
     MKL_INFO = numexpr.get_vml_version()
 else:
     MKL_INFO = False
+
+
+def sort_dictionary(dictionary):
+    """Sorts a dictionary alphabetically. Case insensitive."""
+    sorted_dictionary = {}
+    for name in sorted(dictionary.keys(), key=lambda x: x.lower()):
+        sorted_dictionary[name] = dictionary[name]
+    return sorted_dictionary

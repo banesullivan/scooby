@@ -1,14 +1,18 @@
 # coding=utf-8
-from scooby.extras import MKL_INFO, TOTAL_RAM
+
+# These are our default optional packages to investigate
+SCOOBY_PACKAGES = ['numpy', 'scipy', 'IPython', 'matplotlib']
+
+from scooby.extras import MKL_INFO, TOTAL_RAM, sort_dictionary
 from scooby.knowledge import VERSION_ATTRIBUTES
 from scooby.mysteries import in_ipython, in_ipykernel
 from scooby.report import Report
 
 
 def investigate(core=None,
-                optional=('numpy', 'scipy', 'IPython', 'matplotlib',),
+                optional=SCOOBY_PACKAGES,
                 additional=None,
-                ncol=3, text_width=54):
+                ncol=3, text_width=54, sort=False):
     """
     Have Scooby investigate the active Python environment. This returns a
     :class:`scooby.Report` object which displays the system information
@@ -33,9 +37,12 @@ def investigate(core=None,
     text_width : int, optional
         The text width for non-HTML display modes
 
+    sort : bool, optional
+        Sort the packages when the report is shown
+
     """
     versions = Report(core=core, optional=optional, additional=additional,
-                        ncol=ncol, text_width=text_width)
+                        ncol=ncol, text_width=text_width, sort=sort)
     return versions
 
 
