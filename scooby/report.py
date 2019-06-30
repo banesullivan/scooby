@@ -8,6 +8,7 @@ import time
 from types import ModuleType
 
 import scooby
+from scooby import SCOOBY_PACKAGES
 from scooby.extras import MKL_INFO, TOTAL_RAM
 from scooby.knowledge import VERSION_ATTRIBUTES
 from scooby.mysteries import in_ipython, in_ipykernel
@@ -72,8 +73,8 @@ class PythonInfo:
     """An internal helper class to handle managing Python infromation and
     package versions"""
 
-    def __init__(self, core=('numpy', 'scipy',),
-                       optional=('IPython', 'matplotlib',),
+    def __init__(self, core=None,
+                       optional=SCOOBY_PACKAGES,
                        additional=None):
         self._packages = {} # Holds name of packages and their version
         self._failures = {} # Holds failures and reason
@@ -237,7 +238,7 @@ class Report(PlatformInfo, PythonInfo):
 
     """
     def __init__(self, core=None,
-                       optional=('numpy', 'scipy', 'IPython', 'matplotlib',),
+                       optional=SCOOBY_PACKAGES,
                        additional=None,
                        ncol=3, text_width=80):
         PythonInfo.__init__(self, core=core, optional=optional,

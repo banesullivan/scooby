@@ -4,9 +4,12 @@ from scooby.knowledge import VERSION_ATTRIBUTES
 from scooby.mysteries import in_ipython, in_ipykernel
 from scooby.report import Report
 
+# These are our default optional packages to investigate
+SCOOBY_PACKAGES = ['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']
+
 
 def investigate(core=None,
-                optional=('numpy', 'scipy', 'IPython', 'matplotlib',),
+                optional=SCOOBY_PACKAGES,
                 additional=None,
                 ncol=3, text_width=54):
     """
