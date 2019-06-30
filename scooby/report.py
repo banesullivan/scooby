@@ -106,7 +106,7 @@ class PythonInfo:
         if isinstance(packages, (str, ModuleType)):
             pckgs = [packages, ]
         elif packages is None or len(packages) < 1:
-            return []
+            pckgs = list()
         else:
             pckgs = list(packages)
 
