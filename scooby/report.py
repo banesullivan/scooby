@@ -176,13 +176,9 @@ class Report(PlatformInfo, PythonInfo):
         text = '\n' + self.text_width*'-' + '\n'
 
         # Date and time info as title
-        date_text = '  Date: '
-        mult = 0
-        indent = len(date_text)
-        for txt in textwrap.wrap(self.date, self.text_width-indent):
-            date_text += ' '*mult + txt + '\n'
-            mult = indent
-        text += date_text+'\n'
+        for txt in textwrap.wrap(self.date, self.text_width-4):
+            text += '  ' + txt + '\n'
+        text += '\n'
 
         # ########## Platform/OS details ############
         text += '{:>18}'.format(self.system)+' : OS\n'
