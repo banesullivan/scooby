@@ -1,8 +1,19 @@
 """
-A module for storing the path to a version string/variable for many of the
-common packages in the Python stack that have something other than a
-``__version__`` attribute.
+
+knowledge
+=========
+
+The knowledge base.
+
+It contains, for instance, known odd locations of version information for
+particular modules (``VERSION_ATTRIBUTES``, ``VERSION_METHODS``)
+
+It also checks and stores mandatory additional information, if possible, such
+as available RAM or MKL info.
+
 """
+
+
 try:
     import psutil
 except ImportError:

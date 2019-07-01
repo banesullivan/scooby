@@ -1,3 +1,12 @@
+"""
+
+report
+======
+
+The main routine containing the `Report` class.
+
+"""
+
 import sys
 import time
 import platform
