@@ -3,6 +3,36 @@ A module for storing the path to a version string/variable for many of the
 common packages in the Python stack that have something other than a
 ``__version__`` attribute.
 """
+try:
+    import psutil
+except ImportError:
+    psutil = False
+
+try:
+    import mkl
+except ImportError:
+    mkl = False
+
+try:
+    import numexpr
+except ImportError:
+    numexpr = False
+
+# Get available RAM, if available
+if psutil:
+    tmem = psutil.virtual_memory().total
+    TOTAL_RAM = '{:.1f} GB'.format(tmem / (1024.0 ** 3))
+else:
+    TOTAL_RAM = False
+
+# Get mkl info from numexpr or mkl, if available
+if mkl:
+    MKL_INFO = mkl.get_version_string()
+elif numexpr:
+    MKL_INFO = numexpr.get_vml_version()
+else:
+    MKL_INFO = False
+
 
 VERSION_ATTRIBUTES = {
     'vtk': 'VTK_VERSION',
@@ -20,20 +50,3 @@ def get_pyqt5_version():
 VERSION_METHODS = {
     'PyQt5': get_pyqt5_version,
 }
-
-
-def get_from_knowledge_base(module, name=None):
-    """Get version info from a known, different place than __version__."""
-    if name is None:
-        name = module.__name__
-    try:
-        attr = VERSION_ATTRIBUTES[name]
-        return getattr(module, attr)
-    except (KeyError, AttributeError):
-        pass
-    try:
-        method = VERSION_METHODS[name]
-        return method()
-    except (KeyError, ImportError):
-        pass
-    return None

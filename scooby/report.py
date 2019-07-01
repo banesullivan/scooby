@@ -1,16 +1,15 @@
+import sys
+import time
+import platform
+import textwrap
 import importlib
 import multiprocessing
-import platform
-import sys
-import textwrap
-import time
 from types import ModuleType
 
-from scooby.extras import MKL_INFO, TOTAL_RAM, sort_dictionary
-from scooby.knowledge import get_from_knowledge_base
-from scooby.mysteries import in_ipykernel, in_ipython
+from .knowledge import VERSION_ATTRIBUTES, VERSION_METHODS, MKL_INFO, TOTAL_RAM
 
 
+# Info classes
 class PlatformInfo:
     """Internal helper class to access details about the computer platform."""
 
@@ -67,11 +66,11 @@ class PythonInfo:
         self._sort = sort
 
         # Add packages in the following order:
-        self.add_packages(additional)               # Provided by the user
-        self.add_packages(core)                     # Provided by a module dev
-        self.add_packages(optional, optional=True)  # Optional packages
+        self._add_packages(additional)               # Provided by the user
+        self._add_packages(core)                     # Provided by a module dev
+        self._add_packages(optional, optional=True)  # Optional packages
 
-    def add_packages(self, packages, optional=False):
+    def _add_packages(self, packages, optional=False):
         """Add all packages to list; optional ones only if available."""
 
         # Ensure arguments are a list
@@ -84,52 +83,9 @@ class PythonInfo:
 
         # Loop over packages
         for pckg in pckgs:
-            self.get_version(pckg, optional)
-
-    def get_version(self, pckg, optional):
-        """Get the version of a package by passing the package or it's name"""
-
-        if isinstance(pckg, str):  # Case 1: pckg is a string; import it
-            name = pckg
-            pckg = self._safe_import_by_name(pckg)
-
-            # Return if we cannot load the module and it is an optional one
-            if pckg is None and optional:
-                return
-
-        elif isinstance(pckg, ModuleType):  # Case 2: pckg is module; get name
-
-            # Get the name of the package.
-            try:
-                name = pckg.__name__
-            except AttributeError:
-                name = str(pckg).split("'")[1]
-
-        else:
-            raise TypeError("Cannot fetch version from type "
-                            "({})".format(type(pckg)))
-
-        # Now get the version info from the module
-        if pckg is None:
-            version = 'Could not import'
-        else:
-            version = get_from_knowledge_base(pckg, name=name)
-            if version is None:
-                try:
-                    version = pckg.__version__
-                except AttributeError:
-                    version = 'Version unknown'
-
-        # Add the version to the package reference
-        self._packages[name] = version
-
-    def _safe_import_by_name(self, name, optional=False):
-        """Import module `name`; returns None if it fails."""
-        try:
-            module = importlib.import_module(name)
-        except ImportError:
-            module = None
-        return module
+            name, version = get_version(pckg, optional)
+            if version is not None:
+                self._packages[name] = version
 
     @property
     def sys_version(self):
@@ -148,12 +104,16 @@ class PythonInfo:
         """Return versions of all packages
         (available and unavailable/unknown)
         """
-        packages = dict(self._packages)
+        pckg_dict = dict(self._packages)
         if self._sort:
-            packages = sort_dictionary(packages)
-        return packages
+            packages = {}
+            for name in sorted(pckg_dict.keys(), key=lambda x: x.lower()):
+                packages[name] = pckg_dict[name]
+            pckg_dict = packages
+        return pckg_dict
 
 
+# The main Report instance
 class Report(PlatformInfo, PythonInfo):
     """Have Scooby report the active Python environment.
 
@@ -228,11 +188,7 @@ class Report(PlatformInfo, PythonInfo):
         text += '\n'
 
         # Loop over packages
-        if self._sort:
-            packages = sort_dictionary(self._packages)
-        else:
-            packages = self._packages
-        for name, version in packages.items():
+        for name, version in self._packages.items():
             text += '{:>18} : {}\n'.format(version, name)
 
         # ########## MKL details ############
@@ -325,3 +281,117 @@ class Report(PlatformInfo, PythonInfo):
         html += "</table>"
 
         return html
+
+
+# Functionalities that might also be of interest on its own.
+def get_version(module, optional):
+    """Get the version of `module` by passing the package or it's name.
+
+
+    Parameters
+    ----------
+    module : str or module
+        Name of a module to import or the module itself.
+
+    optional : bool
+        If the package is optional of note.
+
+
+    Returns
+    -------
+    name : str
+        Package name
+
+    version : str or None
+        Version of module. Returns None if module is not found and it is
+        optional.
+    """
+
+    # module is (1) a string or (2) a module.
+    # If (1), we have to load it, if (2), we have to get its name.
+    if isinstance(module, str):           # Case 1: module is a string; import
+        name = module  # The name is stored in module in this case.
+
+        # Import module `name`; set to None if it fails.
+        try:
+            module = importlib.import_module(name)
+        except ImportError:
+            module = None
+
+        # Return if we cannot load the module and it is an optional one
+        if module is None and optional:
+            return name, None
+
+    elif isinstance(module, ModuleType):  # Case 2: module is module; get name
+        name = module.__name__
+
+    else:                                 # If not str nor module raise error
+        raise TypeError("Cannot fetch version from type "
+                        "({})".format(type(module)))
+
+    # Now get the version info from the module
+    if module is None:
+        return name, 'Could not import'
+    else:
+
+        # Try common version names.
+        for v_string in ('__version__', 'version'):
+            try:
+                return name, getattr(module, v_string)
+            except AttributeError:
+                pass
+
+        # Try the VERSION_ATTRIBUTES library
+        try:
+            attr = VERSION_ATTRIBUTES[name]
+            return name, getattr(module, attr)
+        except (KeyError, AttributeError):
+            pass
+
+        # Try the VERSION_METHODS library
+        try:
+            method = VERSION_METHODS[name]
+            return name, method()
+        except (KeyError, ImportError):
+            pass
+
+        # If not found, return 'Version unknown'
+        return name, 'Version unknown'
+
+
+def in_ipython():
+    """Mystery: are we in an IPython environment?
+
+    Returns
+    -------
+    bool : True if in an IPython environment
+    """
+    try:
+        __IPYTHON__
+        return True
+    except NameError:
+        return False
+
+
+def in_ipykernel():
+    """Mystery: are we in a ipykernel (most likely Jupyter) environment?
+
+    Warning
+    -------
+    There is no way to tell if the code is being executed in a notebook
+    (Jupyter Notebook or Jupyter Lab) or a kernel is used but executed in a
+    QtConsole, or in an IPython console, or any other frontend GUI. However, if
+    `in_ipykernel` returns True, you are most likely in a Jupyter Notebook/Lab,
+    just keep it in mind that there are other possibilities.
+
+    Returns
+    -------
+    bool : True if using an ipykernel
+    """
+    ipykernel = False
+    if in_ipython():
+        try:
+            ipykernel = type(get_ipython()).__module__.startswith('ipykernel.')
+        except NameError:
+            pass
+    return ipykernel

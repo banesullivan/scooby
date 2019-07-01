@@ -24,7 +24,7 @@ setuptools.setup(
         'Natural Language :: English',
     ),
     extras_require={
-        'cpu' : ['psutil', 'mkl'],
+        'cpu': ['psutil', 'mkl'],
         # 'gpu': [], # TODO: what's needed?
     },
 )

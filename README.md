@@ -168,6 +168,27 @@ else:
     # Do normal, boring Python stuff
 ```
 
+### How does scooby gets the version number?
+
+A couple of locations are checked, and we are happy to implement more if
+needed, just open an issue!
+
+Currently, it looks in the following places:
+- `__version__`;
+- `version`;
+- lookup `VERSION_ATTRIBUTES`;
+- lookup `VERSION_METHODS`.
+
+`VERSION_ATTRIBUTES` is a dictionary of attributes for known python packages
+with a non-standard place for the version, e.g. `VERSION_ATTRIBUTES['vtki'] =
+'VTK_VERSION']. You can add other know places via ```py
+scooby.knowledge.VERSION_ATTRIBUTES['a_module'] = 'Awesom_version_location'
+```
+
+Similarly, `VERSION_METHODS` is a dictionary for methods to find the version,
+and you can add similarly your methods which will define the version of a
+package.
+
 
 ## Optional Requirements
 
