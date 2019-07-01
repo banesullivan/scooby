@@ -28,11 +28,6 @@ environment you care most about.
 If `scooby` is unable to detect aspects of an environment that you'd like to
 know, please share this with us as a feature requests or pull requests.
 
-
-
-
-
-
 The scooby reporting is derived from the versioning-scripts created by [Dieter
 Werthmüller](https://github.com/prisae) for
 [empymod](https://empymod.github.io), [emg3d](https://empymod.github.io), and
@@ -44,28 +39,10 @@ an environment reporting tool in any Python library with minimal impact.
 
 ## Usage
 
-### Solving Mysteries
-
-Are you struggling with the mystery of whether or not code is being executed in
-IPython, Jupyter, or normal Python? Try using some of Scooby's investigative
-functions to solve these kinds of mysteries:
-
-```py
-import scooby
-
-if scooby.in_ipykernel():
-    # Do Jupyter stuff
-elif scooby.in_ipython():
-    # Do IPython stuff
-else:
-    # Do normal, boring Python stuff
-```
-
 ### Generating Reports
 
-Use Scooby's `Report` objects. These objects have representation methods
-implemented so that if outputted, they show a nicely formatted report but you
-could also capture the report as an object itself.
+Reports are rendered as html-tables in Jupyter notebooks as shown in the
+screenshot above, and otherwise as plain text lists.
 
 ```py
 >>> import scooby
@@ -96,175 +73,142 @@ could also capture the report as an object itself.
 --------------------------------------------------------------------------------
 ```
 
-But you can also add addtional packages too if you'd like via the `addtional`
-keyword argument:
-
+On top of the default (optional) packages you can provide additional packages,
+either as strings or give already imported packages:
 ```py
->>> scooby.Report(additional='pyvista')
+>>> import pyvista
+>>> import scooby
+>>> scooby.Report(additional=[pyvista, 'vtk', 'no_version', 'does_not_exist'])
 ```
 ```
 --------------------------------------------------------------------------------
-  Date: Sun Jun 30 12:52:14 2019 MDT
+  Date: Mon Jul 01 10:55:24 2019 CEST
 
-            Darwin : OS
-                12 : CPU(s)
+             Linux : OS
+                 4 : CPU(s)
             x86_64 : Machine
              64bit : Architecture
-           32.0 GB : RAM
-            Python : Environment
+           15.6 GB : RAM
+           IPython : Environment
 
-  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
-  [Clang 4.0.1 (tags/RELEASE_401/final)]
+  Python 3.7.3 (default, Mar 27 2019, 22:11:17)  [GCC 7.3.0]
 
             0.20.4 : pyvista
-            1.16.3 : numpy
-             1.3.0 : scipy
+             8.1.2 : vtk
+   Version unknown : no_version
+  Could not import : does_not_exist
+            1.16.4 : numpy
+             1.2.1 : scipy
              7.5.0 : IPython
              3.1.0 : matplotlib
-             0.2.2 : scooby
+             0.3.0 : scooby
 
-  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
+  Intel(R) Math Kernel Library Version 2019.0.4 Product Build 20190411 for
   Intel(R) 64 architecture applications
 --------------------------------------------------------------------------------
 ```
+As can be seen, scooby reports if a package could not be imported or if the
+version of a package could not be determined.
 
-Or maybe you want a whole bunch of additional packages:
+Other useful parameters are
+
+- `ncol`: number of columns in the html-table;
+- `text_width`: text width of the plain-text version;
+- `sort`: list is sorted alphabetically if True.
+
+Besides `additional` there are two more lists, `core` and `optional`, which
+can be used to provide package names. However, they are mostly useful for
+package maintainers wanting to use scooby to create their reporting system.
+See below:
+
+
+### Implementing scooby in your project
+
+You can generate easily your own Report-instance using scooby:
 
 ```py
->>> scooby.Report(additional=['pyvista', 'vtk', 'appdirs',])
-```
-```
---------------------------------------------------------------------------------
-  Date: Sun Jun 30 12:52:37 2019 MDT
+class Report(scooby.Report):
+    def __init__(self, additional=None, ncol=3, text_width=80, sort=False):
+        """Initiate a scooby.Report instance."""
 
-            Darwin : OS
-                12 : CPU(s)
-            x86_64 : Machine
-             64bit : Architecture
-           32.0 GB : RAM
-            Python : Environment
+        # Mandatory packages.
+        core = ['yourpackage', 'your_core_packages', 'e.g.', 'numpy', 'scooby']
 
-  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
-  [Clang 4.0.1 (tags/RELEASE_401/final)]
+        # Optional packages.
+        optional = ['your_optional_packages', 'e.g.', 'matplotlib']
 
-            0.20.4 : pyvista
-             8.2.0 : vtk
-             1.4.3 : appdirs
-            1.16.3 : numpy
-             1.3.0 : scipy
-             7.5.0 : IPython
-             3.1.0 : matplotlib
-             0.2.2 : scooby
-
-  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
-  Intel(R) 64 architecture applications
---------------------------------------------------------------------------------
+        super().__init__(additional, core, optional, ncol, text_width, sort)
 ```
 
+So a user can use your Report:
+```py
+>>> import your_package
+>>> your_package.Report()
+```
 
-Want to add a package to investigate but aren't sure if it is present, simply
-define the `optional` list in the arguments. Note that the default libraries of
-`numpy`, `scipy`, `IPython`, and `matplotlib` (and `scooby`) are defaults for
-optional argument, so you might want to put those in the `core` argument if you
-care about those.
+The packages on the `core`-list are the mandatory ones for your project, while
+the `optional`-list can be used for optional packages. Keep the
+`additional`-list free to allow your users to add packages to the list.
+
+
+### Solving Mysteries
+
+Are you struggling with the mystery of whether or not code is being executed in
+IPython, Jupyter, or normal Python? Try using some of Scooby's investigative
+functions to solve these kinds of mysteries:
 
 ```py
->>> scooby.Report(core=['numpy', 'matplotlib'], optional=['foo', ])
-```
-```
---------------------------------------------------------------------------------
-  Date: Sun Jun 30 12:52:58 2019 MDT
+import scooby
 
-            Darwin : OS
-                12 : CPU(s)
-            x86_64 : Machine
-             64bit : Architecture
-           32.0 GB : RAM
-            Python : Environment
-
-  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
-  [Clang 4.0.1 (tags/RELEASE_401/final)]
-
-            1.16.3 : numpy
-             3.1.0 : matplotlib
-
-  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
-  Intel(R) 64 architecture applications
---------------------------------------------------------------------------------
+if scooby.in_ipykernel():
+    # Do Jupyter/IPyKernel stuff
+elif scooby.in_ipython():
+    # Do IPython stuff
+else:
+    # Do normal, boring Python stuff
 ```
 
-Since the `foo` package wasn't found and it's optional, nothing is reported.
-But what if you need some sort of error message that a package wasn't found?
-Then add your package to the `additional` list and Scooby will report it, just
-with a `NA`:
+### How does scooby gets the version number?
+
+A couple of locations are checked, and we are happy to implement more if
+needed, just open an issue!
+
+Currently, it looks in the following places:
+- `__version__`;
+- `version`;
+- lookup `VERSION_ATTRIBUTES`;
+- lookup `VERSION_METHODS`.
+
+`VERSION_ATTRIBUTES` is a dictionary of attributes for known python packages
+with a non-standard place for the version, e.g. `VERSION_ATTRIBUTES['vtk'] =
+'VTK_VERSION'`. You can add other known places via
+```py
+scooby.knowledge.VERSION_ATTRIBUTES['a_module'] = 'Awesom_version_location'
+```
+
+Similarly, `VERSION_METHODS` is a dictionary for methods to find the version,
+and you can add similarly your methods which will define the version of a
+package.
+
+### Using scooby to get version information.
+
+If you are just interested in the version of a package then you can use scooby
+as well. A few examples:
 
 ```py
->>> scooby.Report(additional=['foo',])
+>>> import scooby, numpy
+>>> scooby.get_version(numpy)
+('numpy', '1.16.4')
+>>> scooby.get_version('no_version')
+('no_version', 'Version unknown')
+>>> scooby.get_version('does_not_exist')
+('does_not_exist', 'Could not import')
 ```
-```
---------------------------------------------------------------------------------
-  Date: Sun Jun 30 12:53:20 2019 MDT
-
-            Darwin : OS
-                12 : CPU(s)
-            x86_64 : Machine
-             64bit : Architecture
-           32.0 GB : RAM
-            Python : Environment
-
-  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
-  [Clang 4.0.1 (tags/RELEASE_401/final)]
-
-  Could not import : foo
-            1.16.3 : numpy
-             1.3.0 : scipy
-             7.5.0 : IPython
-             3.1.0 : matplotlib
-             0.2.2 : scooby
-
-  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
-  Intel(R) 64 architecture applications
---------------------------------------------------------------------------------
-```
-
-
-And you can also sort the packages alphabetically with the `sort` argument:
-
-```py
->>> scooby.Report(additional=['pyvista', 'vtk', 'appdirs',], sort=True)
-```
-```
---------------------------------------------------------------------------------
-  Date: Sun Jun 30 12:54:31 2019 MDT
-
-            Darwin : OS
-                12 : CPU(s)
-            x86_64 : Machine
-             64bit : Architecture
-           32.0 GB : RAM
-            Python : Environment
-
-  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
-  [Clang 4.0.1 (tags/RELEASE_401/final)]
-
-             1.4.3 : appdirs
-             7.5.0 : IPython
-             3.1.0 : matplotlib
-            1.16.3 : numpy
-            0.20.4 : pyvista
-             1.3.0 : scipy
-             0.2.2 : scooby
-             8.2.0 : vtk
-
-  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
-  Intel(R) 64 architecture applications
---------------------------------------------------------------------------------
-```
-
+Again, modules can be provided as already loaded ones or as string.
 
 ## Optional Requirements
 
 The following is a list of optional requirements and their purpose:
 
 - `psutil`: report total RAM in GB
-- `mkl`: report Intel(R) Math Kernel Library version
+- `mkl-services`: report Intel(R) Math Kernel Library version
