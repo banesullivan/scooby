@@ -294,7 +294,7 @@ class Report(PlatformInfo, PythonInfo):
 
 
 # This functionaliy might also be of interest on its own.
-def get_version(module, optional):
+def get_version(module, optional=False):
     """Get the version of `module` by passing the package or it's name.
 
 
@@ -305,6 +305,7 @@ def get_version(module, optional):
 
     optional : bool
         If the package is optional of note.
+        Default is False.
 
 
     Returns
