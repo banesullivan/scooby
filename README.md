@@ -181,7 +181,8 @@ Currently, it looks in the following places:
 
 `VERSION_ATTRIBUTES` is a dictionary of attributes for known python packages
 with a non-standard place for the version, e.g. `VERSION_ATTRIBUTES['vtki'] =
-'VTK_VERSION']. You can add other know places via ```py
+'VTK_VERSION']. You can add other know places via
+```py
 scooby.knowledge.VERSION_ATTRIBUTES['a_module'] = 'Awesom_version_location'
 ```
 
