@@ -18,6 +18,9 @@ from types import ModuleType
 from .knowledge import VERSION_ATTRIBUTES, VERSION_METHODS, MKL_INFO, TOTAL_RAM
 from .knowledge import in_ipython, in_ipykernel
 
+MODULE_NOT_FOUND = 'Could not import'
+VERSION_NOT_FOUND = 'Version unknown'
+
 
 # Info classes
 class PlatformInfo:
@@ -94,7 +97,7 @@ class PythonInfo:
         # Loop over packages
         for pckg in pckgs:
             name, version = get_version(pckg)
-            if not (version == 'Could not import' and optional):
+            if not (version == MODULE_NOT_FOUND and optional):
                 self._packages[name] = version
 
     @property
@@ -333,7 +336,7 @@ def get_version(module):
 
     # Now get the version info from the module
     if module is None:
-        return name, 'Could not import'
+        return name, MODULE_NOT_FOUND
     else:
 
         # Try common version names.
@@ -357,5 +360,5 @@ def get_version(module):
         except (KeyError, ImportError):
             pass
 
-        # If not found, return 'Version unknown'
-        return name, 'Version unknown'
+        # If not found, return VERSION_NOT_FOUND
+        return name, VERSION_NOT_FOUND
