@@ -93,8 +93,8 @@ class PythonInfo:
 
         # Loop over packages
         for pckg in pckgs:
-            name, version = get_version(pckg, optional)
-            if version is not None:
+            name, version = get_version(pckg)
+            if not (version == 'Could not import' and optional):
                 self._packages[name] = version
 
     @property
@@ -294,7 +294,7 @@ class Report(PlatformInfo, PythonInfo):
 
 
 # This functionaliy might also be of interest on its own.
-def get_version(module, optional=False):
+def get_version(module):
     """Get the version of `module` by passing the package or it's name.
 
 
@@ -303,10 +303,6 @@ def get_version(module, optional=False):
     module : str or module
         Name of a module to import or the module itself.
 
-    optional : bool
-        If the package is optional of note.
-        Default is False.
-
 
     Returns
     -------
@@ -314,8 +310,7 @@ def get_version(module, optional=False):
         Package name
 
     version : str or None
-        Version of module. Returns None if module is not found and it is
-        optional.
+        Version of module.
     """
 
     # module is (1) a string or (2) a module.
@@ -328,10 +323,6 @@ def get_version(module, optional=False):
             module = importlib.import_module(name)
         except ImportError:
             module = None
-
-        # Return if we cannot load the module and it is an optional one
-        if module is None and optional:
-            return name, None
 
     elif isinstance(module, ModuleType):  # Case 2: module is module; get name
         name = module.__name__
