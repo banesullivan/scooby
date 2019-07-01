@@ -146,6 +146,10 @@ So a user can use your Report:
 >>> your_package.Report()
 ```
 
+The packages on the `core`-list are the mandatory ones for your project, while
+the `optional`-list can be used for optional packages. Keep the
+`additional`-list free to allow your users to add packages to the list.
+
 
 ### Solving Mysteries
 
