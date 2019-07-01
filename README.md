@@ -189,6 +189,21 @@ Similarly, `VERSION_METHODS` is a dictionary for methods to find the version,
 and you can add similarly your methods which will define the version of a
 package.
 
+### Using scooby to get version information.
+
+If you are just interested in the version of a package then you can use scooby
+as well. A few examples:
+
+```py
+>>> import scooby, numpy
+>>> scooby.get_version(numpy)
+('numpy', '1.16.4')
+>>> scooby.get_version('no_version')
+('no_version', 'Version unknown')
+>>> scooby.get_version('does_not_exist')
+('does_not_exist', 'Could not import')
+```
+Again, modules can be provided as already loaded ones or as string.
 
 ## Optional Requirements
 
