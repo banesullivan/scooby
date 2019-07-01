@@ -174,8 +174,8 @@ class Report(PlatformInfo, PythonInfo):
         Defaults to ['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']
 
     ncol : int, optional
-        Number of package-columns in html table; only has effect if
-        ``mode='HTML'`` or ``mode='html'``. Defaults to 3.
+        Number of package-columns in html table (no effect in text-version);
+        Defaults to 3.
 
     text_width : int, optional
         The text width for non-HTML display modes
