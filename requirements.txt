@@ -1,3 +1,4 @@
 psutil
 mkl
-mkl-services
+# mkl-services  # required for `import mkl`;
+#               # install with conda -c intel mkl-services
