@@ -137,7 +137,8 @@ class Report(scooby.Report):
         # Optional packages.
         optional = ['your_optional_packages', 'e.g.', 'matplotlib']
 
-        super().__init__(additional, core, optional, ncol, text_width, sort)
+        super().__init__(additional=additional, core=core, optional=optional,
+                         ncol=ncol, text_width=text_width, sort=sort)
 ```
 
 So a user can use your Report:
