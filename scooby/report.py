@@ -157,7 +157,7 @@ class PythonInfo:
                 continue
             elif version == VERSION_NOT_FOUND:
                 # Version unknown - throw warning and leave unspecified
-                logging.warnig('Version unknown for {}: not specified.'.format(module))
+                logging.warning('Version unknown for {}: not specified.'.format(module))
                 version_info = ""
             else:
                 version_info = "=={}".format(version)
