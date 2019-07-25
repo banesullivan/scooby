@@ -126,6 +126,44 @@ class PythonInfo:
         return pckg_dict
 
 
+    def listing(self):
+        """Create a string listing all the Python modules and their versions.
+        This can be saved to a ``requirements.txt`` file for ``pip``.
+
+        Example
+        -------
+        To make a ``pip`` requirements file, perform the following:
+
+        >>> import scooby
+        >>> report = scooby.Report()
+        >>> with open('requirements.txt', 'w') as f:
+        ...     f.write(report.listing())
+
+        Then you are ready to share that file to be used with ``pip``::
+
+            $ pip install -r requirements.txt
+
+        Note
+        ----
+        If a version is unknown (``scooby`` is unaware of how to find that
+        package's version string) then the version is not specified.
+        """
+        contents = ""
+        for module, version in self.packages.items():
+            if version == MODULE_NOT_FOUND:
+                # Module not found so don't include it?
+                # TODO: how should we handle this situation
+                continue
+            elif version == VERSION_NOT_FOUND:
+                # Version unknown - throw warning and leave unspecified
+                logging.warnig('Version unknown for {}: not specified.'.format(module))
+                version_info = ""
+            else:
+                version_info = "=={}".format(version)
+            contents += "{}{}\n".format(module, version_info)
+        return contents
+
+
 # The main Report instance
 class Report(PlatformInfo, PythonInfo):
     """Have Scooby report the active Python environment.

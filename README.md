@@ -169,7 +169,7 @@ else:
     # Do normal, boring Python stuff
 ```
 
-### How does scooby gets the version number?
+### How does scooby get the version number?
 
 A couple of locations are checked, and we are happy to implement more if
 needed, just open an issue!
@@ -206,6 +206,23 @@ as well. A few examples:
 ('does_not_exist', 'Could not import')
 ```
 Again, modules can be provided as already loaded ones or as string.
+
+### Creating `pip` requirements files
+
+To make a `pip` requirements file, use the `Report.listing()` method in the
+following manner:
+
+```py
+import scooby
+report = scooby.Report()
+with open('requirements.txt', 'w') as f:
+    f.write(report.listing())
+```
+Then you are ready to share that file to be used with ``pip``:
+
+```bash
+$ pip install -r requirements.txt
+```
 
 ## Optional Requirements
 
