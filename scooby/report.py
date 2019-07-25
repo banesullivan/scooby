@@ -105,6 +105,11 @@ class PythonInfo:
     def sys_version(self):
         return sys.version
 
+
+    @property
+    def py_version(self):
+        return '{}.{}'.format(sys.version_info.major, sys.version_info.minor)
+
     @property
     def python_environment(self):
         if in_ipykernel():
@@ -334,6 +339,19 @@ class Report(PlatformInfo, PythonInfo):
 
         return html
 
+
+    def conda_yml(self, name='scooby_generated'):
+        """Returns Anaconda YML content for this environment"""
+        template = """name: {}
+dependencies:
+  - python={}
+  - pip:
+{}
+"""
+        insert = "    - "
+        listing = self.listing().strip().split('\n')
+        pip_deps = "\n".join([insert + p for p in listing])
+        return template.format(name, self.py_version, pip_deps)
 
 # This functionaliy might also be of interest on its own.
 def get_version(module):
