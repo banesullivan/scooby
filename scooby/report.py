@@ -160,7 +160,7 @@ class PythonInfo:
         for module, version in self.packages.items():
             if version == MODULE_NOT_FOUND:
                 # Module not found so don't include it?
-                # TODO: how should we handle this situation
+                logging.warning('Module {}: not found. Skipping.'.format(module))
                 continue
             elif version == VERSION_NOT_FOUND:
                 # Version unknown - throw warning and leave unspecified
