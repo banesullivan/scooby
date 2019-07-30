@@ -21,6 +21,7 @@ script:
   - python -c "import scooby, mock; print(scooby.Report(additional=[mock,]))"
   - python -c "import scooby, mock; print(scooby.Report(additional=mock))"
   - python -c "import scooby, mock; print(scooby.Report(additional=mock)._repr_html_())"
+  - python -c "import scooby; print(scooby.Report().listing(write=False))"
   # Test sorting
   - python -c "import scooby; print(scooby.Report(additional=['collections', 'foo', 'aaa'], sort=True))"
 
