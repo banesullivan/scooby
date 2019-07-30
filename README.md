@@ -215,8 +215,7 @@ following manner:
 ```py
 import scooby
 report = scooby.Report()
-with open('requirements.txt', 'w') as f:
-    f.write(report.listing())
+report.listing()
 ```
 Then you are ready to share that file to be used with ``pip``:
 

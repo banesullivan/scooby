@@ -127,18 +127,25 @@ class PythonInfo:
         return pckg_dict
 
 
-    def listing(self):
+    def listing(self, write=True):
         """Create a string listing all the Python modules and their versions.
-        This can be saved to a ``requirements.txt`` file for ``pip``.
+        This is saved to a ``requirements.txt`` file for ``pip`` in the current
+        working directory.
+
+        Parameters
+        ----------
+        write : bool
+            If True (default), writes the listing to a ``requirements.txt``
+            file in the current working directory. If False, returns the
+            listing as a string.
 
         Example
         -------
-        To make a ``pip`` requirements file, perform the following:
+        To make a ``requirements.txt`` file, perform the following:
 
         >>> import scooby
         >>> report = scooby.Report()
-        >>> with open('requirements.txt', 'w') as f:
-        ...     f.write(report.listing())
+        >>> report.listing()
 
         Then you are ready to share that file to be used with ``pip``::
 
@@ -162,7 +169,11 @@ class PythonInfo:
             else:
                 version_info = "=={}".format(version)
             contents += "{}{}\n".format(module, version_info)
-        return contents
+        if write:
+            with open('requirements.txt', 'w') as f:
+                f.write(contents)
+        else:
+            return contents
 
 
 # The main Report instance
