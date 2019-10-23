@@ -57,10 +57,10 @@ def test_get_version():
     assert version == numpy.__version__
     assert name == "numpy"
     name, version = scooby.get_version("no_version")
-    assert version == "Version unknown"
+    assert version == scooby.report.VERSION_NOT_FOUND
     assert name == "no_version"
     name, version = scooby.get_version("does_not_exist")
-    assert version == "Could not import"
+    assert version == scooby.report.MODULE_NOT_FOUND
     assert name == "does_not_exist"
 
 
