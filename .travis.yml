@@ -11,7 +11,7 @@ sudo: false
 
 install:
   - python -m pip install -r requirements.txt
-  - python -m pip install numpy scipy no_version pytest
+  - python -m pip install numpy scipy no_version pytest bs4
 
 script:
   - python -c "import scooby; print(scooby.Report(core='numpy'))"

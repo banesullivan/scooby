@@ -1,6 +1,8 @@
+from bs4 import BeautifulSoup
 import mock
 import numpy
 import pytest
+import re
 
 import scooby
 
@@ -60,3 +62,16 @@ def test_get_version():
     name, version = scooby.get_version("does_not_exist")
     assert version == "Could not import"
     assert name == "does_not_exist"
+
+
+def test_plain_vs_html():
+    report = scooby.Report()
+    text_html = BeautifulSoup(report._repr_html_(), features="lxml").get_text()
+    text_plain = report.__repr__()
+
+    text_plain = " ".join(re.findall("[a-zA-Z1-9]+", text_plain))
+    text_html = " ".join(re.findall("[a-zA-Z1-9]+", text_html))
+
+    # Plain text currently starts with `Date :`;
+    # we should remove that, or add it to the html version too.
+    assert text_html == text_plain[5:]
