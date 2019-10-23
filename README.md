@@ -42,7 +42,11 @@ an environment reporting tool in any Python library with minimal impact.
 ### Generating Reports
 
 Reports are rendered as html-tables in Jupyter notebooks as shown in the
-screenshot above, and otherwise as plain text lists.
+screenshot above, and otherwise as plain text lists. If you do not output the
+report object either at the end of a notebook cell or it is generated
+somewhere in a vanilla Python script, you may have to print the report object:
+`print(scooby.Report())`, but note that this will only output the plain text
+representation of the script.
 
 ```py
 >>> import scooby
