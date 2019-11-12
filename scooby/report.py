@@ -307,7 +307,11 @@ class Inspection(Report):
 
         stdlib_pkgs = get_standard_lib_modules()
         modules = set()
-        modules_dirty = set([val if inspect.ismodule(val) else (sys.modules[val.__module__] if (hasattr(val, "__module__") and val.__module__ != "__main__") else None) for val in global_vars.values()])
+        modules_dirty = set(
+            [val if inspect.ismodule(val) else (sys.modules[val.__module__] if
+             (hasattr(val, "__module__") and val.__module__ != "__main__") else
+             None) for val in global_vars.values()]
+        )
         modules_dirty.remove(None)
         for module in modules_dirty:
             name = module.__name__.split(".")[0]
