@@ -14,7 +14,6 @@ import platform
 import sys
 import textwrap
 import time
-from copy import copy
 from types import ModuleType
 
 from .knowledge import (MKL_INFO, TOTAL_RAM, VERSION_ATTRIBUTES,
@@ -308,13 +307,12 @@ class Inspection(Report):
 
         stdlib_pkgs = get_standard_lib_modules()
         modules = set()
-        for var in copy(global_vars).values():
-            if hasattr(var, "__module__") and var.__module__ != "__main__":
-                var = sys.modules[var.__module__]
-            if inspect.ismodule(var):
-                name = var.__name__.split(".")[0]
-                if name not in stdlib_pkgs:
-                    modules.add(name)
+        modules_dirty = set([val if inspect.ismodule(val) else (sys.modules[val.__module__] if (hasattr(val, "__module__") and val.__module__ != "__main__") else None) for val in global_vars.values()])
+        modules_dirty.remove(None)
+        for module in modules_dirty:
+            name = module.__name__.split(".")[0]
+            if name not in stdlib_pkgs:
+                modules.add(name)
 
         Report.__init__(self, additional=additional, core=modules, ncol=ncol,
                         text_width=text_width, sort=sort, optional=[])
