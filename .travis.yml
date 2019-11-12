@@ -11,10 +11,9 @@ sudo: false
 
 install:
   - python -m pip install -r requirements.txt
-  - python -m pip install numpy scipy
+  - python -m pip install numpy scipy no_version pytest bs4 pytest-cov
 
 script:
-  - python -c "import scooby; print(scooby.Report())"
   - python -c "import scooby; print(scooby.Report(core='numpy'))"
   - python -c "import scooby; print(scooby.Report(additional=['mock', 'foo']))"
   - python -c "import scooby; print(scooby.Report(additional=['foo',]))"
@@ -24,6 +23,8 @@ script:
   - python -c "import scooby; print(scooby.Report().listing(write=False))"
   # Test sorting
   - python -c "import scooby; print(scooby.Report(additional=['collections', 'foo', 'aaa'], sort=True))"
+  # Test more complicated routines
+  - python -m pytest -v --cov .
 
 notifications:
   email:
