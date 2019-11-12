@@ -7,16 +7,19 @@ The main routine containing the `Report` class.
 
 """
 
-import sys
-import time
-import platform
-import textwrap
 import importlib
+import inspect
 import multiprocessing
+import platform
+import sys
+import textwrap
+import time
+from copy import copy
 from types import ModuleType
 
-from .knowledge import VERSION_ATTRIBUTES, VERSION_METHODS, MKL_INFO, TOTAL_RAM
-from .knowledge import in_ipython, in_ipykernel
+from .knowledge import (MKL_INFO, TOTAL_RAM, VERSION_ATTRIBUTES,
+                        VERSION_METHODS, get_standard_lib_modules,
+                        in_ipykernel, in_ipython)
 
 MODULE_NOT_FOUND = 'Could not import'
 VERSION_NOT_FOUND = 'Version unknown'
@@ -294,6 +297,27 @@ class Report(PlatformInfo, PythonInfo):
         html += "</table>"
 
         return html
+
+
+class Inspection(Report):
+    """A class to inspect the active environment and generate a report based
+    on all imported modules. Simply pass the ``globals()`` dictionary.
+    """
+    def __init__(self, global_vars, additional=None, ncol=3, text_width=80,
+                 sort=False,):
+
+        stdlib_pkgs = get_standard_lib_modules()
+        modules = set()
+        for var in copy(global_vars).values():
+            if hasattr(var, "__module__") and var.__module__ != "__main__":
+                var = sys.modules[var.__module__]
+            if inspect.ismodule(var):
+                name = var.__name__.split(".")[0]
+                if name not in stdlib_pkgs:
+                    modules.add(name)
+
+        Report.__init__(self, additional=additional, core=modules, ncol=ncol,
+                        text_width=text_width, sort=sort, optional=[])
 
 
 # This functionaliy might also be of interest on its own.
