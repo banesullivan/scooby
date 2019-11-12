@@ -7,16 +7,17 @@ The main routine containing the `Report` class.
 
 """
 
-import sys
-import time
-import platform
-import textwrap
 import importlib
+import logging
 import multiprocessing
+import platform
+import sys
+import textwrap
+import time
 from types import ModuleType
 
-from .knowledge import VERSION_ATTRIBUTES, VERSION_METHODS, MKL_INFO, TOTAL_RAM
-from .knowledge import in_ipython, in_ipykernel
+from .knowledge import (MKL_INFO, TOTAL_RAM, VERSION_ATTRIBUTES,
+                        VERSION_METHODS, in_ipykernel, in_ipython)
 
 MODULE_NOT_FOUND = 'Could not import'
 VERSION_NOT_FOUND = 'Version unknown'
@@ -124,6 +125,55 @@ class PythonInfo:
                 packages[name] = pckg_dict[name]
             pckg_dict = packages
         return pckg_dict
+
+
+    def listing(self, write=True):
+        """Create a string listing all the Python modules and their versions.
+        This is saved to a ``requirements.txt`` file for ``pip`` in the current
+        working directory.
+
+        Parameters
+        ----------
+        write : bool
+            If True (default), writes the listing to a ``requirements.txt``
+            file in the current working directory. If False, returns the
+            listing as a string.
+
+        Example
+        -------
+        To make a ``requirements.txt`` file, perform the following:
+
+        >>> import scooby
+        >>> report = scooby.Report()
+        >>> report.listing()
+
+        Then you are ready to share that file to be used with ``pip``::
+
+            $ pip install -r requirements.txt
+
+        Note
+        ----
+        If a version is unknown (``scooby`` is unaware of how to find that
+        package's version string) then the version is not specified.
+        """
+        contents = ""
+        for module, version in self.packages.items():
+            if version == MODULE_NOT_FOUND:
+                # Module not found so don't include it?
+                logging.warning('Module {}: not found. Skipping.'.format(module))
+                continue
+            elif version == VERSION_NOT_FOUND:
+                # Version unknown - throw warning and leave unspecified
+                logging.warning('Version unknown for {}: not specified.'.format(module))
+                version_info = ""
+            else:
+                version_info = "=={}".format(version)
+            contents += "{}{}\n".format(module, version_info)
+        if write:
+            with open('requirements.txt', 'w') as f:
+                f.write(contents)
+        else:
+            return contents
 
 
 # The main Report instance
