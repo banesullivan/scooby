@@ -125,6 +125,6 @@ def get_standard_lib_modules():
         "gc",
         "time",
         "unicodedata",
-
+        "mmap",
         }.union(stdlib_pkgs)
     return stdlib_pkgs

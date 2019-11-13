@@ -69,7 +69,7 @@ class TrackedReport(Report):
     def __init__(self, additional=None, ncol=3, text_width=80, sort=False):
         if not TRACKING_SUPPORTED:
             raise RuntimeError(SUPPORT_MESSAGE)
-        if len(TRACKED_IMPORTS) < 1:
+        if len(TRACKED_IMPORTS) < 2:
             raise RuntimeError("There are no tracked imports, please use "
                                "`scooby.track_imports()` before running your "
                                "code.")
