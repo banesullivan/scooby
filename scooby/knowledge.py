@@ -50,6 +50,7 @@ VERSION_ATTRIBUTES = {
     'vtk': 'VTK_VERSION',
     'vtkmodules.all': 'VTK_VERSION',
     'PyQt5': 'Qt.PYQT_VERSION_STR',
+    'sip': 'SIP_VERSION_STR',
 }
 
 
@@ -115,5 +116,15 @@ def get_standard_lib_modules():
         "builtins",
         "session",
         "math",
+        "itertools",
+        "binascii",
+        "array",
+        "atexit",
+        "fcntl",
+        "errno",
+        "gc",
+        "time",
+        "unicodedata",
+
         }.union(stdlib_pkgs)
     return stdlib_pkgs

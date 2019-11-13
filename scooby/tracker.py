@@ -9,14 +9,30 @@ CLASSIC_IMPORT = builtins.__import__
 # The variable we track all imports in
 TRACKED_IMPORTS = []
 
+MODULES_TO_IGNORE = {
+    "pyMKL",
+    "mkl",
+    "numexpr",
+    "vtkmodules",
+    "mpl_toolkits",
+}
+
 
 STDLIB_PKGS = get_standard_lib_modules()
+
+
+def _criterion(name):
+    if (len(name) > 0 and name not in STDLIB_PKGS and not name.startswith("_")
+        and name not in MODULES_TO_IGNORE):
+        return True
+    return False
+
 
 def scooby_import(name, globals=None, locals=None, fromlist=(), level=0):
     """A custom override of the import method to track package names"""
     m = CLASSIC_IMPORT(name, globals=globals, locals=locals, fromlist=fromlist, level=level)
     name = name.split(".")[0]
-    if level == 0 and len(name) > 0 and name not in STDLIB_PKGS:
+    if level == 0 and _criterion(name):
         TRACKED_IMPORTS.append(name)
     return m
 
