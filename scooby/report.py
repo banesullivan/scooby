@@ -8,7 +8,6 @@ The main routine containing the `Report` class.
 """
 
 import importlib
-import inspect
 import multiprocessing
 import platform
 import sys
@@ -17,8 +16,7 @@ import time
 from types import ModuleType
 
 from .knowledge import (MKL_INFO, TOTAL_RAM, VERSION_ATTRIBUTES,
-                        VERSION_METHODS, get_standard_lib_modules,
-                        in_ipykernel, in_ipython)
+                        VERSION_METHODS, in_ipykernel, in_ipython)
 
 MODULE_NOT_FOUND = 'Could not import'
 VERSION_NOT_FOUND = 'Version unknown'
@@ -297,29 +295,6 @@ class Report(PlatformInfo, PythonInfo):
 
         return html
 
-
-class Inspection(Report):
-    """A class to inspect the active environment and generate a report based
-    on all imported modules. Simply pass the ``globals()`` dictionary.
-    """
-    def __init__(self, global_vars, additional=None, ncol=3, text_width=80,
-                 sort=False,):
-
-        stdlib_pkgs = get_standard_lib_modules()
-        modules = set()
-        modules_dirty = set(
-            [val if inspect.ismodule(val) else (sys.modules[val.__module__] if
-             (hasattr(val, "__module__") and val.__module__ != "__main__") else
-             None) for val in global_vars.values()]
-        )
-        modules_dirty.remove(None)
-        for module in modules_dirty:
-            name = module.__name__.split(".")[0]
-            if name not in stdlib_pkgs:
-                modules.add(name)
-
-        Report.__init__(self, additional=additional, core=modules, ncol=ncol,
-                        text_width=text_width, sort=sort, optional=[])
 
 
 # This functionaliy might also be of interest on its own.

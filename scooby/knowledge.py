@@ -113,5 +113,7 @@ def get_standard_lib_modules():
         "__builtin__",
         "__builtins__",
         "builtins",
+        "session",
+        "math",
         }.union(stdlib_pkgs)
     return stdlib_pkgs
