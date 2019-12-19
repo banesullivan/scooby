@@ -156,9 +156,12 @@ class Report(PlatformInfo, PythonInfo):
     sort : bool, optional
         Sort the packages when the report is shown
 
+    extra_meta : tuple(str, str)
+        Additional two component pairs of meta information to display
+
     """
     def __init__(self, additional=None, core=None, optional=None, ncol=3,
-                 text_width=80, sort=False,):
+                 text_width=80, sort=False, extra_meta=None,):
 
         # Set default optional packages to investigate
         if optional is None:
@@ -168,6 +171,19 @@ class Report(PlatformInfo, PythonInfo):
                             optional=optional, sort=sort)
         self.ncol = int(ncol)
         self.text_width = int(text_width)
+
+        if extra_meta is not None:
+            if not isinstance(extra_meta, (list, tuple)):
+                raise TypeError("`extra_meta` must be a list/tuple of key-value pairs.")
+            if len(extra_meta) == 2 and isinstance(extra_meta[0], str):
+                extra_meta = [extra_meta]
+            for meta in extra_meta:
+                if not isinstance(meta, (list, tuple)) or len(meta) != 2:
+                    raise TypeError("Each chunk of meta info must have two values.")
+        else:
+            extra_meta = []
+        self._extra_meta = extra_meta
+
 
     def __repr__(self):
         """Plain-text version information."""
@@ -189,6 +205,8 @@ class Report(PlatformInfo, PythonInfo):
         text += '{:>18}'.format(self.cpu_count)+' : CPU(s)\n'
         text += '{:>18}'.format(self.machine)+' : Machine\n'
         text += '{:>18}'.format(self.architecture)+' : Architecture\n'
+        for meta in self._extra_meta:
+            text += '{:>18}'.format(meta[0])+' : {}\n'.format(meta[1])
         if TOTAL_RAM:
             text += '{:>18}'.format(self.total_ram)+' : RAM\n'
         text += '{:>18}'.format(self.python_environment)+' : Environment\n'
@@ -263,6 +281,8 @@ class Report(PlatformInfo, PythonInfo):
         html, i = cols(html, self.cpu_count, 'CPU(s)', self.ncol, i)
         html, i = cols(html, self.machine, 'Machine', self.ncol, i)
         html, i = cols(html, self.architecture, 'Architecture', self.ncol, i)
+        for meta in self._extra_meta:
+            html, i = cols(html, meta[1], meta[0], self.ncol, i)
         if TOTAL_RAM:
             html, i = cols(html, self.total_ram, 'RAM', self.ncol, i)
         html, i = cols(
