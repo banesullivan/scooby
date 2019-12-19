@@ -205,11 +205,11 @@ class Report(PlatformInfo, PythonInfo):
         text += '{:>18}'.format(self.cpu_count)+' : CPU(s)\n'
         text += '{:>18}'.format(self.machine)+' : Machine\n'
         text += '{:>18}'.format(self.architecture)+' : Architecture\n'
-        for meta in self._extra_meta:
-            text += '{:>18}'.format(meta[0])+' : {}\n'.format(meta[1])
         if TOTAL_RAM:
             text += '{:>18}'.format(self.total_ram)+' : RAM\n'
         text += '{:>18}'.format(self.python_environment)+' : Environment\n'
+        for meta in self._extra_meta:
+            text += '{:>18}'.format(meta[0])+' : {}\n'.format(meta[1])
 
         # ########## Python details ############
         text += '\n'
@@ -281,12 +281,12 @@ class Report(PlatformInfo, PythonInfo):
         html, i = cols(html, self.cpu_count, 'CPU(s)', self.ncol, i)
         html, i = cols(html, self.machine, 'Machine', self.ncol, i)
         html, i = cols(html, self.architecture, 'Architecture', self.ncol, i)
-        for meta in self._extra_meta:
-            html, i = cols(html, meta[1], meta[0], self.ncol, i)
         if TOTAL_RAM:
             html, i = cols(html, self.total_ram, 'RAM', self.ncol, i)
         html, i = cols(
                 html, self.python_environment, 'Environment', self.ncol, i)
+        for meta in self._extra_meta:
+            html, i = cols(html, meta[1], meta[0], self.ncol, i)
         # Finish row
         html += "  </tr>\n"
 
