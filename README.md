@@ -224,7 +224,7 @@ tracked and Scooby can report their versions.
 Once you are ready to generate a report, instantiate a `TrackedReport` object.
 
 In the following example, we import a constant from `scipy` which will report
-the versions of `scipy` and `numpy` both packages are loaded in the session
+the versions of `scipy` and `numpy` as both packages are loaded in the session
 (note that `numpy` is internally loaded by `scipy`).
 
 ```py
