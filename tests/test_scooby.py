@@ -3,6 +3,7 @@ import mock
 import numpy
 import pytest
 import re
+import sys
 
 import scooby
 
@@ -94,6 +95,7 @@ def test_extra_meta():
         report = scooby.Report(extra_meta="fo")
 
 
+@pytest.mark.skipif(sys.version_info.major < 3, reason="Tracking not supported on Python 2.")
 def test_tracking():
     scooby.track_imports()
     from scipy.constants import mu_0 # a float value
