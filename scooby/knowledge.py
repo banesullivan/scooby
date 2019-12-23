@@ -12,7 +12,8 @@ It also checks and stores mandatory additional information, if possible, such
 as available RAM or MKL info.
 
 """
-
+import distutils.sysconfig as sysconfig
+import os
 
 try:
     import psutil
@@ -49,6 +50,7 @@ VERSION_ATTRIBUTES = {
     'vtk': 'VTK_VERSION',
     'vtkmodules.all': 'VTK_VERSION',
     'PyQt5': 'Qt.PYQT_VERSION_STR',
+    'sip': 'SIP_VERSION_STR',
 }
 
 
@@ -100,3 +102,29 @@ def in_ipykernel():
         except NameError:
             pass
     return ipykernel
+
+
+def get_standard_lib_modules():
+    """Returns a set of the names of all modules in the standard library"""
+    names = os.listdir(sysconfig.get_python_lib(standard_lib=True))
+    stdlib_pkgs = set([name if not name.endswith(".py") else name[:-3] for name in names])
+    stdlib_pkgs = {
+        "python",
+        "sys",
+        "__builtin__",
+        "__builtins__",
+        "builtins",
+        "session",
+        "math",
+        "itertools",
+        "binascii",
+        "array",
+        "atexit",
+        "fcntl",
+        "errno",
+        "gc",
+        "time",
+        "unicodedata",
+        "mmap",
+        }.union(stdlib_pkgs)
+    return stdlib_pkgs

@@ -212,6 +212,50 @@ as well. A few examples:
 ```
 Again, modules can be provided as already loaded ones or as string.
 
+
+### Tracking Imports in a Session
+
+Scooby has the ability to track all imported modules during a Python session
+such that *any* imported, non-standard lib package that is used in the session
+is reported by a `TrackedReport`. For instance, start a session by importing
+Scooby and enabling tracking with the `track_imports()` function.
+Then *all* subsequent packages that are imported during the session will be
+tracked and Scooby can report their versions.
+Once you are ready to generate a report, instantiate a `TrackedReport` object.
+
+In the following example, we import a constant from `scipy` which will report
+the versions of `scipy` and `numpy` as both packages are loaded in the session
+(note that `numpy` is internally loaded by `scipy`).
+
+```py
+>>> import scooby
+>>> scooby.track_imports()
+
+>>> from scipy.constants import mu_0 # a float value
+
+>>> scooby.TrackedReport()
+```
+```
+--------------------------------------------------------------------------------
+  Date: Mon Dec 23 16:24:32 2019 EST
+
+            Darwin : OS
+                12 : CPU(s)
+            x86_64 : Machine
+             64bit : Architecture
+           32.0 GB : RAM
+            Python : Environment
+
+  Python 3.7.3 | packaged by conda-forge | (default, Dec  6 2019, 08:36:57)
+  [Clang 9.0.0 (tags/RELEASE_900/final)]
+
+             0.4.3 : scooby
+            1.17.3 : numpy
+             1.3.2 : scipy
+--------------------------------------------------------------------------------
+```
+
+
 ## Optional Requirements
 
 The following is a list of optional requirements and their purpose:

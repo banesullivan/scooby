@@ -3,6 +3,7 @@ import mock
 import numpy
 import pytest
 import re
+import sys
 
 import scooby
 
@@ -92,3 +93,17 @@ def test_extra_meta():
         report = scooby.Report(extra_meta="foo")
     with pytest.raises(TypeError):
         report = scooby.Report(extra_meta="fo")
+
+
+@pytest.mark.skipif(sys.version_info.major < 3, reason="Tracking not supported on Python 2.")
+def test_tracking():
+    scooby.track_imports()
+    from scipy.constants import mu_0 # a float value
+    report = scooby.TrackedReport()
+    scooby.untrack_imports()
+    import no_version
+    assert "numpy" in report.packages
+    assert "scipy" in report.packages
+    assert "no_version" not in report.packages
+    assert "pytest" not in report.packages
+    assert "mu_0" not in report.packages

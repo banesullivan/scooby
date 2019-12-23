@@ -7,16 +7,16 @@ The main routine containing the `Report` class.
 
 """
 
-import sys
-import time
-import platform
-import textwrap
 import importlib
 import multiprocessing
+import platform
+import sys
+import textwrap
+import time
 from types import ModuleType
 
-from .knowledge import VERSION_ATTRIBUTES, VERSION_METHODS, MKL_INFO, TOTAL_RAM
-from .knowledge import in_ipython, in_ipykernel
+from .knowledge import (MKL_INFO, TOTAL_RAM, VERSION_ATTRIBUTES,
+                        VERSION_METHODS, in_ipykernel, in_ipython)
 
 MODULE_NOT_FOUND = 'Could not import'
 VERSION_NOT_FOUND = 'Version unknown'
@@ -314,6 +314,7 @@ class Report(PlatformInfo, PythonInfo):
         html += "</table>"
 
         return html
+
 
 
 # This functionaliy might also be of interest on its own.
