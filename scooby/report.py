@@ -209,7 +209,7 @@ class Report(PlatformInfo, PythonInfo):
             text += '{:>18}'.format(self.total_ram)+' : RAM\n'
         text += '{:>18}'.format(self.python_environment)+' : Environment\n'
         for meta in self._extra_meta:
-            text += '{:>18}'.format(meta[0])+' : {}\n'.format(meta[1])
+            text += '{:>18}'.format(meta[1])+' : {}\n'.format(meta[0])
 
         # ########## Python details ############
         text += '\n'
