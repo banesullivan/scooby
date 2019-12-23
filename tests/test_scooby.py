@@ -75,3 +75,20 @@ def test_plain_vs_html():
     # Plain text currently starts with `Date :`;
     # we should remove that, or add it to the html version too.
     assert text_html == text_plain[5:]
+
+
+
+def test_extra_meta():
+    report = scooby.Report(extra_meta=("key", "value"))
+    assert "value : key" in report.__repr__()
+    report = scooby.Report(extra_meta=(("key", "value"),))
+    assert "value : key" in report.__repr__()
+    report = scooby.Report(extra_meta=(("key", "value"), ("another", "one")))
+    assert "value : key" in report.__repr__()
+    assert "one : another" in report.__repr__()
+    with pytest.raises(TypeError):
+        report = scooby.Report(extra_meta=(("key", "value"), "foo"))
+    with pytest.raises(TypeError):
+        report = scooby.Report(extra_meta="foo")
+    with pytest.raises(TypeError):
+        report = scooby.Report(extra_meta="fo")
