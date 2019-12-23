@@ -16,7 +16,6 @@ TRACKED_IMPORTS = ["scooby"]
 MODULES_TO_IGNORE = {
     "pyMKL",
     "mkl",
-    "numexpr",
     "vtkmodules",
     "mpl_toolkits",
 }
