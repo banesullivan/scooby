@@ -80,12 +80,12 @@ def test_plain_vs_html():
 
 def test_extra_meta():
     report = scooby.Report(extra_meta=("key", "value"))
-    assert "key : value" in report.__repr__()
+    assert "value : key" in report.__repr__()
     report = scooby.Report(extra_meta=(("key", "value"),))
-    assert "key : value" in report.__repr__()
+    assert "value : key" in report.__repr__()
     report = scooby.Report(extra_meta=(("key", "value"), ("another", "one")))
-    assert "key : value" in report.__repr__()
-    assert "another : one" in report.__repr__()
+    assert "value : key" in report.__repr__()
+    assert "one : another" in report.__repr__()
     with pytest.raises(TypeError):
         report = scooby.Report(extra_meta=(("key", "value"), "foo"))
     with pytest.raises(TypeError):
