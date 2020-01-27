@@ -156,6 +156,52 @@ The packages on the `core`-list are the mandatory ones for your project, while
 the `optional`-list can be used for optional packages. Keep the
 `additional`-list free to allow your users to add packages to the list.
 
+### Implementing as a soft dependency
+
+If you would like to implement `scooby`, but are hesitant to add another
+dependency to your package, here an easy way how you can use `scooby` as a soft
+dependency. Instead of `import scooby` use the following snippet:
+
+```py
+# Make scooby a soft dependency:
+try:
+    from scooby import Report as ScoobyReport
+except ImportError:
+    class ScoobyReport:
+        def __init__(self, additional, core, optional, ncol, text_width, sort):
+            print('\n  *ERROR*: `Report` requires `scooby`.'
+                  '\n           Install it via `pip install scooby` or')
+                  '\n           `conda install -c conda-forge scooby`.\n')
+```
+and then include your own `Report`-function as above,
+
+```py
+class Report(scooby.Report):
+    def __init__(self, additional=None, ncol=3, text_width=80, sort=False):
+        """Initiate a scooby.Report instance."""
+
+        # Mandatory packages.
+        core = ['yourpackage', 'your_core_packages', 'e.g.', 'numpy', 'scooby']
+
+        # Optional packages.
+        optional = ['your_optional_packages', 'e.g.', 'matplotlib']
+
+        scooby.Report.__init__(self, additional=additional, core=core,
+                               optional=optional, ncol=ncol,
+                               text_width=text_width, sort=sort)
+
+```
+If a user has `scooby` installed, all works as expected. If `scooby` is not
+installed, it will just print the following message:
+
+```py
+>>> import your_package
+>>> your_package.Report()
+
+  *ERROR*: `Report` requires `scooby`
+           Install it via `pip install scooby` or
+           `conda install -c conda-forge scooby`.
+```
 
 ### Solving Mysteries
 
