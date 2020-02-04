@@ -109,7 +109,7 @@ def test_tracking():
     assert "mu_0" not in report.packages
 
 
-def test_version_compar():
+def test_version_compare():
     assert scooby.meets_version('2', '1')
     assert not scooby.meets_version('1', '2')
 
@@ -122,7 +122,6 @@ def test_version_compar():
 
     assert scooby.meets_version('0.2.5', '0.1.8')
     assert not scooby.meets_version('0.1.8', '0.2.5')
-
 
     assert not scooby.meets_version('0.25.1', '0.25.2')
     assert scooby.meets_version('0.26.0', '0.25.2')
