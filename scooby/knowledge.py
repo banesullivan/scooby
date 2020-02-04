@@ -154,7 +154,7 @@ def meets_version(version, meets):
     Returns
     -------
     newer : bool
-        True if version ``va`` is greater or equal to version ``vb``.
+        True if version ``version`` is greater or equal to version ``meets``.
 
     Examples
     --------
