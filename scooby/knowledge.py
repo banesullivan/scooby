@@ -128,3 +128,53 @@ def get_standard_lib_modules():
         "mmap",
         }.union(stdlib_pkgs)
     return stdlib_pkgs
+
+
+def version_tuple(v):
+    """Convert a version string to a tuple."""
+    return tuple(map(int, (v.split("."))))
+
+
+def meets_version(version, meets):
+    """Check if a version string meets a minimum version.
+
+    This is a simplified way to compare version strings. For a more robust
+    tool, please check out the ``packaging`` library:
+
+    https://github.com/pypa/packaging
+
+    Parameters
+    ----------
+    version : str
+        Version string.  For example ``'0.25.1'``.
+
+    meets : str
+        Version string.  For example ``'0.25.2'``.
+
+    Returns
+    -------
+    newer : bool
+        True if version ``va`` is greater or equal to version ``vb``.
+
+    Examples
+    --------
+    >>> meets_version('0.25.1', '0.25.2')
+    False
+
+    >>> meets_version('0.26.0', '0.25.2')
+    True
+    """
+    va = version_tuple(version)
+    vb = version_tuple(meets)
+
+    if len(va) != len(vb):
+        raise AssertionError("Versions are not comparable.")
+
+    for i in range(len(va)):
+        if va[i] > vb[i]:
+            return True
+        elif va[i] < vb[i]:
+            return False
+
+    # Arrived here if same version
+    return True
