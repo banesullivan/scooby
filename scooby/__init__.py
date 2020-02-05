@@ -16,7 +16,8 @@ Werthmüller for ``empymod``, ``emg3d``, and the ``SimPEG`` framework
 """
 
 from scooby.report import Report, get_version
-from scooby.knowledge import get_standard_lib_modules, in_ipython, in_ipykernel
+from scooby.knowledge import (get_standard_lib_modules, in_ipykernel,
+                              in_ipython, meets_version, version_tuple)
 from scooby.tracker import TrackedReport, track_imports, untrack_imports
 
 __all__ = ['Report', 'TrackedReport', 'get_standard_lib_modules', 'in_ipython',
