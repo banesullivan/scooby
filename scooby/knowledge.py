@@ -131,8 +131,23 @@ def get_standard_lib_modules():
 
 
 def version_tuple(v):
-    """Convert a version string to a tuple."""
-    return tuple(map(int, (v.split("."))))
+    """Convert a version string to a tuple containing ints.
+
+    Returns
+    -------
+    ver_tuple : tuple
+        Length 3 tuple representing the major, minor, and patch
+        version.
+    """
+    split_v = v.split(".")
+    while len(split_v) < 3:
+        split_v.append('0')
+
+    if len(split_v) > 3:
+        raise ValueError('Version strings containing more than three parts cannot '
+                         'be parsed')
+
+    return tuple(map(int, split_v))
 
 
 def meets_version(version, meets):
