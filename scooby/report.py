@@ -261,10 +261,10 @@ class Report(PlatformInfo, PythonInfo):
                 html += "  <tr>\n"
 
             html += "    <td style='text-align: right; background-color: #ccc;"
-            html += " " + border + ">%s</td>\n" % version
+            html += " " + border + ">%s</td>\n" % name
 
             html += "    <td style='text-align: left; "
-            html += border + ">%s</td>\n" % name
+            html += border + ">%s</td>\n" % version
 
             return html, i+1
 
@@ -283,6 +283,8 @@ class Report(PlatformInfo, PythonInfo):
         html, i = cols(html, 'Architecture', self.architecture, self.ncol, i)
         if TOTAL_RAM:
             html, i = cols(html, 'RAM', self.total_ram, self.ncol, i)
+        else:
+            html, i = cols(html, '', '', 1, 0)
         html, i = cols(
                 html, 'Environment', self.python_environment, self.ncol, i)
         for meta in self._extra_meta:
