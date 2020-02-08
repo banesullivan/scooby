@@ -277,18 +277,16 @@ class Report(PlatformInfo, PythonInfo):
 
         # ########## Platform/OS details ############
         html += "  <tr>\n"
-        html, i = cols(html, 'OS', self.system, self.ncol, 0)
-        html, i = cols(html, 'CPU(s)', self.cpu_count, self.ncol, i)
-        html, i = cols(html, 'Machine', self.machine, self.ncol, i)
-        html, i = cols(html, 'Architecture', self.architecture, self.ncol, i)
+        html, i = cols(html, self.system, 'OS', self.ncol, 0)
+        html, i = cols(html, self.cpu_count, 'CPU(s)', self.ncol, i)
+        html, i = cols(html, self.machine, 'Machine', self.ncol, i)
+        html, i = cols(html, self.architecture, 'Architecture', self.ncol, i)
         if TOTAL_RAM:
-            html, i = cols(html, 'RAM', self.total_ram, self.ncol, i)
-        else:
-            html, i = cols(html, '', '', 1, 0)
+            html, i = cols(html, self.total_ram, 'RAM', self.ncol, i)
         html, i = cols(
-                html, 'Environment', self.python_environment, self.ncol, i)
+                html, self.python_environment, 'Environment', self.ncol, i)
         for meta in self._extra_meta:
-            html, i = cols(html, meta[0], meta[1], self.ncol, i)
+            html, i = cols(html, meta[1], meta[0], self.ncol, i)
         # Finish row
         html += "  </tr>\n"
 
@@ -299,7 +297,7 @@ class Report(PlatformInfo, PythonInfo):
         # Loop over packages
         i = 0  # Reset count for rows.
         for name, version in self.packages.items():
-            html, i = cols(html, name, version, self.ncol, i)
+            html, i = cols(html, version, name, self.ncol, i)
         # Fill up the row
         while i % self.ncol != 0:
             html += "    <td style= " + border + "></td>\n"
