@@ -261,10 +261,10 @@ class Report(PlatformInfo, PythonInfo):
                 html += "  <tr>\n"
 
             html += "    <td style='text-align: right; background-color: #ccc;"
-            html += " " + border + ">%s</td>\n" % version
+            html += " " + border + ">%s</td>\n" % name
 
             html += "    <td style='text-align: left; "
-            html += border + ">%s</td>\n" % name
+            html += border + ">%s</td>\n" % version
 
             return html, i+1
 
