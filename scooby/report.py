@@ -201,13 +201,13 @@ class Report(PlatformInfo, PythonInfo):
         text += date_text+'\n'
 
         # ########## Platform/OS details ############
-        text += '{:>21}{}'.format('OS : ', self.system)+'\n'
-        text += '{:>21}{}'.format('CPU(s) : ', self.cpu_count)+'\n'
-        text += '{:>21}{}'.format('Machine : ', self.machine)+'\n'
-        text += '{:>21}{}'.format('Architecture : ', self.architecture)+'\n'
+        text += '{:>18} : {}\n'.format('OS', self.system)
+        text += '{:>18} : {}\n'.format('CPU(s)', self.cpu_count)
+        text += '{:>18} : {}\n'.format('Machine', self.machine)
+        text += '{:>18} : {}\n'.format('Architecture', self.architecture)
         if TOTAL_RAM:
-            text += '{:>21}{}'.format('RAM : ', self.total_ram)+'\n'
-        text += '{:>21}{}'.format('Environment : ', self.python_environment)+'\n'
+            text += '{:>18} : {}\n'.format('RAM', self.total_ram)
+        text += '{:>18} : {}\n'.format('Environment', self.python_environment)
         for meta in self._extra_meta:
             text += '{:>18}'.format(meta[1])+' : {}\n'.format(meta[0])
 
@@ -219,8 +219,8 @@ class Report(PlatformInfo, PythonInfo):
         text += '\n'
 
         # Loop over packages
-        for name, version in self._packages.items():
-            text += '{:>18} : {}\n'.format(name, version)
+        for version, name in self._packages.items():
+            text += '{:>18} : {}\n'.format(version, name)
 
         # ########## MKL details ############
         if MKL_INFO:
