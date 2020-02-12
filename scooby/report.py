@@ -201,13 +201,13 @@ class Report(PlatformInfo, PythonInfo):
         text += date_text+'\n'
 
         # ########## Platform/OS details ############
-        text += '{:>18}'.format(self.system)+' : OS\n'
-        text += '{:>18}'.format(self.cpu_count)+' : CPU(s)\n'
-        text += '{:>18}'.format(self.machine)+' : Machine\n'
-        text += '{:>18}'.format(self.architecture)+' : Architecture\n'
+        text += '{:>18} : {}\n'.format('OS', self.system)
+        text += '{:>18} : {}\n'.format('CPU(s)', self.cpu_count)
+        text += '{:>18} : {}\n'.format('Machine', self.machine)
+        text += '{:>18} : {}\n'.format('Architecture', self.architecture)
         if TOTAL_RAM:
-            text += '{:>18}'.format(self.total_ram)+' : RAM\n'
-        text += '{:>18}'.format(self.python_environment)+' : Environment\n'
+            text += '{:>18} : {}\n'.format('RAM', self.total_ram)
+        text += '{:>18} : {}\n'.format('Environment', self.python_environment)
         for meta in self._extra_meta:
             text += '{:>18}'.format(meta[1])+' : {}\n'.format(meta[0])
 
@@ -219,7 +219,7 @@ class Report(PlatformInfo, PythonInfo):
         text += '\n'
 
         # Loop over packages
-        for name, version in self._packages.items():
+        for version, name in self._packages.items():
             text += '{:>18} : {}\n'.format(version, name)
 
         # ########## MKL details ############
@@ -261,10 +261,10 @@ class Report(PlatformInfo, PythonInfo):
                 html += "  <tr>\n"
 
             html += "    <td style='text-align: right; background-color: #ccc;"
-            html += " " + border + ">%s</td>\n" % version
+            html += " " + border + ">%s</td>\n" % name
 
             html += "    <td style='text-align: left; "
-            html += border + ">%s</td>\n" % name
+            html += border + ">%s</td>\n" % version
 
             return html, i+1
 
