@@ -54,25 +54,25 @@ representation of the script.
 ```
 ```
 --------------------------------------------------------------------------------
-  Date: Sun Jun 30 12:51:42 2019 MDT
+  Date: Wed Feb 12 15:35:43 2020 W. Europe Standard Time
 
-            Darwin : OS
-                12 : CPU(s)
-            x86_64 : Machine
-             64bit : Architecture
-           32.0 GB : RAM
-            Python : Environment
+                OS : Windows
+            CPU(s) : 16
+           Machine : AMD64
+      Architecture : 64bit
+               RAM : 31.9 GB
+       Environment : IPython
 
-  Python 3.7.3 | packaged by conda-forge | (default, Mar 27 2019, 15:43:19)
-  [Clang 4.0.1 (tags/RELEASE_401/final)]
+  Python 3.7.6 | packaged by conda-forge | (default, Jan  7 2020, 21:48:41)
+  [MSC v.1916 64 bit (AMD64)]
 
-            1.16.3 : numpy
-             1.3.0 : scipy
-             7.5.0 : IPython
-             3.1.0 : matplotlib
-             0.2.2 : scooby
+             numpy : 1.18.1
+             scipy : 1.3.1
+           IPython : 7.12.0
+        matplotlib : 3.0.3
+            scooby : 0.5.0
 
-  Intel(R) Math Kernel Library Version 2018.0.3 Product Build 20180406 for
+  Intel(R) Math Kernel Library Version 2019.0.4 Product Build 20190411 for
   Intel(R) 64 architecture applications
 --------------------------------------------------------------------------------
 ```
@@ -86,26 +86,27 @@ either as strings or give already imported packages:
 ```
 ```
 --------------------------------------------------------------------------------
-  Date: Mon Jul 01 10:55:24 2019 CEST
+  Date: Wed Feb 12 16:15:15 2020 W. Europe Standard Time
 
-             Linux : OS
-                 4 : CPU(s)
-            x86_64 : Machine
-             64bit : Architecture
-           15.6 GB : RAM
-           IPython : Environment
+                OS : Windows
+            CPU(s) : 16
+           Machine : AMD64
+      Architecture : 64bit
+               RAM : 31.9 GB
+       Environment : IPython
 
-  Python 3.7.3 (default, Mar 27 2019, 22:11:17)  [GCC 7.3.0]
+  Python 3.7.6 | packaged by conda-forge | (default, Jan  7 2020, 21:48:41)
+  [MSC v.1916 64 bit (AMD64)]
 
-            0.20.4 : pyvista
-             8.1.2 : vtk
-   Version unknown : no_version
-  Could not import : does_not_exist
-            1.16.4 : numpy
-             1.2.1 : scipy
-             7.5.0 : IPython
-             3.1.0 : matplotlib
-             0.3.0 : scooby
+           pyvista : 0.23.1
+               vtk : 8.1.2
+        no_version : Version unknown
+    does_not_exist : Could not import
+             numpy : 1.18.1
+             scipy : 1.3.1
+           IPython : 7.12.0
+        matplotlib : 3.0.3
+            scooby : 0.5.0
 
   Intel(R) Math Kernel Library Version 2019.0.4 Product Build 20190411 for
   Intel(R) 64 architecture applications
