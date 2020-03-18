@@ -107,7 +107,8 @@ def in_ipykernel():
 def get_standard_lib_modules():
     """Returns a set of the names of all modules in the standard library"""
     names = os.listdir(sysconfig.get_python_lib(standard_lib=True))
-    stdlib_pkgs = set([name if not name.endswith(".py") else name[:-3] for name in names])
+    stdlib_pkgs = set([name if not name.endswith(".py") else name[:-3]
+                       for name in names])
     stdlib_pkgs = {
         "python",
         "sys",
@@ -144,8 +145,8 @@ def version_tuple(v):
         split_v.append('0')
 
     if len(split_v) > 3:
-        raise ValueError('Version strings containing more than three parts cannot '
-                         'be parsed')
+        raise ValueError('Version strings containing more than three parts '
+                         'cannot be parsed')
 
     return tuple(map(int, split_v))
 
