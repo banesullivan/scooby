@@ -10,10 +10,16 @@ This is a lightweight toolset to easily report your Python environment's
 package versions and hardware resources.
 
 
-Install from [PyPI](https://pypi.org/project/scooby/):
+Install from [PyPI](https://pypi.org/project/scooby/)
 
 ```bash
 pip install scooby
+```
+
+or from [conda-forge](https://anaconda.org/conda-forge/scooby/)
+
+```bash
+conda install -c conda-forge scooby
 ```
 
 ![Jupyter Notebook Formatting](https://github.com/banesullivan/scooby/raw/master/assets/jupyter.png)

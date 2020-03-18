@@ -202,13 +202,11 @@ class Report(PlatformInfo, PythonInfo):
         text += date_text+'\n'
 
         # ########## Platform/OS details ############
-        text += '{:>18} : {}\n'.format('OS', self.system)
-        text += '{:>18} : {}\n'.format('CPU(s)', self.cpu_count)
-        text += '{:>18} : {}\n'.format('Machine', self.machine)
-        text += '{:>18} : {}\n'.format('Architecture', self.architecture)
-        if TOTAL_RAM:
-            text += '{:>18} : {}\n'.format('RAM', self.total_ram)
-        text += '{:>18} : {}\n'.format('Environment', self.python_environment)
+        repr_dict = self.to_dict()
+        for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM',
+                    'Environment']:
+            if key in repr_dict:
+                text += '{:>18} : {}\n'.format(key, repr_dict[key])
         for meta in self._extra_meta:
             text += '{:>18}'.format(meta[1])+' : {}\n'.format(meta[0])
 
@@ -277,14 +275,12 @@ class Report(PlatformInfo, PythonInfo):
 
         # ########## Platform/OS details ############
         html += "  <tr>\n"
-        html, i = cols(html, self.system, 'OS', self.ncol, 0)
-        html, i = cols(html, self.cpu_count, 'CPU(s)', self.ncol, i)
-        html, i = cols(html, self.machine, 'Machine', self.ncol, i)
-        html, i = cols(html, self.architecture, 'Architecture', self.ncol, i)
-        if TOTAL_RAM:
-            html, i = cols(html, self.total_ram, 'RAM', self.ncol, i)
-        html, i = cols(
-                html, self.python_environment, 'Environment', self.ncol, i)
+        repr_dict = self.to_dict()
+        i = 0
+        for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM',
+                    'Environment']:
+            if key in repr_dict:
+                html, i = cols(html, repr_dict[key], key, self.ncol, i)
         for meta in self._extra_meta:
             html, i = cols(html, meta[1], meta[0], self.ncol, i)
         # Finish row
