@@ -7,6 +7,7 @@ import sys
 
 import scooby
 
+
 def test_report():
     report = scooby.Report()
     text = str(report)
@@ -21,10 +22,18 @@ def test_report():
     assert len(html) > 0
     # Same as what is printed in Travis build log
     report = scooby.Report(additional=['mock', 'foo'])
-    report = scooby.Report(additional=['foo',])
-    report = scooby.Report(additional=[mock,])
+    report = scooby.Report(additional=['foo', ])
+    report = scooby.Report(additional=[mock, ])
     report = scooby.Report(additional=mock)
     report = scooby.Report(additional=['collections', 'foo', 'aaa'], sort=True)
+
+
+def test_dict():
+    report = scooby.Report(['no_version', 'does_not_exist'])
+    for key, value in report.to_dict().items():
+        if key is not 'MKL':
+            assert key in report.__repr__()
+        assert value[:10] in report.__repr__()
 
 
 def test_inheritence_example():
@@ -50,7 +59,7 @@ def test_inheritence_example():
 
 
 def test_ipy():
-    result = scooby.in_ipykernel()
+    scooby.in_ipykernel()
 
 
 def test_get_version():
@@ -78,7 +87,6 @@ def test_plain_vs_html():
     assert text_html == text_plain[5:]
 
 
-
 def test_extra_meta():
     report = scooby.Report(extra_meta=("key", "value"))
     assert "value : key" in report.__repr__()
@@ -95,13 +103,14 @@ def test_extra_meta():
         report = scooby.Report(extra_meta="fo")
 
 
-@pytest.mark.skipif(sys.version_info.major < 3, reason="Tracking not supported on Python 2.")
+@pytest.mark.skipif(sys.version_info.major < 3,
+                    reason="Tracking not supported on Python 2.")
 def test_tracking():
     scooby.track_imports()
-    from scipy.constants import mu_0 # a float value
+    from scipy.constants import mu_0  # noqa ; a float value
     report = scooby.TrackedReport()
     scooby.untrack_imports()
-    import no_version
+    import no_version  # noqa
     assert "numpy" in report.packages
     assert "scipy" in report.packages
     assert "no_version" not in report.packages

@@ -174,12 +174,14 @@ class Report(PlatformInfo, PythonInfo):
 
         if extra_meta is not None:
             if not isinstance(extra_meta, (list, tuple)):
-                raise TypeError("`extra_meta` must be a list/tuple of key-value pairs.")
+                raise TypeError("`extra_meta` must be a list/tuple of "
+                                "key-value pairs.")
             if len(extra_meta) == 2 and isinstance(extra_meta[0], str):
                 extra_meta = [extra_meta]
             for meta in extra_meta:
                 if not isinstance(meta, (list, tuple)) or len(meta) != 2:
-                    raise TypeError("Each chunk of meta info must have two values.")
+                    raise TypeError(
+                            "Each chunk of meta info must have two values.")
         else:
             extra_meta = []
         self._extra_meta = extra_meta
@@ -323,7 +325,7 @@ class Report(PlatformInfo, PythonInfo):
 
         # Platform/OS details
         out['OS'] = self.system
-        out['CPU(s)'] = self.cpu_count
+        out['CPU(s)'] = str(self.cpu_count)
         out['Machine'] = self.machine
         out['Architecture'] = self.architecture
         if TOTAL_RAM:
