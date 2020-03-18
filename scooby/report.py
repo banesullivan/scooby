@@ -184,7 +184,6 @@ class Report(PlatformInfo, PythonInfo):
             extra_meta = []
         self._extra_meta = extra_meta
 
-
     def __repr__(self):
         """Plain-text version information."""
 
@@ -272,8 +271,7 @@ class Report(PlatformInfo, PythonInfo):
         html = "<table style='border: 3px solid #ddd;'>\n"
 
         # Date and time info as title
-        html = colspan(html, self.date,
-                       self.ncol, 0)
+        html = colspan(html, self.date, self.ncol, 0)
 
         # ########## Platform/OS details ############
         html += "  <tr>\n"
@@ -315,6 +313,37 @@ class Report(PlatformInfo, PythonInfo):
 
         return html
 
+    def to_dict(self):
+        """Return report as dict for storage."""
+
+        out = {}
+
+        # Date and time info
+        out['Date'] = self.date
+
+        # Platform/OS details
+        out['OS'] = self.system
+        out['CPU(s)'] = self.cpu_count
+        out['Machine'] = self.machine
+        out['Architecture'] = self.architecture
+        if TOTAL_RAM:
+            out['RAM'] = self.total_ram
+        out['Environment'] = self.python_environment
+        for meta in self._extra_meta:
+            out[meta[1]] = meta[0]
+
+        # Python details
+        out['Python'] = self.sys_version
+
+        # Loop over packages
+        for name, version in self._packages.items():
+            out[name] = version
+
+        # MKL details
+        if MKL_INFO:
+            out['MKL'] = MKL_INFO
+
+        return out
 
 
 # This functionaliy might also be of interest on its own.
