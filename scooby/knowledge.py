@@ -22,7 +22,8 @@ except ImportError:
 
 try:
     import mkl
-except ImportError:
+    mkl.get_version_string()
+except (ImportError, AttributeError):
     mkl = False
 
 try:
