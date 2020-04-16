@@ -5,3 +5,4 @@ bs4
 psutil
 mkl
 mock
+numpy
