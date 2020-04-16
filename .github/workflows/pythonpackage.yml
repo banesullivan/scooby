@@ -38,7 +38,10 @@ jobs:
         python setup.py sdist
     - name: Upload to PyPi
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@v1.1.0
-      with:
-        user: ${{ secrets.pypi_username }}
-        password: ${{ secrets.pypi_password }}
+      run: |
+        pip install twine
+        python setup.py sdist
+        twine upload --skip-existing dist/scooby*.gz
+      env:
+        TWINE_USERNAME: ${{ secrets.pypi_username }}
+        TWINE_PASSWORD: ${{ secrets.pypi_password }}
