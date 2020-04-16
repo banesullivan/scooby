@@ -290,21 +290,20 @@ the versions of `scipy` and `numpy` as both packages are loaded in the session
 ```
 ```
 --------------------------------------------------------------------------------
-  Date: Mon Dec 23 16:24:32 2019 EST
+  Date: Thu Apr 16 15:33:11 2020 MDT
 
-            Darwin : OS
-                12 : CPU(s)
-            x86_64 : Machine
-             64bit : Architecture
-           32.0 GB : RAM
-            Python : Environment
+                OS : Linux
+            CPU(s) : 8
+           Machine : x86_64
+      Architecture : 64bit
+               RAM : 62.7 GB
+       Environment : IPython
 
-  Python 3.7.3 | packaged by conda-forge | (default, Dec  6 2019, 08:36:57)
-  [Clang 9.0.0 (tags/RELEASE_900/final)]
+  Python 3.7.7 (default, Mar 10 2020, 15:16:38)  [GCC 7.5.0]
 
-             0.4.3 : scooby
-            1.17.3 : numpy
-             1.3.2 : scipy
+            scooby : 0.5.2
+             numpy : 1.18.1
+             scipy : 1.4.1
 --------------------------------------------------------------------------------
 ```
 
