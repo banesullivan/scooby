@@ -6,3 +6,5 @@ psutil
 mkl
 mock
 numpy
+scipy
+no_version
