@@ -138,5 +138,7 @@ def test_version_compare():
 
     assert not scooby.meets_version('0.25.2', '0.26')
 
+    assert scooby.meets_version('0.28.0dev0', '0.25.2')
+
     with pytest.raises(ValueError):
         scooby.meets_version('0.25.2.0', '0.26')

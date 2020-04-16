@@ -135,6 +135,9 @@ def get_standard_lib_modules():
 def version_tuple(v):
     """Convert a version string to a tuple containing ints.
 
+    Non-numeric version strings will be converted to 0.  For example:
+    ``'0.28.0dev0'`` will be converted to ``'0.28.0'``
+
     Returns
     -------
     ver_tuple : tuple
@@ -149,7 +152,14 @@ def version_tuple(v):
         raise ValueError('Version strings containing more than three parts '
                          'cannot be parsed')
 
-    return tuple(map(int, split_v))
+    vals = []
+    for item in split_v:
+        if item.isnumeric():
+            vals.append(int(item))
+        else:
+            vals.append(0)
+
+    return tuple(vals)
 
 
 def meets_version(version, meets):
