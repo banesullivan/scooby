@@ -32,3 +32,9 @@ jobs:
         pip install -r requirements_test.txt
         pip install pytest
         pytest -v --cov scooby --cov-report html
+    - name: Upload to PyPi
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@v1.1.0
+      with:
+        user: ${{ secrets.pypi_username }}
+        password: ${{ secrets.pypi_password }}
