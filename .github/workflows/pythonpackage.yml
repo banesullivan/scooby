@@ -24,24 +24,22 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install
+    - name: Build Wheel and Install
       run: |
-        python -m pip install --upgrade pip
-        pip install -e .
+        python -m pip install --upgrade pip wheel
+        python setup.py bdist_wheel
+        pip install dist/scooby*.whl
     - name: Test with pytest
       run: |
         pip install -r requirements_test.txt
-        pip install pytest
+        cd tests
         pytest -v --cov scooby --cov-report html
-    - name: Build sdist
-      run: |
-        python setup.py sdist
+        cd ..
     - name: Upload to PyPi
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
       run: |
         pip install twine
-        python setup.py sdist
-        twine upload --skip-existing dist/scooby*.gz
+        twine upload --skip-existing dist/scooby*.whl
       env:
         TWINE_USERNAME: ${{ secrets.pypi_username }}
         TWINE_PASSWORD: ${{ secrets.pypi_password }}
