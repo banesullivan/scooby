@@ -32,9 +32,9 @@ jobs:
     - name: Test with pytest
       run: |
         pip install -r requirements_test.txt
-	cd tests
+        cd tests
         pytest -v --cov scooby --cov-report html
-	cd ..
+        cd ..
     - name: Upload to PyPi
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
       run: |
