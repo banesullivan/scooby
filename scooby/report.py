@@ -208,7 +208,7 @@ class Report(PlatformInfo, PythonInfo):
             if key in repr_dict:
                 text += '{:>18} : {}\n'.format(key, repr_dict[key])
         for meta in self._extra_meta:
-            text += '{:>18}'.format(meta[1])+' : {}\n'.format(meta[0])
+            text += '{:>18}'.format(meta[0])+' : {}\n'.format(meta[1])
 
         # ########## Python details ############
         text += '\n'
