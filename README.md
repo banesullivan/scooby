@@ -66,7 +66,7 @@ representation of the script.
             CPU(s) : 16
            Machine : AMD64
       Architecture : 64bit
-               RAM : 31.9 GB
+               RAM : 31.9 GiB
        Environment : IPython
 
   Python 3.7.6 | packaged by conda-forge | (default, Jan  7 2020, 21:48:41)
@@ -98,7 +98,7 @@ either as strings or give already imported packages:
             CPU(s) : 16
            Machine : AMD64
       Architecture : 64bit
-               RAM : 31.9 GB
+               RAM : 31.9 GiB
        Environment : IPython
 
   Python 3.7.6 | packaged by conda-forge | (default, Jan  7 2020, 21:48:41)
@@ -296,7 +296,7 @@ the versions of `scipy` and `numpy` as both packages are loaded in the session
             CPU(s) : 8
            Machine : x86_64
       Architecture : 64bit
-               RAM : 62.7 GB
+               RAM : 62.7 GiB
        Environment : IPython
 
   Python 3.7.7 (default, Mar 10 2020, 15:16:38)  [GCC 7.5.0]
@@ -312,5 +312,5 @@ the versions of `scipy` and `numpy` as both packages are loaded in the session
 
 The following is a list of optional requirements and their purpose:
 
-- `psutil`: report total RAM in GB
+- `psutil`: report total RAM in GiB
 - `mkl-services`: report Intel(R) Math Kernel Library version
