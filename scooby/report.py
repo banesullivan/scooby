@@ -211,7 +211,7 @@ class Report(PlatformInfo, PythonInfo):
             if key in repr_dict:
                 text += f'{key:>{row_width}} : {repr_dict[key]}\n'
         for meta in self._extra_meta:
-            text += f'{meta[0]:>row_width} : {meta[1]}\n'
+            text += f'{meta[0]:>{row_width}} : {meta[1]}\n'
 
         # ########## Python details ############
         text += '\n'
