@@ -217,9 +217,11 @@ class Report(PlatformInfo, PythonInfo):
             text += '  '+txt+'\n'
         text += '\n'
 
+        # Get length of longest package
+        name_width = max(18, len(max(self._packages.keys(), key=len)))
         # Loop over packages
-        for version, name in self._packages.items():
-            text += '{:>18} : {}\n'.format(version, name)
+        for name, version in self._packages.items():
+            text += f'{name:>{name_width}} : {version}\n'
 
         # ########## MKL details ############
         if MKL_INFO:
