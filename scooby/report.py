@@ -201,14 +201,17 @@ class Report(PlatformInfo, PythonInfo):
             mult = indent
         text += date_text+'\n'
 
+        # Get length of longest package: min of 18 and max of 40
+        row_width = min(40, max(18, len(max(self._packages.keys(), key=len))))
+
         # ########## Platform/OS details ############
         repr_dict = self.to_dict()
         for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM',
                     'Environment']:
             if key in repr_dict:
-                text += '{:>18} : {}\n'.format(key, repr_dict[key])
+                text += f'{key:>{row_width}} : {repr_dict[key]}\n'
         for meta in self._extra_meta:
-            text += '{:>18}'.format(meta[0])+' : {}\n'.format(meta[1])
+            text += f'{meta[0]:>row_width} : {meta[1]}\n'
 
         # ########## Python details ############
         text += '\n'
@@ -217,11 +220,9 @@ class Report(PlatformInfo, PythonInfo):
             text += '  '+txt+'\n'
         text += '\n'
 
-        # Get length of longest package
-        name_width = max(18, len(max(self._packages.keys(), key=len)))
         # Loop over packages
         for name, version in self._packages.items():
-            text += f'{name:>{name_width}} : {version}\n'
+            text += f'{name:>{row_width}} : {version}\n'
 
         # ########## MKL details ############
         if MKL_INFO:
