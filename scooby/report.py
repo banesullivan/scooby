@@ -13,6 +13,8 @@ import platform
 import sys
 import textwrap
 import time
+import psutil
+from pathlib import Path
 from types import ModuleType
 
 from .knowledge import (MKL_INFO, TOTAL_RAM, VERSION_ATTRIBUTES,
@@ -69,6 +71,18 @@ class PlatformInfo:
     @property
     def date(self):
         return time.strftime('%a %b %d %H:%M:%S %Y %Z')
+
+    @property
+    def filesystem(self):
+        # Code by https://stackoverflow.com/a/35291824/10504481
+        mypath = str(Path(__file__).resolve())
+        bestMatch = ""
+        fsType = ""
+        for part in psutil.disk_partitions():
+            if mypath.startswith(part.mountpoint) and len(bestMatch) < len(part.mountpoint):
+                fsType = part.fstype
+                bestMatch = part.mountpoint
+        return fsType
 
 
 class PythonInfo:
@@ -207,7 +221,7 @@ class Report(PlatformInfo, PythonInfo):
         # ########## Platform/OS details ############
         repr_dict = self.to_dict()
         for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM',
-                    'Environment']:
+                    'Environment', 'File System']:
             if key in repr_dict:
                 text += f'{key:>{row_width}} : {repr_dict[key]}\n'
         for key, value in self._extra_meta:
@@ -327,6 +341,7 @@ class Report(PlatformInfo, PythonInfo):
         out['CPU(s)'] = str(self.cpu_count)
         out['Machine'] = self.machine
         out['Architecture'] = self.architecture
+        out['File System'] = self.filesystem
         if TOTAL_RAM:
             out['RAM'] = self.total_ram
         out['Environment'] = self.python_environment
