@@ -295,7 +295,7 @@ class Report(PlatformInfo, PythonInfo):
         repr_dict = self.to_dict()
         i = 0
         for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM',
-                    'Environment']:
+                    'Environment', "File system"]:
             if key in repr_dict:
                 html, i = cols(html, repr_dict[key], key, self.ncol, i)
         for meta in self._extra_meta:
