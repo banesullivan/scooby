@@ -221,7 +221,7 @@ class Report(PlatformInfo, PythonInfo):
         # ########## Platform/OS details ############
         repr_dict = self.to_dict()
         for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM',
-                    'Environment', 'File System']:
+                    'Environment', 'File system']:
             if key in repr_dict:
                 text += f'{key:>{row_width}} : {repr_dict[key]}\n'
         for key, value in self._extra_meta:
@@ -341,7 +341,7 @@ class Report(PlatformInfo, PythonInfo):
         out['CPU(s)'] = str(self.cpu_count)
         out['Machine'] = self.machine
         out['Architecture'] = self.architecture
-        out['File System'] = self.filesystem
+        out['File system'] = self.filesystem
         if TOTAL_RAM:
             out['RAM'] = self.total_ram
         out['Environment'] = self.python_environment
