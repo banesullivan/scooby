@@ -76,14 +76,14 @@ class PlatformInfo:
     def filesystem(self):
         """Get the type of the file system at the path of the scooby package"""
         # Code by https://stackoverflow.com/a/35291824/10504481
-        mypath = str(Path(__file__).resolve())
-        bestMatch = ""
-        fsType = ""
+        my_path = str(Path(__file__).resolve())
+        best_match = ""
+        fs_type = ""
         for part in psutil.disk_partitions():
-            if mypath.startswith(part.mountpoint) and len(bestMatch) < len(part.mountpoint):
-                fsType = part.fstype
-                bestMatch = part.mountpoint
-        return fsType
+            if my_path.startswith(part.mountpoint) and len(best_match) < len(part.mountpoint):
+                fs_type = part.fstype
+                best_match = part.mountpoint
+        return fs_type
 
 
 class PythonInfo:
