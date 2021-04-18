@@ -175,7 +175,7 @@ class Report(PlatformInfo, PythonInfo):
         Additional two component pairs of meta information to display
 
     """
-    def __init__(self, additional=None, core=None, optional=None, ncol=3,
+    def __init__(self, additional=None, core=None, optional=None, ncol=4,
                  text_width=80, sort=False, extra_meta=None,):
 
         # Set default optional packages to investigate
