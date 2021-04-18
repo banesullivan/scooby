@@ -74,6 +74,7 @@ class PlatformInfo:
 
     @property
     def filesystem(self):
+        """Get the type of the file system at the path of the scooby package"""
         # Code by https://stackoverflow.com/a/35291824/10504481
         mypath = str(Path(__file__).resolve())
         bestMatch = ""
