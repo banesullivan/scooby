@@ -13,6 +13,8 @@ import platform
 import sys
 import textwrap
 import time
+import psutil
+from pathlib import Path
 from types import ModuleType
 
 from .knowledge import (MKL_INFO, TOTAL_RAM, VERSION_ATTRIBUTES,
@@ -69,6 +71,19 @@ class PlatformInfo:
     @property
     def date(self):
         return time.strftime('%a %b %d %H:%M:%S %Y %Z')
+
+    @property
+    def filesystem(self):
+        """Get the type of the file system at the path of the scooby package"""
+        # Code by https://stackoverflow.com/a/35291824/10504481
+        my_path = str(Path(__file__).resolve())
+        best_match = ""
+        fs_type = ""
+        for part in psutil.disk_partitions():
+            if my_path.startswith(part.mountpoint) and len(best_match) < len(part.mountpoint):
+                fs_type = part.fstype
+                best_match = part.mountpoint
+        return fs_type
 
 
 class PythonInfo:
@@ -160,7 +175,7 @@ class Report(PlatformInfo, PythonInfo):
         Additional two component pairs of meta information to display
 
     """
-    def __init__(self, additional=None, core=None, optional=None, ncol=3,
+    def __init__(self, additional=None, core=None, optional=None, ncol=4,
                  text_width=80, sort=False, extra_meta=None,):
 
         # Set default optional packages to investigate
@@ -207,7 +222,7 @@ class Report(PlatformInfo, PythonInfo):
         # ########## Platform/OS details ############
         repr_dict = self.to_dict()
         for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM',
-                    'Environment']:
+                    'Environment', 'File system']:
             if key in repr_dict:
                 text += f'{key:>{row_width}} : {repr_dict[key]}\n'
         for key, value in self._extra_meta:
@@ -281,7 +296,7 @@ class Report(PlatformInfo, PythonInfo):
         repr_dict = self.to_dict()
         i = 0
         for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM',
-                    'Environment']:
+                    'Environment', "File system"]:
             if key in repr_dict:
                 html, i = cols(html, repr_dict[key], key, self.ncol, i)
         for meta in self._extra_meta:
@@ -327,6 +342,7 @@ class Report(PlatformInfo, PythonInfo):
         out['CPU(s)'] = str(self.cpu_count)
         out['Machine'] = self.machine
         out['Architecture'] = self.architecture
+        out['File system'] = self.filesystem
         if TOTAL_RAM:
             out['RAM'] = self.total_ram
         out['Environment'] = self.python_environment
