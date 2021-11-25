@@ -25,9 +25,12 @@ from scooby.knowledge import (  # noqa
 from scooby.report import Report, get_version
 from scooby.tracker import TrackedReport, track_imports, untrack_imports
 
+doo = Report
+
 __all__ = [
     'Report',
     'TrackedReport',
+    'doo',
     'get_standard_lib_modules',
     'in_ipython',
     'in_ipykernel',
