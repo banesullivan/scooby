@@ -84,6 +84,37 @@ representation of the script.
 --------------------------------------------------------------------------------
 ```
 
+For all the Scooby-Doo fans out there, `doo` is an alias for `Report` so you
+oh-so satisfyingly can do:
+
+```py
+>>> import scooby
+>>> scooby.doo()
+```
+```
+--------------------------------------------------------------------------------
+  Date: Thu Nov 25 09:47:50 2021 MST
+
+                OS : Darwin
+            CPU(s) : 12
+           Machine : x86_64
+      Architecture : 64bit
+               RAM : 32.0 GiB
+       Environment : Python
+       File system : apfs
+
+  Python 3.8.12 | packaged by conda-forge | (default, Oct 12 2021, 21:50:38)
+  [Clang 11.1.0 ]
+
+             numpy : 1.21.4
+             scipy : 1.7.3
+           IPython : 7.29.0
+        matplotlib : 3.5.0
+            scooby : 0.5.8
+--------------------------------------------------------------------------------
+>>>
+```
+
 On top of the default (optional) packages you can provide additional packages,
 either as strings or give already imported packages:
 ```py
