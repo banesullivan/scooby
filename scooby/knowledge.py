@@ -75,9 +75,15 @@ def get_pyqt5_version():
     from PyQt5.Qt import PYQT_VERSION_STR
     return PYQT_VERSION_STR
 
+def get_gdal_version():
+    from osgeo import gdal
+
+    return gdal.VersionInfo("RELEASE_NAME")
+
 
 VERSION_METHODS = {
-    'PyQt5': get_pyqt5_version,
+    'pyqt5': get_pyqt5_version,
+    'osgeo.gdal': get_gdal_version,
 }
 
 

@@ -417,7 +417,7 @@ def get_version(module):
 
         # Try the VERSION_METHODS library
         try:
-            method = VERSION_METHODS[name]
+            method = VERSION_METHODS[name.lower()]
             return name, method()
         except (KeyError, ImportError):
             pass
