@@ -1,6 +1,5 @@
 """
-
-knowledge
+Knowledge
 =========
 
 The knowledge base.
@@ -24,6 +23,7 @@ except ImportError:
 
 try:
     import mkl
+
     mkl.get_version_string()
 except (ImportError, AttributeError):
     mkl = False
@@ -73,6 +73,7 @@ VERSION_ATTRIBUTES = {
 def get_pyqt5_version():
     """Returns the PyQt5 version"""
     from PyQt5.Qt import PYQT_VERSION_STR
+
     return PYQT_VERSION_STR
 
 
@@ -138,8 +139,7 @@ def get_standard_lib_modules():
     else:
         names = os.listdir(sysconfig.get_python_lib(standard_lib=True))
 
-        stdlib_pkgs = set([name if not name.endswith(".py") else name[:-3]
-                           for name in names])
+        stdlib_pkgs = set([name if not name.endswith(".py") else name[:-3] for name in names])
 
     stdlib_pkgs = {
         "python",
@@ -159,7 +159,7 @@ def get_standard_lib_modules():
         "time",
         "unicodedata",
         "mmap",
-        }.union(stdlib_pkgs)
+    }.union(stdlib_pkgs)
     return stdlib_pkgs
 
 
@@ -180,8 +180,7 @@ def version_tuple(v):
         split_v.append('0')
 
     if len(split_v) > 3:
-        raise ValueError('Version strings containing more than three parts '
-                         'cannot be parsed')
+        raise ValueError('Version strings containing more than three parts ' 'cannot be parsed')
 
     vals = []
     for item in split_v:
