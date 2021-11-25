@@ -25,14 +25,16 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Build Wheel and Install
-      run: |
-        python setup.py install
+      run: python setup.py install
     - name: Test Report Generation with No Dependencies
-      run: |
-        python -c "import scooby;scooby.Report();"
+      run: python -c "import scooby;scooby.Report();"
+    - name: Install testing requirements
+      run: pip install -r requirements_test.txt
     - name: Test Entire API
       run: |
-        pip install -r requirements_test.txt
-        cd tests
-        pytest -v --cov scooby --cov-report html
-        cd ..
+        pytest -v --cov scooby --cov-report xml
+    - uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml
+          verbose: true

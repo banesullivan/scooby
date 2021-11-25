@@ -28,6 +28,7 @@ test.bat
 # Code coverage results
 htmlcov
 .coverage
+coverage.xml
 *,cover
 
 .tox
