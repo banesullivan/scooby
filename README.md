@@ -3,6 +3,7 @@
 ![Build Status](https://github.com/banesullivan/scooby/workflows/Python%20package/badge.svg)
 [![PyPI Status](https://img.shields.io/pypi/v/scooby.svg?logo=python&logoColor=white)](https://pypi.org/project/scooby/)
 [![Conda Status](https://img.shields.io/conda/vn/conda-forge/scooby.svg)](https://anaconda.org/conda-forge/scooby)
+[![codecov](https://codecov.io/gh/banesullivan/scooby/branch/master/graph/badge.svg?token=eJqZ700tqH)](https://codecov.io/gh/banesullivan/scooby)
 
 *Great Dane turned Python environment detective*
 
