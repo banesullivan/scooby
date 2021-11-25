@@ -29,3 +29,5 @@ test.bat
 htmlcov
 .coverage
 *,cover
+
+.tox
