@@ -1,12 +1,13 @@
-# Scooby
+# 🐶🕵️ Scooby
 
-![Build Status](https://github.com/banesullivan/scooby/workflows/Python%20package/badge.svg)
+[![Tests](https://github.com/banesullivan/scooby/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/banesullivan/scooby/actions/workflows/pythonpackage.yml)
 [![PyPI Status](https://img.shields.io/pypi/v/scooby.svg?logo=python&logoColor=white)](https://pypi.org/project/scooby/)
 [![Conda Status](https://img.shields.io/conda/vn/conda-forge/scooby.svg)](https://anaconda.org/conda-forge/scooby)
+[![codecov](https://codecov.io/gh/banesullivan/scooby/branch/main/graph/badge.svg?token=eJqZ700tqH)](https://codecov.io/gh/banesullivan/scooby)
 
-A Great Dane turned Python environment detective
+*Great Dane turned Python environment detective*
 
-This is a lightweight toolset to easily report your Python environment's
+This is a lightweight tool for easily reporting your Python environment's
 package versions and hardware resources.
 
 
@@ -22,7 +23,7 @@ or from [conda-forge](https://anaconda.org/conda-forge/scooby/)
 conda install -c conda-forge scooby
 ```
 
-![Jupyter Notebook Formatting](https://github.com/banesullivan/scooby/raw/master/assets/jupyter.png)
+![Jupyter Notebook Formatting](https://github.com/banesullivan/scooby/raw/main/assets/jupyter.png)
 
 Scooby has HTML formatting for Jupyter notebooks and rich text formatting for
 just about every other environment. We designed this module to be lightweight
@@ -81,6 +82,37 @@ representation of the script.
   Intel(R) Math Kernel Library Version 2019.0.4 Product Build 20190411 for
   Intel(R) 64 architecture applications
 --------------------------------------------------------------------------------
+```
+
+For all the Scooby-Doo fans out there, `doo` is an alias for `Report` so you
+oh-so satisfyingly can do:
+
+```py
+>>> import scooby
+>>> scooby.doo()
+```
+```
+--------------------------------------------------------------------------------
+  Date: Thu Nov 25 09:47:50 2021 MST
+
+                OS : Darwin
+            CPU(s) : 12
+           Machine : x86_64
+      Architecture : 64bit
+               RAM : 32.0 GiB
+       Environment : Python
+       File system : apfs
+
+  Python 3.8.12 | packaged by conda-forge | (default, Oct 12 2021, 21:50:38)
+  [Clang 11.1.0 ]
+
+             numpy : 1.21.4
+             scipy : 1.7.3
+           IPython : 7.29.0
+        matplotlib : 3.5.0
+            scooby : 0.5.8
+--------------------------------------------------------------------------------
+>>>
 ```
 
 On top of the default (optional) packages you can provide additional packages,
@@ -183,7 +215,7 @@ except ImportError:
 and then include your own `Report`-function as above,
 
 ```py
-class Report(scooby.Report):
+class Report(ScoobyReport):
     def __init__(self, additional=None, ncol=3, text_width=80, sort=False):
         """Initiate a scooby.Report instance."""
 

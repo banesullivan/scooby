@@ -1,6 +1,5 @@
 """
-
-report
+Report
 ======
 
 The main routine containing the `Report` class.
@@ -9,16 +8,22 @@ The main routine containing the `Report` class.
 
 import importlib
 import multiprocessing
+from pathlib import Path
 import platform
 import sys
 import textwrap
 import time
-from pathlib import Path
 from types import ModuleType
 
-from .knowledge import (FILESYSTEM_TYPE, MKL_INFO, TOTAL_RAM,
-                        VERSION_ATTRIBUTES, VERSION_METHODS, in_ipykernel,
-                        in_ipython)
+from .knowledge import (
+    FILESYSTEM_TYPE,
+    MKL_INFO,
+    TOTAL_RAM,
+    VERSION_ATTRIBUTES,
+    VERSION_METHODS,
+    in_ipykernel,
+    in_ipython,
+)
 
 MODULE_NOT_FOUND = 'Could not import'
 VERSION_NOT_FOUND = 'Version unknown'
@@ -54,8 +59,7 @@ class PlatformInfo:
 
     @property
     def cpu_count(self):
-        """Return the number of CPUs in the system.
-        """
+        """Return the number of CPUs in the system."""
         return multiprocessing.cpu_count()
 
     @property
@@ -88,8 +92,8 @@ class PythonInfo:
         self._sort = sort
 
         # Add packages in the following order:
-        self._add_packages(additional)               # Provided by the user
-        self._add_packages(core)                     # Provided by a module dev
+        self._add_packages(additional)  # Provided by the user
+        self._add_packages(core)  # Provided by a module dev
         self._add_packages(optional, optional=True)  # Optional packages
 
     def _add_packages(self, packages, optional=False):
@@ -97,7 +101,9 @@ class PythonInfo:
 
         # Ensure arguments are a list
         if isinstance(packages, (str, ModuleType)):
-            pckgs = [packages, ]
+            pckgs = [
+                packages,
+            ]
         elif packages is None or len(packages) < 1:
             pckgs = list()
         else:
@@ -169,28 +175,34 @@ class Report(PlatformInfo, PythonInfo):
         Additional two component pairs of meta information to display
 
     """
-    def __init__(self, additional=None, core=None, optional=None, ncol=4,
-                 text_width=80, sort=False, extra_meta=None,):
+
+    def __init__(
+        self,
+        additional=None,
+        core=None,
+        optional=None,
+        ncol=4,
+        text_width=80,
+        sort=False,
+        extra_meta=None,
+    ):
 
         # Set default optional packages to investigate
         if optional is None:
             optional = ['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']
 
-        PythonInfo.__init__(self, additional=additional, core=core,
-                            optional=optional, sort=sort)
+        PythonInfo.__init__(self, additional=additional, core=core, optional=optional, sort=sort)
         self.ncol = int(ncol)
         self.text_width = int(text_width)
 
         if extra_meta is not None:
             if not isinstance(extra_meta, (list, tuple)):
-                raise TypeError("`extra_meta` must be a list/tuple of "
-                                "key-value pairs.")
+                raise TypeError("`extra_meta` must be a list/tuple of " "key-value pairs.")
             if len(extra_meta) == 2 and isinstance(extra_meta[0], str):
                 extra_meta = [extra_meta]
             for meta in extra_meta:
                 if not isinstance(meta, (list, tuple)) or len(meta) != 2:
-                    raise TypeError(
-                            "Each chunk of meta info must have two values.")
+                    raise TypeError("Each chunk of meta info must have two values.")
         else:
             extra_meta = []
         self._extra_meta = extra_meta
@@ -199,24 +211,23 @@ class Report(PlatformInfo, PythonInfo):
         """Plain-text version information."""
 
         # Width for text-version
-        text = '\n' + self.text_width*'-' + '\n'
+        text = '\n' + self.text_width * '-' + '\n'
 
         # Date and time info as title
         date_text = '  Date: '
         mult = 0
         indent = len(date_text)
-        for txt in textwrap.wrap(self.date, self.text_width-indent):
-            date_text += ' '*mult + txt + '\n'
+        for txt in textwrap.wrap(self.date, self.text_width - indent):
+            date_text += ' ' * mult + txt + '\n'
             mult = indent
-        text += date_text+'\n'
+        text += date_text + '\n'
 
         # Get length of longest package: min of 18 and max of 40
         row_width = min(40, max(18, len(max(self._packages.keys(), key=len))))
 
         # ########## Platform/OS details ############
         repr_dict = self.to_dict()
-        for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM',
-                    'Environment', 'File system']:
+        for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM', 'Environment', 'File system']:
             if key in repr_dict:
                 text += f'{key:>{row_width}} : {repr_dict[key]}\n'
         for key, value in self._extra_meta:
@@ -224,9 +235,8 @@ class Report(PlatformInfo, PythonInfo):
 
         # ########## Python details ############
         text += '\n'
-        for txt in textwrap.wrap(
-                'Python '+self.sys_version, self.text_width-4):
-            text += '  '+txt+'\n'
+        for txt in textwrap.wrap('Python ' + self.sys_version, self.text_width - 4):
+            text += '  ' + txt + '\n'
         text += '\n'
 
         # Loop over packages
@@ -236,11 +246,11 @@ class Report(PlatformInfo, PythonInfo):
         # ########## MKL details ############
         if MKL_INFO:
             text += '\n'
-            for txt in textwrap.wrap(MKL_INFO, self.text_width-4):
-                text += '  '+txt+'\n'
+            for txt in textwrap.wrap(MKL_INFO, self.text_width - 4):
+                text += '  ' + txt + '\n'
 
         # ########## Finish ############
-        text += self.text_width*'-'
+        text += self.text_width * '-'
 
         return text
 
@@ -259,7 +269,7 @@ class Report(PlatformInfo, PythonInfo):
             elif nrow % 2 == 0:
                 html += "background-color: #ddd;"
             html += border + " colspan='"
-            html += str(2*ncol)+"'>%s</td>\n" % txt
+            html += str(2 * ncol) + "'>%s</td>\n" % txt
             html += "  </tr>\n"
             return html
 
@@ -277,7 +287,7 @@ class Report(PlatformInfo, PythonInfo):
             html += "    <td style='text-align: left; "
             html += border + ">%s</td>\n" % version
 
-            return html, i+1
+            return html, i + 1
 
         # Start html-table
         html = "<table style='border: 3px solid #ddd;'>\n"
@@ -289,8 +299,7 @@ class Report(PlatformInfo, PythonInfo):
         html += "  <tr>\n"
         repr_dict = self.to_dict()
         i = 0
-        for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM',
-                    'Environment', "File system"]:
+        for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM', 'Environment', "File system"]:
             if key in repr_dict:
                 html, i = cols(html, repr_dict[key], key, self.ncol, i)
         for meta in self._extra_meta:
@@ -299,7 +308,7 @@ class Report(PlatformInfo, PythonInfo):
         html += "  </tr>\n"
 
         # ########## Python details ############
-        html = colspan(html, 'Python '+self.sys_version, self.ncol, 1)
+        html = colspan(html, 'Python ' + self.sys_version, self.ncol, 1)
 
         html += "  <tr>\n"
         # Loop over packages
@@ -380,7 +389,7 @@ def get_version(module):
 
     # module is (1) a string or (2) a module.
     # If (1), we have to load it, if (2), we have to get its name.
-    if isinstance(module, str):           # Case 1: module is a string; import
+    if isinstance(module, str):  # Case 1: module is a string; import
         name = module  # The name is stored in module in this case.
 
         # Import module `name`; set to None if it fails.
@@ -392,9 +401,8 @@ def get_version(module):
     elif isinstance(module, ModuleType):  # Case 2: module is module; get name
         name = module.__name__
 
-    else:                                 # If not str nor module raise error
-        raise TypeError("Cannot fetch version from type "
-                        "({})".format(type(module)))
+    else:  # If not str nor module raise error
+        raise TypeError("Cannot fetch version from type " "({})".format(type(module)))
 
     # Now get the version info from the module
     if module is None:

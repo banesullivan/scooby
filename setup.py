@@ -1,8 +1,9 @@
 # coding=utf-8
-import setuptools
 import io
 
-__version__ = '0.5.7'
+import setuptools
+
+__version__ = '0.5.9'
 
 with io.open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
