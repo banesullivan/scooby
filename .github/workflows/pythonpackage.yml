@@ -26,9 +26,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Build Wheel and Install
       run: |
-        python -m pip install --upgrade pip wheel
-        python setup.py bdist_wheel
-        pip install dist/scooby*.whl
+        python setup.py install
     - name: Test Report Generation with No Dependencies
       run: |
         python -c "import scooby;scooby.Report();"
