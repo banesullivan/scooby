@@ -1,6 +1,5 @@
 """
-
-report
+Report
 ======
 
 The main routine containing the `Report` class.

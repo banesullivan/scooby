@@ -1,6 +1,5 @@
 """
-
-knowledge
+Knowledge
 =========
 
 The knowledge base.

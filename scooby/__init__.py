@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-A Great Dane turned Python environment detective
-================================================
+Great Dane turned Python environment detective
+==============================================
 
 A lightweight toolset to easily report your Python environment's package
 versions and hardware resources.
