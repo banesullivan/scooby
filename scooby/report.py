@@ -13,12 +13,12 @@ import platform
 import sys
 import textwrap
 import time
-import psutil
 from pathlib import Path
 from types import ModuleType
 
-from .knowledge import (MKL_INFO, TOTAL_RAM, VERSION_ATTRIBUTES,
-                        VERSION_METHODS, in_ipykernel, in_ipython)
+from .knowledge import (FILESYSTEM_TYPE, MKL_INFO, TOTAL_RAM,
+                        VERSION_ATTRIBUTES, VERSION_METHODS, in_ipykernel,
+                        in_ipython)
 
 MODULE_NOT_FOUND = 'Could not import'
 VERSION_NOT_FOUND = 'Version unknown'
@@ -75,15 +75,9 @@ class PlatformInfo:
     @property
     def filesystem(self):
         """Get the type of the file system at the path of the scooby package"""
-        # Code by https://stackoverflow.com/a/35291824/10504481
-        my_path = str(Path(__file__).resolve())
-        best_match = ""
-        fs_type = ""
-        for part in psutil.disk_partitions():
-            if my_path.startswith(part.mountpoint) and len(best_match) < len(part.mountpoint):
-                fs_type = part.fstype
-                best_match = part.mountpoint
-        return fs_type
+        if FILESYSTEM_TYPE:
+            return FILESYSTEM_TYPE
+        return 'unknown'
 
 
 class PythonInfo:
@@ -342,7 +336,8 @@ class Report(PlatformInfo, PythonInfo):
         out['CPU(s)'] = str(self.cpu_count)
         out['Machine'] = self.machine
         out['Architecture'] = self.architecture
-        out['File system'] = self.filesystem
+        if FILESYSTEM_TYPE:
+            out['File system'] = self.filesystem
         if TOTAL_RAM:
             out['RAM'] = self.total_ram
         out['Environment'] = self.python_environment

@@ -29,7 +29,10 @@ jobs:
         python -m pip install --upgrade pip wheel
         python setup.py bdist_wheel
         pip install dist/scooby*.whl
-    - name: Test with pytest
+    - name: Test Report Generation with No Dependencies
+      run: |
+        python -c "import scooby;scooby.Report();"
+    - name: Test Entire API
       run: |
         pip install -r requirements_test.txt
         cd tests
