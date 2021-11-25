@@ -28,11 +28,11 @@ conda install -c conda-forge scooby
 Scooby has HTML formatting for Jupyter notebooks and rich text formatting for
 just about every other environment. We designed this module to be lightweight
 such that it could easily be added as a dependency to Python projects for
-environment reporting when debugging. Simply add `scooby` to your dependencies
-and implement a function to have `scooby` report on the aspects of the
+environment reporting when debugging. Simply add scooby to your dependencies
+and implement a function to have scooby report on the aspects of the
 environment you care most about.
 
-If `scooby` is unable to detect aspects of an environment that you'd like to
+If scooby is unable to detect aspects of an environment that you'd like to
 know, please share this with us as a feature requests or pull requests.
 
 The scooby reporting is derived from the versioning-scripts created by [Dieter
@@ -50,10 +50,10 @@ an environment reporting tool in any Python library with minimal impact.
 
 Reports are rendered as html-tables in Jupyter notebooks as shown in the
 screenshot above, and otherwise as plain text lists. If you do not output the
-report object either at the end of a notebook cell or it is generated
-somewhere in a vanilla Python script, you may have to print the report object:
-`print(scooby.Report())`, but note that this will only output the plain text
-representation of the script.
+`Report` object either at the end of a notebook cell or it is generated
+somewhere in a vanilla Python script, you may have to print the `Report`
+object: `print(scooby.Report())`, but note that this will only output the plain
+text representation of the script.
 
 ```py
 >>> import scooby
@@ -85,7 +85,7 @@ representation of the script.
 ```
 
 For all the Scooby-Doo fans out there, `doo` is an alias for `Report` so you
-oh-so satisfyingly can do:
+can oh-so satisfyingly do:
 
 ```py
 >>> import scooby
@@ -112,7 +112,6 @@ oh-so satisfyingly can do:
         matplotlib : 3.5.0
             scooby : 0.5.8
 --------------------------------------------------------------------------------
->>>
 ```
 
 On top of the default (optional) packages you can provide additional packages,
@@ -150,7 +149,8 @@ either as strings or give already imported packages:
   Intel(R) 64 architecture applications
 --------------------------------------------------------------------------------
 ```
-As can be seen, scooby reports if a package could not be imported or if the
+
+Furthermore, scooby reports if a package could not be imported or if the
 version of a package could not be determined.
 
 Other useful parameters are
@@ -161,13 +161,14 @@ Other useful parameters are
 
 Besides `additional` there are two more lists, `core` and `optional`, which
 can be used to provide package names. However, they are mostly useful for
-package maintainers wanting to use scooby to create their reporting system.
-See below:
+package maintainers wanting to use scooby to create their reporting system
+(see below).
 
 
 ### Implementing scooby in your project
 
-You can generate easily your own Report-instance using scooby:
+You can easily generate a custom `Report` instance using scooby within your
+project:
 
 ```py
 class Report(scooby.Report):
@@ -185,7 +186,10 @@ class Report(scooby.Report):
                                text_width=text_width, sort=sort)
 ```
 
-So a user can use your Report:
+This makes it particularly easy for a user of your project to quickly generate
+a report on all of the relevant package versions and environment details when
+sumbitting a bug.
+
 ```py
 >>> import your_package
 >>> your_package.Report()
@@ -195,11 +199,11 @@ The packages on the `core`-list are the mandatory ones for your project, while
 the `optional`-list can be used for optional packages. Keep the
 `additional`-list free to allow your users to add packages to the list.
 
-### Implementing as a soft dependency
+#### Implementing as a soft dependency
 
-If you would like to implement `scooby`, but are hesitant to add another
-dependency to your package, here an easy way how you can use `scooby` as a soft
-dependency. Instead of `import scooby` use the following snippet:
+If you would like to implement scooby, but are hesitant to add another
+dependency to your package, here is an easy way how you can use scooby as a
+soft dependency. Instead of `import scooby` use the following snippet:
 
 ```py
 # Make scooby a soft dependency:
@@ -212,7 +216,8 @@ except ImportError:
                   '\n           Install it via `pip install scooby` or')
                   '\n           `conda install -c conda-forge scooby`.\n')
 ```
-and then include your own `Report`-function as above,
+
+and then create your own `Report` class same as above,
 
 ```py
 class Report(ScoobyReport):
@@ -230,8 +235,8 @@ class Report(ScoobyReport):
                                text_width=text_width, sort=sort)
 
 ```
-If a user has `scooby` installed, all works as expected. If `scooby` is not
-installed, it will just print the following message:
+If a user has scooby installed, all works as expected. If scooby is not
+installed, it will raise the following exception:
 
 ```py
 >>> import your_package
@@ -245,7 +250,7 @@ installed, it will just print the following message:
 ### Solving Mysteries
 
 Are you struggling with the mystery of whether or not code is being executed in
-IPython, Jupyter, or normal Python? Try using some of Scooby's investigative
+IPython, Jupyter, or normal Python? Try using some of scooby's investigative
 functions to solve these kinds of mysteries:
 
 ```py
@@ -259,32 +264,33 @@ else:
     # Do normal, boring Python stuff
 ```
 
-### How does scooby gets the version number?
+### How does scooby get version numbers?
 
 A couple of locations are checked, and we are happy to implement more if
 needed, just open an issue!
 
 Currently, it looks in the following places:
-- `__version__`;
-- `version`;
-- lookup `VERSION_ATTRIBUTES`;
-- lookup `VERSION_METHODS`.
+- `__version__`
+- `version`
+- lookup `VERSION_ATTRIBUTES` in the scooby knowledge base
+- lookup `VERSION_METHODS` in the scooby knowledge base
 
 `VERSION_ATTRIBUTES` is a dictionary of attributes for known python packages
 with a non-standard place for the version, e.g. `VERSION_ATTRIBUTES['vtk'] =
-'VTK_VERSION'`. You can add other known places via
+'VTK_VERSION'`. You can add other known places via:
+
 ```py
-scooby.knowledge.VERSION_ATTRIBUTES['a_module'] = 'Awesom_version_location'
+scooby.knowledge.VERSION_ATTRIBUTES['a_module'] = 'Awesome_version_location'
 ```
 
-Similarly, `VERSION_METHODS` is a dictionary for methods to find the version,
-and you can add similarly your methods which will define the version of a
-package.
+Similarly, `VERSION_METHODS` is a dictionary for methods to retrieve the
+version, and you can similarly add your methods which will get the version
+of a package.
 
 ### Using scooby to get version information.
 
-If you are just interested in the version of a package then you can use scooby
-as well. A few examples:
+If you are only interested in the version of a single package then you can use
+scooby as well. A few examples:
 
 ```py
 >>> import scooby, numpy
@@ -295,7 +301,8 @@ as well. A few examples:
 >>> scooby.get_version('does_not_exist')
 ('does_not_exist', 'Could not import')
 ```
-Again, modules can be provided as already loaded ones or as string.
+
+Note that modules can be provided as already loaded ones or as strings.
 
 
 ### Tracking Imports in a Session
@@ -303,10 +310,10 @@ Again, modules can be provided as already loaded ones or as string.
 Scooby has the ability to track all imported modules during a Python session
 such that *any* imported, non-standard lib package that is used in the session
 is reported by a `TrackedReport`. For instance, start a session by importing
-Scooby and enabling tracking with the `track_imports()` function.
+scooby and enabling tracking with the `track_imports()` function.
 Then *all* subsequent packages that are imported during the session will be
-tracked and Scooby can report their versions.
-Once you are ready to generate a report, instantiate a `TrackedReport` object.
+tracked and scooby can report their versions.
+Once you are ready to generate a `Report`, instantiate a `TrackedReport` object.
 
 In the following example, we import a constant from `scipy` which will report
 the versions of `scipy` and `numpy` as both packages are loaded in the session
