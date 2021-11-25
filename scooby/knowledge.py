@@ -14,6 +14,7 @@ as available RAM or MKL info.
 """
 import distutils.sysconfig as sysconfig
 import os
+from pathlib import Path
 import sys
 
 try:
@@ -38,6 +39,19 @@ if psutil:
     TOTAL_RAM = '{:.1f} GiB'.format(tmem / (1024.0 ** 3))
 else:
     TOTAL_RAM = False
+
+# Get the type of the file system at the path of the scooby package
+if psutil:
+    # Code by https://stackoverflow.com/a/35291824/10504481
+    my_path = str(Path(__file__).resolve())
+    best_match = ""
+    FILESYSTEM_TYPE = ""
+    for part in psutil.disk_partitions():
+        if my_path.startswith(part.mountpoint) and len(best_match) < len(part.mountpoint):
+            FILESYSTEM_TYPE = part.fstype
+            best_match = part.mountpoint
+else:
+    FILESYSTEM_TYPE = False
 
 # Get mkl info from numexpr or mkl, if available
 if mkl:
