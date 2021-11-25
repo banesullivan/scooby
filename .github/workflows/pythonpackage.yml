@@ -38,12 +38,3 @@ jobs:
         cd tests
         pytest -v --cov scooby --cov-report html
         cd ..
-    - name: Upload to PyPi
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-      run: |
-        pip install twine
-        python setup.py sdist
-        twine upload --skip-existing dist/scooby*
-      env:
-        TWINE_USERNAME: ${{ secrets.pypi_username }}
-        TWINE_PASSWORD: ${{ secrets.pypi_password }}
