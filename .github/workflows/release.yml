@@ -17,10 +17,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
+      - name: Build and Install Wheel
+        run: |
+          python setup.py bdist_wheel
+          pip install dist/scooby*.whl
+      - name: Test Report Generation with No Dependencies
+        run: python -c "import scooby;scooby.Report();"
       - name: Build and Publish to PyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          python setup.py sdist bdist_wheel
+          python setup.py sdist
           twine upload --skip-existing dist/scooby*
