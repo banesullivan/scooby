@@ -184,7 +184,7 @@ except ImportError:
 and then include your own `Report`-function as above,
 
 ```py
-class Report(scooby.Report):
+class Report(ScoobyReport):
     def __init__(self, additional=None, ncol=3, text_width=80, sort=False):
         """Initiate a scooby.Report instance."""
 
