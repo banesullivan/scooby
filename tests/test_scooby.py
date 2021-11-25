@@ -1,9 +1,10 @@
+import re
+import sys
+
 from bs4 import BeautifulSoup
 import mock
 import numpy
 import pytest
-import re
-import sys
 
 import scooby
 

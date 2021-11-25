@@ -1,5 +1,5 @@
-from scooby.report import Report
 from scooby.knowledge import get_standard_lib_modules
+from scooby.report import Report
 
 TRACKING_SUPPORTED = False
 SUPPORT_MESSAGE = ("Tracking is not supported for this version of Python. "

@@ -9,16 +9,22 @@ The main routine containing the `Report` class.
 
 import importlib
 import multiprocessing
+from pathlib import Path
 import platform
 import sys
 import textwrap
 import time
-from pathlib import Path
 from types import ModuleType
 
-from .knowledge import (FILESYSTEM_TYPE, MKL_INFO, TOTAL_RAM,
-                        VERSION_ATTRIBUTES, VERSION_METHODS, in_ipykernel,
-                        in_ipython)
+from .knowledge import (
+    FILESYSTEM_TYPE,
+    MKL_INFO,
+    TOTAL_RAM,
+    VERSION_ATTRIBUTES,
+    VERSION_METHODS,
+    in_ipykernel,
+    in_ipython,
+)
 
 MODULE_NOT_FOUND = 'Could not import'
 VERSION_NOT_FOUND = 'Version unknown'

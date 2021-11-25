@@ -1,6 +1,7 @@
 # coding=utf-8
-import setuptools
 import io
+
+import setuptools
 
 __version__ = '0.5.7'
 
