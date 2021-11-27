@@ -114,6 +114,12 @@ can oh-so satisfyingly do:
 --------------------------------------------------------------------------------
 ```
 
+Or better yet:
+
+```py
+from scooby import doo as doobiedoo
+```
+
 On top of the default (optional) packages you can provide additional packages,
 either as strings or give already imported packages:
 ```py
