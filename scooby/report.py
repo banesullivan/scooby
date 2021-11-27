@@ -8,7 +8,6 @@ The main routine containing the `Report` class.
 
 import importlib
 import multiprocessing
-from pathlib import Path
 import platform
 import sys
 import textwrap

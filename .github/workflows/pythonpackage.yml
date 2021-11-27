@@ -31,8 +31,9 @@ jobs:
     - name: Install testing requirements
       run: pip install -r requirements_test.txt
     - name: Test Entire API
-      run: |
-        pytest -v --cov scooby --cov-report xml
+      run: make apitest
+    - name: Doctests
+      run: make doctest
     - uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
