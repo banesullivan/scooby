@@ -290,7 +290,7 @@ class Report(PlatformInfo, PythonInfo):
             return html, i + 1
 
         # Start html-table
-        html = "<table style='border: 3px solid #ddd;'>\n"
+        html = "<table style='font-size: smaller; border: 3px solid #ddd;' cellpadding='4'>\n"
 
         # Date and time info as title
         html = colspan(html, self.date, self.ncol, 0)
