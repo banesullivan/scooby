@@ -102,7 +102,7 @@ def test_plain_vs_html():
 
     # Plain text currently starts with `Date :`;
     # we should remove that, or add it to the html version too.
-    assert text_html == text_plain[5:]
+    assert text_html[20:] == text_plain[25:]
 
 
 def test_extra_meta():
