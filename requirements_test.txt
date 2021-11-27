@@ -4,7 +4,6 @@ codecov
 bs4
 psutil
 mkl
-mock
 numpy
 scipy
 no_version

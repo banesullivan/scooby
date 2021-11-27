@@ -2,7 +2,6 @@ import re
 import sys
 
 from bs4 import BeautifulSoup
-import mock
 import numpy
 import pytest
 
@@ -22,7 +21,7 @@ def test_report():
     html = report._repr_html_()
     assert len(html) > 0
     # Same as what is printed in Travis build log
-    report = scooby.Report(additional=['mock', 'foo'])
+    report = scooby.Report(additional=['pytest', 'foo'])
     report = scooby.Report(
         additional=[
             'foo',
@@ -30,17 +29,17 @@ def test_report():
     )
     report = scooby.Report(
         additional=[
-            mock,
+            pytest,
         ]
     )
-    report = scooby.Report(additional=mock)
+    report = scooby.Report(additional=pytest)
     report = scooby.Report(additional=['collections', 'foo', 'aaa'], sort=True)
 
 
 def test_dict():
     report = scooby.Report(['no_version', 'does_not_exist'])
     for key, value in report.to_dict().items():
-        if key is not 'MKL':
+        if key != 'MKL':
             assert key in report.__repr__()
         assert value[:10] in report.__repr__()
 
@@ -71,7 +70,7 @@ def test_inheritence_example():
                 sort=sort,
             )
 
-    report = Report(['mock'])
+    report = Report(['pytest'])
     assert 'psutil' in report.packages
     assert 'mkl' in report.packages
     assert 'numpy' in report.packages
@@ -103,7 +102,7 @@ def test_plain_vs_html():
 
     # Plain text currently starts with `Date :`;
     # we should remove that, or add it to the html version too.
-    assert text_html == text_plain[5:]
+    assert text_html[20:] == text_plain[25:]
 
 
 def test_extra_meta():
@@ -119,7 +118,7 @@ def test_extra_meta():
     with pytest.raises(TypeError):
         report = scooby.Report(extra_meta="foo")
     with pytest.raises(TypeError):
-        report = scooby.Report(extra_meta="fo")
+        report = scooby.Report(extra_meta="for")
 
 
 @pytest.mark.skipif(sys.version_info.major < 3, reason="Tracking not supported on Python 2.")
