@@ -163,7 +163,6 @@ def test_version_compare():
         scooby.meets_version('0.25.2.0', '0.26')
 
 
-@pytest.mark.skipif(, 'pyvips is working')
 def test_import_os_error():
     # pyvips requires libvips, etc., to be installed
     # We don't have this on CI, so this should throw an error on import
