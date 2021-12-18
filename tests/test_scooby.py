@@ -161,3 +161,12 @@ def test_version_compare():
 
     with pytest.raises(ValueError):
         scooby.meets_version('0.25.2.0', '0.26')
+
+
+def test_import_os_error():
+    # pyvips requires libvips, etc., to be installed
+    # We don't have this on CI, so this should throw an error on import
+    # Make sure scooby can handle it.
+    with pytest.raises(OSError):
+        import pyvips  # noqa
+    assert scooby.Report(['pyvips'])

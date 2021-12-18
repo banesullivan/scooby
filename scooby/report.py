@@ -24,7 +24,8 @@ from .knowledge import (
     in_ipython,
 )
 
-MODULE_NOT_FOUND = 'Could not import'
+MODULE_NOT_FOUND = 'Module not found'
+MODULE_TROUBLE = 'Trouble importing'
 VERSION_NOT_FOUND = 'Version unknown'
 
 
@@ -396,6 +397,8 @@ def get_version(module):
             module = importlib.import_module(name)
         except ImportError:
             module = None
+        except:  # noqa
+            return name, MODULE_TROUBLE
 
     elif isinstance(module, ModuleType):  # Case 2: module is module; get name
         name = module.__name__
