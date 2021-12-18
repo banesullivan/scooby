@@ -397,7 +397,7 @@ def get_version(module):
             module = importlib.import_module(name)
         except ImportError:
             module = None
-        except:
+        except:  # noqa
             return name, MODULE_TROUBLE
 
     elif isinstance(module, ModuleType):  # Case 2: module is module; get name
