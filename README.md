@@ -217,10 +217,13 @@ try:
     from scooby import Report as ScoobyReport
 except ImportError:
     class ScoobyReport:
-        def __init__(self, additional, core, optional, ncol, text_width, sort):
-            print('\n  *ERROR*: `Report` requires `scooby`.'
-                  '\n           Install it via `pip install scooby` or')
-                  '\n           `conda install -c conda-forge scooby`.\n')
+        def __init__(self, *args, **kwargs):
+            message = (
+                '\n  *ERROR*: `Report` requires `scooby`.'
+                '\n           Install it via `pip install scooby` or'
+                '\n           `conda install -c conda-forge scooby`.\n'
+            )
+            raise ImportError(message)
 ```
 
 and then create your own `Report` class same as above,
