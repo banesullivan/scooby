@@ -15,11 +15,11 @@ import time
 from types import ModuleType
 
 from .knowledge import (
-    FILESYSTEM_TYPE,
     MKL_INFO,
     TOTAL_RAM,
     VERSION_ATTRIBUTES,
     VERSION_METHODS,
+    get_filesystem_type,
     in_ipykernel,
     in_ipython,
 )
@@ -79,9 +79,7 @@ class PlatformInfo:
     @property
     def filesystem(self):
         """Get the type of the file system at the path of the scooby package"""
-        if FILESYSTEM_TYPE:
-            return FILESYSTEM_TYPE
-        return 'unknown'
+        return get_filesystem_type()
 
 
 class PythonInfo:
@@ -345,8 +343,7 @@ class Report(PlatformInfo, PythonInfo):
         out['CPU(s)'] = str(self.cpu_count)
         out['Machine'] = self.machine
         out['Architecture'] = self.architecture
-        if FILESYSTEM_TYPE:
-            out['File system'] = self.filesystem
+        out['File system'] = self.filesystem
         if TOTAL_RAM:
             out['RAM'] = self.total_ram
         out['Environment'] = self.python_environment
