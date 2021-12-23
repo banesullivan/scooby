@@ -14,6 +14,7 @@ as available RAM or MKL info.
 import distutils.sysconfig as sysconfig
 import os
 from pathlib import Path
+import platform
 import sys
 
 try:
@@ -41,7 +42,8 @@ else:
     TOTAL_RAM = False
 
 # Get the type of the file system at the path of the scooby package
-if psutil:
+# Skip Windows due to https://github.com/banesullivan/scooby/issues/75
+if psutil and platform.system() != 'Windows':
     # Code by https://stackoverflow.com/a/35291824/10504481
     my_path = str(Path(__file__).resolve())
     best_match = ""
