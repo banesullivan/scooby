@@ -14,6 +14,7 @@ as available RAM or MKL info.
 import distutils.sysconfig as sysconfig
 import os
 from pathlib import Path
+import platform
 import sys
 
 try:
@@ -39,19 +40,6 @@ if psutil:
     TOTAL_RAM = '{:.1f} GiB'.format(tmem / (1024.0 ** 3))
 else:
     TOTAL_RAM = False
-
-# Get the type of the file system at the path of the scooby package
-if psutil:
-    # Code by https://stackoverflow.com/a/35291824/10504481
-    my_path = str(Path(__file__).resolve())
-    best_match = ""
-    FILESYSTEM_TYPE = ""
-    for part in psutil.disk_partitions():
-        if my_path.startswith(part.mountpoint) and len(best_match) < len(part.mountpoint):
-            FILESYSTEM_TYPE = part.fstype
-            best_match = part.mountpoint
-else:
-    FILESYSTEM_TYPE = False
 
 # Get mkl info from numexpr or mkl, if available
 if mkl:
@@ -235,3 +223,20 @@ def meets_version(version, meets):
 
     # Arrived here if same version
     return True
+
+
+def get_filesystem_type():
+    """Get the type of the file system at the path of the scooby package."""
+    # Skip Windows due to https://github.com/banesullivan/scooby/issues/75
+    if psutil and platform.system() != 'Windows':
+        # Code by https://stackoverflow.com/a/35291824/10504481
+        my_path = str(Path(__file__).resolve())
+        best_match = ""
+        fs_type = ""
+        for part in psutil.disk_partitions():
+            if my_path.startswith(part.mountpoint) and len(best_match) < len(part.mountpoint):
+                fs_type = part.fstype
+                best_match = part.mountpoint
+    else:
+        fs_type = 'unknown'
+    return fs_type
