@@ -79,7 +79,9 @@ class PlatformInfo:
     @property
     def filesystem(self):
         """Get the type of the file system at the path of the scooby package"""
-        return get_filesystem_type()
+        if not hasattr(self, '_filesystem'):
+            self._filesystem = get_filesystem_type()
+        return self._filesystem
 
 
 class PythonInfo:
@@ -343,7 +345,8 @@ class Report(PlatformInfo, PythonInfo):
         out['CPU(s)'] = str(self.cpu_count)
         out['Machine'] = self.machine
         out['Architecture'] = self.architecture
-        out['File system'] = self.filesystem
+        if self.filesystem:
+            out['File system'] = self.filesystem
         if TOTAL_RAM:
             out['RAM'] = self.total_ram
         out['Environment'] = self.python_environment

@@ -238,5 +238,5 @@ def get_filesystem_type():
                 fs_type = part.fstype
                 best_match = part.mountpoint
     else:
-        fs_type = 'unknown'
+        fs_type = False
     return fs_type
