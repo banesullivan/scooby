@@ -37,7 +37,7 @@ except ImportError:
 # Get available RAM, if available
 if psutil:
     tmem = psutil.virtual_memory().total
-    TOTAL_RAM = '{:.1f} GiB'.format(tmem / (1024.0 ** 3))
+    TOTAL_RAM = '{:.1f} GiB'.format(tmem / (1024.0**3))
 else:
     TOTAL_RAM = False
 
@@ -238,5 +238,5 @@ def get_filesystem_type():
                 fs_type = part.fstype
                 best_match = part.mountpoint
     else:
-        fs_type = 'unknown'
+        fs_type = False
     return fs_type
