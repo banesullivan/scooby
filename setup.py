@@ -25,6 +25,7 @@ setuptools.setup(
         'Intended Audience :: Science/Research',
         'Natural Language :: English',
     ),
+    python_requires='>=3.7.*',
     extras_require={
         'cpu': ['psutil', 'mkl'],
         # 'gpu': [], # TODO: what's needed?
