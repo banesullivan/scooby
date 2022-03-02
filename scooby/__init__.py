@@ -43,4 +43,4 @@ __all__ = [
 __author__ = 'Dieter Werthmüller & Bane Sullivan'
 __license__ = 'MIT'
 __copyright__ = '2019, Dieter Werthmüller & Bane Sullivan'
-__version__ = '0.5.11'
+__version__ = '0.5.12'
