@@ -159,20 +159,23 @@ class Report(PlatformInfo, PythonInfo):
     optional : list(ModuleType), list(str)
         A list of packages to list if they are available. If not available,
         no warnings or error will be thrown.
-        Defaults to ['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']
+        Defaults to ``['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']``
 
     ncol : int, optional
+        .. deprecated:: 0.6.0
+           Number of columns is always 2.
+
         Number of package-columns in html table (no effect in text-version);
-        Defaults to 3.
+        Defaults to 2.
 
     text_width : int, optional
-        The text width for non-HTML display modes
+        The text width for non-HTML display modes.
 
     sort : bool, optional
-        Sort the packages when the report is shown
+        Sort the packages when the report is shown.
 
     extra_meta : tuple(str, str)
-        Additional two component pairs of meta information to display
+        Additional two component pairs of meta information to display.
 
     """
 
@@ -181,7 +184,7 @@ class Report(PlatformInfo, PythonInfo):
         additional=None,
         core=None,
         optional=None,
-        ncol=4,
+        ncol=2,
         text_width=80,
         sort=False,
         extra_meta=None,
@@ -192,7 +195,7 @@ class Report(PlatformInfo, PythonInfo):
             optional = ['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']
 
         PythonInfo.__init__(self, additional=additional, core=core, optional=optional, sort=sort)
-        self.ncol = int(ncol)
+        self.ncol = 2
         self.text_width = int(text_width)
 
         if extra_meta is not None:
@@ -269,59 +272,43 @@ class Report(PlatformInfo, PythonInfo):
             elif nrow % 2 == 0:
                 html += "background-color: #ddd;"
             html += border + " colspan='"
-            html += str(2 * ncol) + "'>%s</td>\n" % txt
+            html += f"{ncol}'>{txt}</td>\n"
             html += "  </tr>\n"
             return html
 
-        def cols(html, version, name, ncol, i):
-            r"""Print package information in two cells."""
+        def make_row(cell0, cell1):
+            """Make a table row with text in two cells."""
 
-            # Check if we have to start a new row
-            if i > 0 and i % ncol == 0:
-                html += "  </tr>\n"
-                html += "  <tr>\n"
+            row = "    <td style='text-align: left;"
+            row += f" {border}>{cell0}</td>\n"
+            row += "    <td style='text-align: left; "
+            row += f"{border}>{cell1}</td>\n"
 
-            html += "    <td style='text-align: right; background-color: #ccc;"
-            html += " " + border + ">%s</td>\n" % name
+            return f"  <tr>\n{row}  </tr>\n"
 
-            html += "    <td style='text-align: left; "
-            html += border + ">%s</td>\n" % version
-
-            return html, i + 1
 
         # Start html-table
-        html = "<table style='border: 3px solid #ddd;'>\n"
+        html = "<table style='border: 2px solid #ddd;'>\n"
 
         # Date and time info as title
-        html = colspan(html, self.date, self.ncol, 0)
+        html = colspan(html, 'Platform and OS Details', self.ncol, 0)
+        html += make_row('Date/Time', self.date)
 
         # ########## Platform/OS details ############
-        html += "  <tr>\n"
         repr_dict = self.to_dict()
-        i = 0
         for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM', 'Environment', "File system"]:
             if key in repr_dict:
-                html, i = cols(html, repr_dict[key], key, self.ncol, i)
+                html += make_row(key, repr_dict[key])
         for meta in self._extra_meta:
-            html, i = cols(html, meta[1], meta[0], self.ncol, i)
-        # Finish row
-        html += "  </tr>\n"
+            html += make_row(meta[0], meta[1])
 
-        # ########## Python details ############
-        html = colspan(html, 'Python ' + self.sys_version, self.ncol, 1)
+        # Python details
+        html += make_row('Python', str(self.sys_version))
 
-        html += "  <tr>\n"
         # Loop over packages
-        i = 0  # Reset count for rows.
+        html = colspan(html, 'Python Packages', self.ncol, 0)
         for name, version in self.packages.items():
-            html, i = cols(html, version, name, self.ncol, i)
-        # Fill up the row
-        while i % self.ncol != 0:
-            html += "    <td style= " + border + "></td>\n"
-            html += "    <td style= " + border + "></td>\n"
-            i += 1
-        # Finish row
-        html += "  </tr>\n"
+            html += make_row(name, version)
 
         # ########## MKL details ############
         if MKL_INFO:

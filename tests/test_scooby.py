@@ -94,15 +94,13 @@ def test_get_version():
 
 def test_plain_vs_html():
     report = scooby.Report()
-    text_html = BeautifulSoup(report._repr_html_()).get_text()
+    text_html = BeautifulSoup(report._repr_html_(), features='lxml').get_text()
     text_plain = report.__repr__()
 
     text_plain = " ".join(re.findall("[a-zA-Z1-9]+", text_plain))
     text_html = " ".join(re.findall("[a-zA-Z1-9]+", text_html))
 
-    # Plain text currently starts with `Date :`;
-    # we should remove that, or add it to the html version too.
-    assert text_html[20:] == text_plain[25:]
+    assert 'Platform and OS Details' in text_html
 
 
 def test_extra_meta():
