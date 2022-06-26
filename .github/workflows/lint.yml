@@ -1,22 +1,20 @@
 name: Linting
 on:
   pull_request:
-  push:
 
 jobs:
-  style:
+  stylecheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
-      - name: Install Style dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements_style.txt
-      - name: Run codespell
-        run: make codespell
-      - name: Run linting
-        run: make lint
+          python-version: 3.9
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Run pre-commit
+        run: pre-commit run --all-files
