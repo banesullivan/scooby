@@ -1,10 +1,4 @@
-"""
-Report
-======
-
-The main routine containing the `Report` class.
-
-"""
+"""The main module containing the `Report` class."""
 
 import importlib
 import multiprocessing
@@ -35,7 +29,8 @@ class PlatformInfo:
 
     @property
     def system(self):
-        """Returns the system/OS name.
+        """Return the system/OS name.
+
         E.g. ``'Linux'``, ``'Windows'``, or ``'Java'``. An empty string is
         returned if the value cannot be determined.
         """
@@ -43,18 +38,20 @@ class PlatformInfo:
 
     @property
     def platform(self):
+        """Return the platform."""
         return platform.platform()
 
     @property
     def machine(self):
-        """Returns the machine type, e.g. 'i386'
+        """Return the machine type, e.g. 'i386'.
+
         An empty string is returned if the value cannot be determined.
         """
         return platform.machine()
 
     @property
     def architecture(self):
-        """bit architecture used for the executable"""
+        """Return the bit architecture used for the executable."""
         return platform.architecture()[0]
 
     @property
@@ -74,11 +71,12 @@ class PlatformInfo:
 
     @property
     def date(self):
+        """Return the date formatted as a string."""
         return time.strftime('%a %b %d %H:%M:%S %Y %Z')
 
     @property
     def filesystem(self):
-        """Get the type of the file system at the path of the scooby package"""
+        """Get the type of the file system at the path of the scooby package."""
         if not hasattr(self, '_filesystem'):
             self._filesystem = get_filesystem_type()
         return self._filesystem
@@ -88,6 +86,7 @@ class PythonInfo:
     """Internal helper class to access Python info and package versions."""
 
     def __init__(self, additional, core, optional, sort):
+        """Initialize python info."""
         self._packages = {}  # Holds name of packages and their version
         self._sort = sort
 
@@ -98,7 +97,6 @@ class PythonInfo:
 
     def _add_packages(self, packages, optional=False):
         """Add all packages to list; optional ones only if available."""
-
         # Ensure arguments are a list
         if isinstance(packages, (str, ModuleType)):
             pckgs = [
@@ -117,10 +115,12 @@ class PythonInfo:
 
     @property
     def sys_version(self):
+        """Return the system version."""
         return sys.version
 
     @property
     def python_environment(self):
+        """Return the python environment."""
         if in_ipykernel():
             return 'Jupyter'
         elif in_ipython():
@@ -129,8 +129,10 @@ class PythonInfo:
 
     @property
     def packages(self):
-        """Return versions of all packages
-        (available and unavailable/unknown)
+        """Return versions of all packages.
+
+        Includes available and unavailable/unknown.
+
         """
         pckg_dict = dict(self._packages)
         if self._sort:
@@ -186,7 +188,7 @@ class Report(PlatformInfo, PythonInfo):
         sort=False,
         extra_meta=None,
     ):
-
+        """Initialize report."""
         # Set default optional packages to investigate
         if optional is None:
             optional = ['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']
@@ -208,8 +210,7 @@ class Report(PlatformInfo, PythonInfo):
         self._extra_meta = extra_meta
 
     def __repr__(self):
-        """Plain-text version information."""
-
+        """Return Plain-text version information."""
         # Width for text-version
         text = '\n' + self.text_width * '-' + '\n'
 
@@ -255,8 +256,7 @@ class Report(PlatformInfo, PythonInfo):
         return text
 
     def _repr_html_(self):
-        """HTML-rendered version information."""
-
+        """Return HTML-rendered version information."""
         # Define html-styles
         border = "border: 2px solid #fff;'"
 
@@ -275,7 +275,6 @@ class Report(PlatformInfo, PythonInfo):
 
         def cols(html, version, name, ncol, i):
             r"""Print package information in two cells."""
-
             # Check if we have to start a new row
             if i > 0 and i % ncol == 0:
                 html += "  </tr>\n"
@@ -334,7 +333,6 @@ class Report(PlatformInfo, PythonInfo):
 
     def to_dict(self):
         """Return report as dict for storage."""
-
         out = {}
 
         # Date and time info
@@ -369,8 +367,7 @@ class Report(PlatformInfo, PythonInfo):
 
 # This functionaliy might also be of interest on its own.
 def get_version(module):
-    """Get the version of `module` by passing the package or it's name.
-
+    """Get the version of ``module`` by passing the package or it's name.
 
     Parameters
     ----------
@@ -386,7 +383,6 @@ def get_version(module):
     version : str or None
         Version of module.
     """
-
     # module is (1) a string or (2) a module.
     # If (1), we have to load it, if (2), we have to get its name.
     if isinstance(module, str):  # Case 1: module is a string; import
