@@ -11,7 +11,6 @@ It also checks and stores mandatory additional information, if possible, such
 as available RAM or MKL info.
 
 """
-import distutils.sysconfig as sysconfig
 import os
 from pathlib import Path
 import platform
@@ -111,6 +110,8 @@ def in_ipykernel():
 
 def get_standard_lib_modules():
     """Returns a set of the names of all modules in the standard library"""
+    import distutils.sysconfig as sysconfig
+
     if getattr(sys, 'frozen', False):  # within pyinstaller
         lib_path = os.path.join(sysconfig.get_python_lib(standard_lib=True), '..')
         if os.path.isdir(lib_path):
