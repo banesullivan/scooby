@@ -1,3 +1,4 @@
+"""Track imports."""
 from scooby.knowledge import get_standard_lib_modules
 from scooby.report import Report
 
@@ -41,7 +42,7 @@ def _criterion(name):
 if TRACKING_SUPPORTED:
 
     def scooby_import(name, globals=None, locals=None, fromlist=(), level=0):
-        """A custom override of the import method to track package names"""
+        """Override of the import method to track package names."""
         m = CLASSIC_IMPORT(name, globals=globals, locals=locals, fromlist=fromlist, level=level)
         name = name.split(".")[0]
         if level == 0 and _criterion(name):
@@ -58,8 +59,10 @@ def track_imports():
 
 
 def untrack_imports():
-    """Stop tracking imports and return to the builtin import method. This will
-    also clear the tracked imports"""
+    """Stop tracking imports and return to the builtin import method.
+
+    This will also clear the tracked imports.
+    """
     if not TRACKING_SUPPORTED:
         raise RuntimeError(SUPPORT_MESSAGE)
     builtins.__import__ = CLASSIC_IMPORT
@@ -69,11 +72,14 @@ def untrack_imports():
 
 
 class TrackedReport(Report):
-    """A class to inspect the active environment and generate a report based
-    on all imported modules. Simply pass the ``globals()`` dictionary.
+    """A class to inspect the active environment and generate a report.
+
+    Generates a report based on all imported modules. Simply pass the
+    ``globals()`` dictionary.
     """
 
     def __init__(self, additional=None, ncol=3, text_width=80, sort=False):
+        """Initialize."""
         if not TRACKING_SUPPORTED:
             raise RuntimeError(SUPPORT_MESSAGE)
         if len(TRACKED_IMPORTS) < 2:

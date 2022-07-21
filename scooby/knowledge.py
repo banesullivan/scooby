@@ -1,8 +1,8 @@
 """
+The knowledge base.
+
 Knowledge
 =========
-
-The knowledge base.
 
 It contains, for instance, known odd locations of version information for
 particular modules (``VERSION_ATTRIBUTES``, ``VERSION_METHODS``)
@@ -58,7 +58,7 @@ VERSION_ATTRIBUTES = {
 
 
 def get_pyqt5_version():
-    """Returns the PyQt5 version"""
+    """Return the PyQt5 version."""
     from PyQt5.Qt import PYQT_VERSION_STR
 
     return PYQT_VERSION_STR
@@ -71,11 +71,12 @@ VERSION_METHODS = {
 
 # Check the environments
 def in_ipython():
-    """Mystery: are we in an IPython environment?
+    """Check if we are in a IPython environment.
 
     Returns
     -------
-    bool : True if in an IPython environment
+    bool : True
+        ``True`` when in an IPython environment.
     """
     try:
         __IPYTHON__
@@ -85,7 +86,7 @@ def in_ipython():
 
 
 def in_ipykernel():
-    """Mystery: are we in a ipykernel (most likely Jupyter) environment?
+    """Check if in a ipykernel (most likely Jupyter) environment.
 
     Warning
     -------
@@ -109,7 +110,7 @@ def in_ipykernel():
 
 
 def get_standard_lib_modules():
-    """Returns a set of the names of all modules in the standard library"""
+    """Return a set of the names of all modules in the standard library."""
     import distutils.sysconfig as sysconfig
 
     if getattr(sys, 'frozen', False):  # within pyinstaller

@@ -1,5 +1,5 @@
-# coding=utf-8
-"""
+"""Scooby.
+
 Great Dane turned Python environment detective
 ==============================================
 
