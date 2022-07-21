@@ -25,13 +25,10 @@ MODULES_TO_IGNORE = {
 }
 
 
-STDLIB_PKGS = get_standard_lib_modules()
-
-
 def _criterion(name):
     if (
         len(name) > 0
-        and name not in STDLIB_PKGS
+        and name not in get_standard_lib_modules()
         and not name.startswith("_")
         and name not in MODULES_TO_IGNORE
     ):
