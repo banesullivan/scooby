@@ -58,6 +58,7 @@ class PlatformInfo:
         """Return the number of CPUs in the system."""
         if not hasattr(self, '_cpu_count'):
             import multiprocessing  # lazy-load see PR#85
+
             self._cpu_count = multiprocessing.cpu_count()
         return self._cpu_count
 
