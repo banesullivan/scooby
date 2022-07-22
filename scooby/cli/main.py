@@ -7,7 +7,7 @@ from scooby.report import Report
 
 
 def main(args=None):
-    """Parsing command line inputs of CLI interface."""
+    """Parse command line inputs of CLI interface."""
     # If not explicitly called, catch arguments
     if args is None:
         args = sys.argv[1:]
