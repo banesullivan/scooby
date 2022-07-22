@@ -1,7 +1,4 @@
-"""
-Entry point for the command-line interface (CLI).
-"""
-import os
+"""Create entry point for the command-line interface (CLI)."""
 import sys
 import argparse
 
@@ -11,7 +8,6 @@ from scooby.report import Report
 
 def main(args=None):
     """Parsing command line inputs of CLI interface."""
-
     # If not explicitly called, catch arguments
     if args is None:
         args = sys.argv[1:]
