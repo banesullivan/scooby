@@ -258,7 +258,7 @@ class Report(PlatformInfo, PythonInfo):
     def _repr_html_(self):
         """Return HTML-rendered version information."""
         # Define html-styles
-        border = "border: 2px solid #fff;'"
+        border = "border: 1px solid;'"
 
         def colspan(html, txt, ncol, nrow):
             r"""Print txt in a row spanning whole table."""
@@ -266,8 +266,6 @@ class Report(PlatformInfo, PythonInfo):
             html += "     <td style='text-align: center; "
             if nrow == 0:
                 html += "font-weight: bold; font-size: 1.2em; "
-            elif nrow % 2 == 0:
-                html += "background-color: #ddd;"
             html += border + " colspan='"
             html += str(2 * ncol) + "'>%s</td>\n" % txt
             html += "  </tr>\n"
@@ -280,7 +278,7 @@ class Report(PlatformInfo, PythonInfo):
                 html += "  </tr>\n"
                 html += "  <tr>\n"
 
-            html += "    <td style='text-align: right; background-color: #ccc;"
+            html += "    <td style='text-align: right;"
             html += " " + border + ">%s</td>\n" % name
 
             html += "    <td style='text-align: left; "
@@ -289,7 +287,7 @@ class Report(PlatformInfo, PythonInfo):
             return html, i + 1
 
         # Start html-table
-        html = "<table style='border: 3px solid #ddd;'>\n"
+        html = "<table style='border: 1.5px solid;'>\n"
 
         # Date and time info as title
         html = colspan(html, self.date, self.ncol, 0)
