@@ -11,11 +11,11 @@ It also checks and stores mandatory additional information, if possible, such
 as available RAM or MKL info.
 
 """
-import sysconfig
 import os
 from pathlib import Path
 import platform
 import sys
+import sysconfig
 
 try:
     import psutil
