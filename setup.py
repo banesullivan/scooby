@@ -16,6 +16,11 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/banesullivan/scooby",
     packages=setuptools.find_packages(),
+    entry_points={
+        "console_scripts": [
+            "scooby=scooby.cli.main:main",
+        ],
+    },
     classifiers=(
         "Programming Language :: Python",
         "License :: OSI Approved :: MIT License",
