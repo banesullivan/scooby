@@ -224,7 +224,10 @@ class Report(PlatformInfo, PythonInfo):
         text += date_text + '\n'
 
         # Get length of longest package: min of 18 and max of 40
-        row_width = min(40, max(18, len(max(self._packages.keys(), key=len))))
+        if self._packages:
+            row_width = min(40, max(18, len(max(self._packages.keys(), key=len))))
+        else:
+            row_width = 40
 
         # ########## Platform/OS details ############
         repr_dict = self.to_dict()
@@ -238,7 +241,8 @@ class Report(PlatformInfo, PythonInfo):
         text += '\n'
         for txt in textwrap.wrap('Python ' + self.sys_version, self.text_width - 4):
             text += '  ' + txt + '\n'
-        text += '\n'
+        if self._packages:
+            text += '\n'
 
         # Loop over packages
         for name, version in self._packages.items():
