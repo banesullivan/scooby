@@ -8,8 +8,6 @@ import time
 from types import ModuleType
 
 from .knowledge import (
-    MKL_INFO,
-    TOTAL_RAM,
     VERSION_ATTRIBUTES,
     VERSION_METHODS,
     get_filesystem_type,
@@ -68,9 +66,47 @@ class PlatformInfo:
 
         If not available, returns 'unknown'.
         """
-        if TOTAL_RAM:
-            return TOTAL_RAM
-        return 'unknown'
+        if not hasattr(self, '_total_ram'):
+
+            try:
+                import psutil  # lazy-load see PR#85
+
+                tmem = psutil.virtual_memory().total
+                self._total_ram = '{:.1f} GiB'.format(tmem / (1024.0**3))
+            except ImportError:
+                self._total_ram = 'unknown'
+
+        return self._total_ram
+
+    @property
+    def mkl_info(self):
+        """Return MKL info.
+
+        If not available, returns 'unknown'.
+        """
+        if not hasattr(self, '_mkl_info'):
+            try:
+                import mkl  # lazy-load see PR#85
+
+                mkl.get_version_string()
+            except (ImportError, AttributeError):
+                mkl = False
+
+            try:
+                import numexpr  # lazy-load see PR#85
+
+            except ImportError:
+                numexpr = False
+
+            # Get mkl info from numexpr or mkl, if available
+            if mkl:
+                self._mkl_info = mkl.get_version_string()
+            elif numexpr:
+                self._mkl_info = numexpr.get_vml_version()
+            else:
+                self._mkl_info = 'unknown'
+
+        return self._mkl_info
 
     @property
     def date(self):
@@ -248,9 +284,9 @@ class Report(PlatformInfo, PythonInfo):
             text += f'{name:>{row_width}} : {version}\n'
 
         # ########## MKL details ############
-        if MKL_INFO:
+        if self.mkl_info != 'unknown':
             text += '\n'
-            for txt in textwrap.wrap(MKL_INFO, self.text_width - 4):
+            for txt in textwrap.wrap(self._mkl_info, self.text_width - 4):
                 text += '  ' + txt + '\n'
 
         # ########## Finish ############
@@ -326,8 +362,8 @@ class Report(PlatformInfo, PythonInfo):
         html += "  </tr>\n"
 
         # ########## MKL details ############
-        if MKL_INFO:
-            html = colspan(html, MKL_INFO, self.ncol, 2)
+        if self.mkl_info != 'unknown':
+            html = colspan(html, self.mkl_info, self.ncol, 2)
 
         # ########## Finish ############
         html += "</table>"
@@ -348,7 +384,7 @@ class Report(PlatformInfo, PythonInfo):
         out['Architecture'] = self.architecture
         if self.filesystem:
             out['File system'] = self.filesystem
-        if TOTAL_RAM:
+        if self.total_ram != 'unknown':
             out['RAM'] = self.total_ram
         out['Environment'] = self.python_environment
         for meta in self._extra_meta:
@@ -362,8 +398,8 @@ class Report(PlatformInfo, PythonInfo):
             out[name] = version
 
         # MKL details
-        if MKL_INFO:
-            out['MKL'] = MKL_INFO
+        if self.mkl_info != 'unknown':
+            out['MKL'] = self.mkl_info
 
         return out
 

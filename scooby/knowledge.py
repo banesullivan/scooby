@@ -7,46 +7,11 @@ Knowledge
 It contains, for instance, known odd locations of version information for
 particular modules (``VERSION_ATTRIBUTES``, ``VERSION_METHODS``)
 
-It also checks and stores mandatory additional information, if possible, such
-as available RAM or MKL info.
-
 """
 import os
 from pathlib import Path
 import platform
 import sys
-
-try:
-    import psutil
-except ImportError:
-    psutil = False
-
-try:
-    import mkl
-
-    mkl.get_version_string()
-except (ImportError, AttributeError):
-    mkl = False
-
-try:
-    import numexpr
-except ImportError:
-    numexpr = False
-
-# Get available RAM, if available
-if psutil:
-    tmem = psutil.virtual_memory().total
-    TOTAL_RAM = '{:.1f} GiB'.format(tmem / (1024.0**3))
-else:
-    TOTAL_RAM = False
-
-# Get mkl info from numexpr or mkl, if available
-if mkl:
-    MKL_INFO = mkl.get_version_string()
-elif numexpr:
-    MKL_INFO = numexpr.get_vml_version()
-else:
-    MKL_INFO = False
 
 # Define unusual version locations
 VERSION_ATTRIBUTES = {
@@ -229,6 +194,11 @@ def meets_version(version, meets):
 
 def get_filesystem_type():
     """Get the type of the file system at the path of the scooby package."""
+    try:
+        import psutil  # lazy-load see PR#85
+    except ImportError:
+        psutil = False
+
     # Skip Windows due to https://github.com/banesullivan/scooby/issues/75
     if psutil and platform.system() != 'Windows':
         # Code by https://stackoverflow.com/a/35291824/10504481
