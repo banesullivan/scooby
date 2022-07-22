@@ -1,6 +1,6 @@
 """Create entry point for the command-line interface (CLI)."""
-import sys
 import argparse
+import sys
 
 import scooby
 from scooby.report import Report
