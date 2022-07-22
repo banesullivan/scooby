@@ -1,7 +1,6 @@
 """The main module containing the `Report` class."""
 
 import importlib
-import multiprocessing
 import platform
 import sys
 import textwrap
@@ -57,7 +56,10 @@ class PlatformInfo:
     @property
     def cpu_count(self):
         """Return the number of CPUs in the system."""
-        return multiprocessing.cpu_count()
+        if not hasattr(self, '_cpu_count'):
+            import multiprocessing  # lazy-load see PR#85
+            self._cpu_count = multiprocessing.cpu_count()
+        return self._cpu_count
 
     @property
     def total_ram(self):

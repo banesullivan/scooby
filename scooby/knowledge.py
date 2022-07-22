@@ -111,7 +111,7 @@ def in_ipykernel():
 
 def get_standard_lib_modules():
     """Return a set of the names of all modules in the standard library."""
-    import distutils.sysconfig as sysconfig
+    import distutils.sysconfig as sysconfig  # lazy-load see PR#85
 
     if getattr(sys, 'frozen', False):  # within pyinstaller
         lib_path = os.path.join(sysconfig.get_python_lib(standard_lib=True), '..')
