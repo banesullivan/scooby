@@ -22,6 +22,14 @@ def main(args=None):
 
     # arg: Sort
     parser.add_argument(
+        "--no-opt",
+        action="store_true",
+        default=False,
+        help="do not show the default optional packages",
+    )
+
+    # arg: Sort
+    parser.add_argument(
         "--sort",
         action="store_true",
         default=False,
@@ -42,8 +50,15 @@ def main(args=None):
         print(f"scooby v{scooby.__version__}")
         return
 
-    # Print report
-    print(Report(args_dict['packages'], sort=args_dict['sort']))
+    # Collect input.
+    inp = {'additional': args_dict['packages'], 'sort': args_dict['sort']}
+
+    # Define optional as empty list if no-opt.
+    if args_dict['no_opt']:
+        inp['optional'] = []
+
+    # Print the report.
+    print(Report(**inp))
 
 
 if __name__ == "__main__":
