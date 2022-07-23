@@ -196,8 +196,8 @@ def get_filesystem_type():
         import psutil  # lazy-load see PR#85
     except ImportError:
         psutil = False
-    import platform  # lazy-load see PR#85
     from pathlib import Path  # lazy-load see PR#85
+    import platform  # lazy-load see PR#85
 
     # Skip Windows due to https://github.com/banesullivan/scooby/issues/75
     if psutil and platform.system() != 'Windows':

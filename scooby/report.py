@@ -489,4 +489,5 @@ def get_version(module):
 def platform():
     """Return platform as lazy load; see PR#85."""
     import platform
+
     return platform

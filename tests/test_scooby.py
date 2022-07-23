@@ -170,3 +170,18 @@ def test_import_os_error():
     with pytest.raises(OSError):
         import pyvips  # noqa
     assert scooby.Report(['pyvips'])
+
+
+@pytest.mark.skipif(not sys.platform.startswith('linux'), reason="Not Linux.")
+def test_import_time():
+    # Relevant for packages which provide a CLI:
+    # How long does it take to import?
+    cmd = ["time", "-f", "%U", "python", "-c", "import scooby"]
+    # Run it twice, just in case.
+    subprocess.run(cmd)
+    subprocess.run(cmd)
+    # Capture it
+    out = subprocess.run(cmd, capture_output=True)
+
+    # Currently we check t < 50 ms.
+    assert float(out.stderr.decode("utf-8")[:-1]) < 0.05
