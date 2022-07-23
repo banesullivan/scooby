@@ -3,7 +3,7 @@ import io
 
 import setuptools
 
-__version__ = '0.5.12'
+__version__ = '0.7.dev0'
 
 with io.open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
