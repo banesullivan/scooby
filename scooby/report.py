@@ -227,7 +227,7 @@ class Report(PlatformInfo, PythonInfo):
         if self._packages:
             row_width = min(40, max(18, len(max(self._packages.keys(), key=len))))
         else:
-            row_width = 40
+            row_width = 18
 
         # ########## Platform/OS details ############
         repr_dict = self.to_dict()
