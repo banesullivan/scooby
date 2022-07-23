@@ -9,9 +9,8 @@ particular modules (``VERSION_ATTRIBUTES``, ``VERSION_METHODS``)
 
 """
 import os
-from pathlib import Path
-import platform
 import sys
+import sysconfig
 
 # Define unusual version locations
 VERSION_ATTRIBUTES = {
@@ -76,10 +75,9 @@ def in_ipykernel():
 
 def get_standard_lib_modules():
     """Return a set of the names of all modules in the standard library."""
-    import distutils.sysconfig as sysconfig  # lazy-load see PR#85
-
+    site_path = sysconfig.get_path('stdlib')
     if getattr(sys, 'frozen', False):  # within pyinstaller
-        lib_path = os.path.join(sysconfig.get_python_lib(standard_lib=True), '..')
+        lib_path = os.path.join(site_path, '..')
         if os.path.isdir(lib_path):
             names = os.listdir(lib_path)
         else:
@@ -92,7 +90,7 @@ def get_standard_lib_modules():
         stdlib_pkgs = set(stdlib_pkgs)
 
     else:
-        names = os.listdir(sysconfig.get_python_lib(standard_lib=True))
+        names = os.listdir(site_path)
 
         stdlib_pkgs = set([name if not name.endswith(".py") else name[:-3] for name in names])
 
@@ -198,6 +196,8 @@ def get_filesystem_type():
         import psutil  # lazy-load see PR#85
     except ImportError:
         psutil = False
+    import platform  # lazy-load see PR#85
+    from pathlib import Path  # lazy-load see PR#85
 
     # Skip Windows due to https://github.com/banesullivan/scooby/issues/75
     if psutil and platform.system() != 'Windows':

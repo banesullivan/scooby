@@ -1,9 +1,7 @@
 """The main module containing the `Report` class."""
 
 import importlib
-import platform
 import sys
-import textwrap
 import time
 from types import ModuleType
 
@@ -31,12 +29,12 @@ class PlatformInfo:
         E.g. ``'Linux'``, ``'Windows'``, or ``'Java'``. An empty string is
         returned if the value cannot be determined.
         """
-        return platform.system()
+        return platform().system()
 
     @property
     def platform(self):
         """Return the platform."""
-        return platform.platform()
+        return platform().platform()
 
     @property
     def machine(self):
@@ -44,12 +42,12 @@ class PlatformInfo:
 
         An empty string is returned if the value cannot be determined.
         """
-        return platform.machine()
+        return platform().machine()
 
     @property
     def architecture(self):
         """Return the bit architecture used for the executable."""
-        return platform.architecture()[0]
+        return platform().architecture()[0]
 
     @property
     def cpu_count(self):
@@ -200,20 +198,23 @@ class Report(PlatformInfo, PythonInfo):
     optional : list(ModuleType), list(str)
         A list of packages to list if they are available. If not available,
         no warnings or error will be thrown.
-        Defaults to ['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']
+        Defaults to ``['numpy', 'scipy', 'IPython', 'matplotlib', 'scooby']``
 
     ncol : int, optional
         Number of package-columns in html table (no effect in text-version);
         Defaults to 3.
 
     text_width : int, optional
-        The text width for non-HTML display modes
+        The text width for non-HTML display modes.
 
     sort : bool, optional
-        Sort the packages when the report is shown
+        Sort the packages when the report is shown.
 
-    extra_meta : tuple(str, str)
-        Additional two component pairs of meta information to display
+    extra_meta : tuple(str, str), optional
+        Additional two component pairs of meta information to display.
+
+    max_width : int, optional
+        Max-width of html-table. By default None.
 
     """
 
@@ -226,6 +227,7 @@ class Report(PlatformInfo, PythonInfo):
         text_width=80,
         sort=False,
         extra_meta=None,
+        max_width=None,
     ):
         """Initialize report."""
         # Set default optional packages to investigate
@@ -235,6 +237,7 @@ class Report(PlatformInfo, PythonInfo):
         PythonInfo.__init__(self, additional=additional, core=core, optional=optional, sort=sort)
         self.ncol = int(ncol)
         self.text_width = int(text_width)
+        self.max_width = max_width
 
         if extra_meta is not None:
             if not isinstance(extra_meta, (list, tuple)):
@@ -250,6 +253,8 @@ class Report(PlatformInfo, PythonInfo):
 
     def __repr__(self):
         """Return Plain-text version information."""
+        import textwrap  # lazy-load see PR#85
+
         # Width for text-version
         text = '\n' + self.text_width * '-' + '\n'
 
@@ -263,9 +268,12 @@ class Report(PlatformInfo, PythonInfo):
         text += date_text + '\n'
 
         # Get length of longest package: min of 18 and max of 40
-        row_width = min(40, max(18, len(max(self._packages.keys(), key=len))))
+        if self._packages:
+            row_width = min(40, max(18, len(max(self._packages.keys(), key=len))))
+        else:
+            row_width = 18
 
-        # ########## Platform/OS details ############
+        # Platform/OS details
         repr_dict = self.to_dict()
         for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM', 'Environment', 'File system']:
             if key in repr_dict:
@@ -273,23 +281,24 @@ class Report(PlatformInfo, PythonInfo):
         for key, value in self._extra_meta:
             text += f'{key:>{row_width}} : {value}\n'
 
-        # ########## Python details ############
+        # Python details
         text += '\n'
         for txt in textwrap.wrap('Python ' + self.sys_version, self.text_width - 4):
             text += '  ' + txt + '\n'
-        text += '\n'
+        if self._packages:
+            text += '\n'
 
         # Loop over packages
         for name, version in self._packages.items():
             text += f'{name:>{row_width}} : {version}\n'
 
-        # ########## MKL details ############
+        # MKL details
         if self.mkl_info != 'unknown':
             text += '\n'
             for txt in textwrap.wrap(self._mkl_info, self.text_width - 4):
                 text += '  ' + txt + '\n'
 
-        # ########## Finish ############
+        # Finish
         text += self.text_width * '-'
 
         return text
@@ -297,18 +306,20 @@ class Report(PlatformInfo, PythonInfo):
     def _repr_html_(self):
         """Return HTML-rendered version information."""
         # Define html-styles
-        border = "border: 2px solid #fff;'"
+        border = "border: 1px solid;'"
 
         def colspan(html, txt, ncol, nrow):
             r"""Print txt in a row spanning whole table."""
             html += "  <tr>\n"
-            html += "     <td style='text-align: center; "
+            html += "     <td style='"
+            if ncol == 1:
+                html += "text-align: left; "
+            else:
+                html += "text-align: center; "
             if nrow == 0:
                 html += "font-weight: bold; font-size: 1.2em; "
-            elif nrow % 2 == 0:
-                html += "background-color: #ddd;"
             html += border + " colspan='"
-            html += str(2 * ncol) + "'>%s</td>\n" % txt
+            html += f"{2 * ncol}'>{txt}</td>\n"
             html += "  </tr>\n"
             return html
 
@@ -319,7 +330,8 @@ class Report(PlatformInfo, PythonInfo):
                 html += "  </tr>\n"
                 html += "  <tr>\n"
 
-            html += "    <td style='text-align: right; background-color: #ccc;"
+            align = "left" if ncol == 1 else "right"
+            html += f"    <td style='text-align: {align};"
             html += " " + border + ">%s</td>\n" % name
 
             html += "    <td style='text-align: left; "
@@ -328,12 +340,15 @@ class Report(PlatformInfo, PythonInfo):
             return html, i + 1
 
         # Start html-table
-        html = "<table style='border: 3px solid #ddd;'>\n"
+        html = "<table style='border: 1.5px solid;"
+        if self.max_width:
+            html += f" max-width: {self.max_width}px;"
+        html += "'>\n"
 
         # Date and time info as title
         html = colspan(html, self.date, self.ncol, 0)
 
-        # ########## Platform/OS details ############
+        # Platform/OS details
         html += "  <tr>\n"
         repr_dict = self.to_dict()
         i = 0
@@ -345,10 +360,10 @@ class Report(PlatformInfo, PythonInfo):
         # Finish row
         html += "  </tr>\n"
 
-        # ########## Python details ############
+        # Python details
         html = colspan(html, 'Python ' + self.sys_version, self.ncol, 1)
-
         html += "  <tr>\n"
+
         # Loop over packages
         i = 0  # Reset count for rows.
         for name, version in self.packages.items():
@@ -361,11 +376,11 @@ class Report(PlatformInfo, PythonInfo):
         # Finish row
         html += "  </tr>\n"
 
-        # ########## MKL details ############
+        # MKL details
         if self.mkl_info != 'unknown':
             html = colspan(html, self.mkl_info, self.ncol, 2)
 
-        # ########## Finish ############
+        # Finish
         html += "</table>"
 
         return html
@@ -469,3 +484,9 @@ def get_version(module):
 
         # If not found, return VERSION_NOT_FOUND
         return name, VERSION_NOT_FOUND
+
+
+def platform():
+    """Return platform as lazy load; see PR#85."""
+    import platform
+    return platform
