@@ -40,7 +40,7 @@ __all__ = [
 ]
 
 
-__author__ = 'Dieter Werthmüller & Bane Sullivan'
+__author__ = 'Dieter Werthmüller, Bane Sullivan, & Alex Kaszynski'
 __license__ = 'MIT'
 __copyright__ = '2019, Dieter Werthmüller & Bane Sullivan'
 __version__ = '0.7.dev0'
