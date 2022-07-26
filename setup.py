@@ -11,7 +11,7 @@ with io.open("README.md", "r", encoding="utf-8") as f:
 setuptools.setup(
     name="scooby",
     version=__version__,
-    author="Dieter Werthmüller, Bane Sullivan, & Alex Kaszynski",
+    author="Dieter Werthmüller, Bane Sullivan, Alex Kaszynski, and contributors",
     author_email="info@pyvista.org",
     description="A Great Dane turned Python environment detective",
     long_description=long_description,
