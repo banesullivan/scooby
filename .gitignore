@@ -10,6 +10,7 @@
 *.egg-info/
 build/
 dist/
+scooby/version.py
 
 # Mac
 .DS_Store

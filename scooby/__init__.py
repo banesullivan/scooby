@@ -43,4 +43,8 @@ __all__ = [
 __author__ = 'Dieter Werthmüller, Bane Sullivan, Alex Kaszynski, and contributors'
 __license__ = 'MIT'
 __copyright__ = '2019, Dieter Werthmüller & Bane Sullivan'
-__version__ = '0.7.dev0'
+try:
+    from scooby.version import version as __version__
+except ImportError:  # Only happens if not properly installed.
+    from datetime import datetime
+    __version__ = 'unknown-'+datetime.today().strftime('%Y%m%d')
