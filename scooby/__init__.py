@@ -47,4 +47,5 @@ try:
     from scooby.version import version as __version__
 except ImportError:  # Only happens if not properly installed.
     from datetime import datetime
-    __version__ = 'unknown-'+datetime.today().strftime('%Y%m%d')
+
+    __version__ = 'unknown-' + datetime.today().strftime('%Y%m%d')

@@ -1,6 +1,6 @@
 # coding=utf-8
-import os
 import io
+import os
 
 import setuptools
 
