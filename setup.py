@@ -18,7 +18,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     entry_points={
         "console_scripts": [
-            "scooby=scooby.cli.main:main",
+            "scooby=scooby.__main__:main",
         ],
     },
     classifiers=(
