@@ -26,9 +26,6 @@ def main(args=None):
         "--report", default=None, type=str, help=("print `Report()` of this package")
     )
 
-    # arg: Track of a package or script
-    parser.add_argument("--track", default=None, type=str, help=("print Report of used packages"))
-
     # arg: Sort
     parser.add_argument(
         "--no-opt",
@@ -59,11 +56,8 @@ def main(args=None):
         print(f"scooby v{scooby.__version__}")
         return
 
-    # Check report and track.
-    report = args_dict.pop('report')
-    track = args_dict.pop('track')
-
     # Report of another package.
+    report = args_dict.pop('report')
     if report:
         try:
             module = importlib.import_module(report)
