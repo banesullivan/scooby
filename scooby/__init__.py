@@ -15,7 +15,6 @@ Werthmüller for ``empymod``, ``emg3d``, and the ``SimPEG`` framework
 ``watermark.py`` from https://github.com/rasbt/watermark.
 """
 
-from scooby.__main__ import main  # noqa
 from scooby.knowledge import (  # noqa
     get_standard_lib_modules,
     in_ipykernel,
