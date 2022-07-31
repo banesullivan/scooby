@@ -355,6 +355,33 @@ the versions of `scipy` and `numpy` as both packages are loaded in the session
 --------------------------------------------------------------------------------
 ```
 
+## Command-Line Interface
+
+Scooby comes with a command-line interface. Simply typing
+
+```bash
+scooby
+```
+
+in a terminal will display the default report. You can also use it to show the
+scooby-report of another package, if that package has scooby implemented as
+suggested above, using `packagename.Report()`. As an example, to print the
+report of pyvista you can run
+
+```bash
+scooby --report pyvista
+```
+
+which will show the report of PyVista.
+
+Simply type
+
+```bash
+scooby --help
+```
+
+to see all the possibilities.
+
 
 ## Optional Requirements
 
