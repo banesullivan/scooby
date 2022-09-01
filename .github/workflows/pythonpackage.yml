@@ -5,9 +5,14 @@ name: Tests
 
 on:
   push:
-    tags: "v*"
+    tags:
+      - "*"
+    branches:
+      - main
   pull_request:
-    branches: "**"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *"
 
 jobs:
   test:
