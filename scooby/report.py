@@ -1,5 +1,6 @@
 """The main module containing the `Report` class."""
 
+from collections.abc import Iterable
 import copy
 import importlib
 import sys
@@ -185,6 +186,11 @@ class PythonInfo:
         both._packages = copy.copy(self.packages)
         both._packages.update(other.packages)
         return both
+
+    def __contains__(self, package):
+        if not isinstance(package, str) and isinstance(package, Iterable):
+            return all([self.__contains__(p) for p in package])
+        return package in self._packages
 
 
 # The main Report instance

@@ -186,3 +186,14 @@ def test_import_time():
 
     # Currently we check t < 0.15 s.
     assert float(out.stderr.decode("utf-8")[:-1]) < 0.15
+
+
+def test_add():
+    a = scooby.Report(['numpy', 'scipy'], optional=[])
+    b = scooby.Report(['psutil'], optional=[])
+    both = a + b
+    print('yo')
+    print(['numpy', 'scipy', 'psutil'] in both)
+    assert ['numpy', 'scipy', 'psutil'] in both
+    assert ['numpy', 'scipy'] not in b
+    assert 'psutil' not in a
