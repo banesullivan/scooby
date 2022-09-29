@@ -1,5 +1,6 @@
 """The main module containing the `Report` class."""
 
+import copy
 import importlib
 import sys
 import time
@@ -178,6 +179,12 @@ class PythonInfo:
                 packages[name] = pckg_dict[name]
             pckg_dict = packages
         return pckg_dict
+
+    def __add__(self, other):
+        both = copy.copy(self)
+        both._packages = copy.copy(self.packages)
+        both._packages.update(other.packages)
+        return both
 
 
 # The main Report instance
