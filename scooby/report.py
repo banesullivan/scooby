@@ -182,12 +182,14 @@ class PythonInfo:
         return pckg_dict
 
     def __add__(self, other):
+        """Add two reports together into a new instance."""
         both = copy.copy(self)
         both._packages = copy.copy(self.packages)
         both._packages.update(other.packages)
         return both
 
     def __contains__(self, package):
+        """Check if a package is listed in this report."""
         if not isinstance(package, str) and isinstance(package, Iterable):
             return all([self.__contains__(p) for p in package])
         return package in self._packages
