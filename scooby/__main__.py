@@ -62,13 +62,13 @@ def main(args=None):
         try:
             module = importlib.import_module(report)
         except ImportError:
-            print(f"Package `{report}` could not be imported.")
+            print(f"Package `{report}` could not be imported.", file=sys.stderr)
             return
 
         try:
             print(module.Report())
         except AttributeError:
-            print(f"Package `{report}` has no attribute `Report()`.")
+            print(f"Package `{report}` has no attribute `Report()`.", file=sys.stderr)
 
     # Scooby report with additional options.
     else:
