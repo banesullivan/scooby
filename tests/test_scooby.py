@@ -96,7 +96,7 @@ def test_get_version():
 
 def test_plain_vs_html():
     report = scooby.Report()
-    text_html = BeautifulSoup(report._repr_html_(), features="lxml").get_text()
+    text_html = BeautifulSoup(report._repr_html_(), features="html.parser").get_text()
     text_plain = report.__repr__()
 
     text_plain = " ".join(re.findall("[a-zA-Z1-9]+", text_plain))
