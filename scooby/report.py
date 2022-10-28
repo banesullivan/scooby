@@ -102,7 +102,7 @@ class PlatformInfo:
             elif numexpr:
                 self._mkl_info = numexpr.get_vml_version()
             else:
-                self._mkl_info = 'unknown'
+                self._mkl_info = None
 
         return self._mkl_info
 
@@ -293,9 +293,9 @@ class Report(PlatformInfo, PythonInfo):
             text += f'{name:>{row_width}} : {version}\n'
 
         # MKL details
-        if self.mkl_info != 'unknown':
+        if self.mkl_info:
             text += '\n'
-            for txt in textwrap.wrap(self._mkl_info, self.text_width - 4):
+            for txt in textwrap.wrap(self.mkl_info, self.text_width - 4):
                 text += '  ' + txt + '\n'
 
         # Finish
@@ -377,7 +377,7 @@ class Report(PlatformInfo, PythonInfo):
         html += "  </tr>\n"
 
         # MKL details
-        if self.mkl_info != 'unknown':
+        if self.mkl_info:
             html = colspan(html, self.mkl_info, self.ncol, 2)
 
         # Finish
@@ -413,7 +413,7 @@ class Report(PlatformInfo, PythonInfo):
             out[name] = version
 
         # MKL details
-        if self.mkl_info != 'unknown':
+        if self.mkl_info:
             out['MKL'] = self.mkl_info
 
         return out
