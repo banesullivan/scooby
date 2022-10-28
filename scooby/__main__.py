@@ -47,9 +47,12 @@ def main(args=None):
         "--version", action="store_true", default=False, help="only display scooby version"
     )
 
-    # Get command line arguments.
-    args_dict = vars(parser.parse_args(args))
+    # Call act with command line arguments as dict.
+    act(vars(parser.parse_args(args)))
 
+
+def act(args_dict):
+    """Act upon CLI inputs."""
     # Quick exit if only scooby version.
     if args_dict.pop('version'):
 
