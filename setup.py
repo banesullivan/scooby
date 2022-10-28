@@ -1,16 +1,14 @@
 # coding=utf-8
 import io
+import os
 
 import setuptools
-
-__version__ = '0.7.dev0'
 
 with io.open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
 
 setuptools.setup(
     name="scooby",
-    version=__version__,
     author="Dieter Werthmüller, Bane Sullivan, Alex Kaszynski, and contributors",
     author_email="info@pyvista.org",
     description="A Great Dane turned Python environment detective",
@@ -30,4 +28,10 @@ setuptools.setup(
         'cpu': ['psutil', 'mkl'],
         # 'gpu': [], # TODO: what's needed?
     },
+    use_scm_version={
+        "root": ".",
+        "relative_to": __file__,
+        "write_to": os.path.join("scooby", "version.py"),
+    },
+    setup_requires=["setuptools_scm"],
 )

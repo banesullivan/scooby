@@ -1,2 +1,13 @@
-include *.rst LICENSE
-include README.md
+prune assets
+prune tests
+prune .github
+exclude codecov.yml
+exclude Makefile
+exclude MANIFEST.in
+exclude pyproject.toml
+exclude requirements_style.txt
+exclude requirements_test.txt
+exclude requirements.txt
+exclude .flake8
+exclude .gitignore
+exclude .pre-commit-config.yaml
