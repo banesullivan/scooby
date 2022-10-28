@@ -1,3 +1,4 @@
+import os
 import re
 import subprocess
 import sys
@@ -186,3 +187,47 @@ def test_import_time():
 
     # Currently we check t < 0.15 s.
     assert float(out.stderr.decode("utf-8")[:-1]) < 0.15
+
+
+@pytest.mark.script_launch_mode('subprocess')
+def test_cli(script_runner):
+
+    # help
+    for inp in ['--help', '-h']:
+        ret = script_runner.run('scooby', inp)
+        assert ret.success
+        assert "Great Dane turned Python environment detective" in ret.stdout
+
+    def rep_comp(inp):
+        # Exclude time to avoid errors.
+        # Exclude scooby-version, because if run locally without having scooby
+        # installed it will be "unknown" for the __main__ one.
+        out = inp.split('OS :')[1]
+        if 'scooby' in inp:
+            out = out.split('scooby :')[0]
+        else:  # As the endings are different.
+            out = out.split('--------')[0]
+        return out
+
+    # default: scooby-Report
+    ret = script_runner.run('scooby')
+    assert ret.success
+    assert rep_comp(scooby.Report().__repr__()) == rep_comp(ret.stdout)
+
+    # default: scooby-Report with sort and no-opt
+    ret = script_runner.run('scooby', 'numpy', '--no-opt', '--sort')
+    assert ret.success
+    test = scooby.Report('numpy', optional=[], sort=True).__repr__()
+    print(rep_comp(test))
+    print(rep_comp(ret.stdout))
+    assert rep_comp(test) == rep_comp(ret.stdout)
+
+    # version -- VIA scooby/__main__.py by calling the folder scooby.
+    ret = script_runner.run('python', 'scooby', '--version')
+    assert ret.success
+    assert "scooby v" in ret.stdout
+
+    # version -- VIA scooby/__main__.py by calling the file.
+    ret = script_runner.run('python', os.path.join('scooby', '__main__.py'), '--version')
+    assert ret.success
+    assert "scooby v" in ret.stdout

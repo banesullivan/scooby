@@ -1,4 +1,5 @@
 pytest
+pytest-console-scripts
 pytest-cov
 codecov
 bs4
