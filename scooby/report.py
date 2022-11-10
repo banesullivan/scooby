@@ -419,6 +419,18 @@ class Report(PlatformInfo, PythonInfo):
         return out
 
 
+def pkg_resources_version_fallback(name):
+    """Use package-resources to get the distribution version."""
+    try:
+        from pkg_resources import DistributionNotFound, get_distribution
+    except ImportError:
+        return
+    try:
+        return get_distribution(name).version
+    except DistributionNotFound:  # pragma: no cover
+        pass
+
+
 # This functionaliy might also be of interest on its own.
 def get_version(module):
     """Get the version of ``module`` by passing the package or it's name.
@@ -458,9 +470,11 @@ def get_version(module):
 
     # Now get the version info from the module
     if module is None:
+        ver = pkg_resources_version_fallback(name)
+        if ver is not None:
+            return name, ver
         return name, MODULE_NOT_FOUND
     else:
-
         # Try common version names.
         for v_string in ('__version__', 'version'):
             try:
@@ -481,6 +495,11 @@ def get_version(module):
             return name, method()
         except (KeyError, ImportError):
             pass
+
+        # Try package-resource distribution version
+        ver = pkg_resources_version_fallback(name)
+        if ver is not None:
+            return name, ver
 
         # If not found, return VERSION_NOT_FOUND
         return name, VERSION_NOT_FOUND
