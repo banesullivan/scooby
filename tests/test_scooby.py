@@ -10,6 +10,19 @@ import pytest
 import scooby
 
 
+# Write a package `no_version` without version number.
+try:
+    os.mkdir("no_version")
+except FileExistsError:
+    pass
+
+with open(os.path.join("no_version", "__init__.py"), "w") as f:
+    f.write("info = 'Package without __version__ number.'\n")
+
+
+import no_version
+
+
 def test_report():
     report = scooby.Report()
     text = str(report)
@@ -87,7 +100,7 @@ def test_get_version():
     assert version == numpy.__version__
     assert name == "numpy"
     name, version = scooby.get_version("no_version")
-    assert version == "0.1.0"  # Assuming this package never updates
+    assert version == scooby.report.VERSION_NOT_FOUND
     assert name == "no_version"
     name, version = scooby.get_version("does_not_exist")
     assert version == scooby.report.MODULE_NOT_FOUND

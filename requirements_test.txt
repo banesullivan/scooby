@@ -7,5 +7,4 @@ psutil
 mkl
 numpy
 scipy
-no_version
 pyvips
