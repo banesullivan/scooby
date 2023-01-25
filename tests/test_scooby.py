@@ -8,6 +8,7 @@ import numpy
 import pytest
 
 import scooby
+from scooby.report import NOT_PROPERLY_INSTALLED, VERSION_NOT_FOUND
 
 # Write a package `dummy_module` without version number.
 ppath = os.path.join("tests", "dummy_module")
@@ -106,7 +107,7 @@ def test_get_version():
 
     # Path dummy module (not installed properly)
     name, version = scooby.get_version("dummy_module")
-    assert version == scooby.report.MODULE_NOT_FOUND
+    assert version == f'{VERSION_NOT_FOUND} {NOT_PROPERLY_INSTALLED}'
     assert name == "dummy_module"
 
     name, version = scooby.get_version("does_not_exist")

@@ -11,6 +11,7 @@ from .knowledge import get_filesystem_type, in_ipykernel, in_ipython
 MODULE_NOT_FOUND = 'Module not found'
 MODULE_TROUBLE = 'Trouble importing'
 VERSION_NOT_FOUND = 'Version unknown'
+NOT_PROPERLY_INSTALLED = '(not properly installed)'
 
 
 # Info classes
@@ -444,12 +445,29 @@ def get_version(module):
     try:
         ver = importlib.metadata.version(name)
     except (importlib.metadata.PackageNotFoundError):  # pragma: no cover
-        return name, MODULE_NOT_FOUND
+        ver = None  # Package be be in PATH
     except:  # noqa
         return name, MODULE_TROUBLE
 
     if ver is None:
-        return name, VERSION_NOT_FOUND
+        # Handle scenario when package is on path but not installed
+        # `importlib.metadata.version` should handle this for py3.11+
+        try:
+            module = importlib.import_module(name)
+        except ImportError:
+            return name, MODULE_NOT_FOUND
+        except:  # noqa
+            return name, MODULE_TROUBLE
+        # Try common version names
+        for v_string in ('__version__', 'version'):
+            try:
+                ver = getattr(module, v_string)
+                break
+            except AttributeError:
+                pass
+        if ver is not None:
+            return name, f'{ver} {NOT_PROPERLY_INSTALLED}'
+        return name, f'{VERSION_NOT_FOUND} {NOT_PROPERLY_INSTALLED}'
 
     return name, ver
 
