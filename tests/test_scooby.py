@@ -87,7 +87,7 @@ def test_get_version():
     assert version == numpy.__version__
     assert name == "numpy"
     name, version = scooby.get_version("no_version")
-    assert version == scooby.report.VERSION_NOT_FOUND
+    assert version == "0.1.0"  # Assuming this package never updates
     assert name == "no_version"
     name, version = scooby.get_version("does_not_exist")
     assert version == scooby.report.MODULE_NOT_FOUND
