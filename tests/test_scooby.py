@@ -105,7 +105,7 @@ def test_get_version():
     assert version == "0.1.0"
     assert name == "no_version"
 
-    # Path dummy module (not installed properly)
+    # Path dummy module without version (not installed properly)
     name, version = scooby.get_version("dummy_module")
     assert version == f'{VERSION_NOT_FOUND} {NOT_PROPERLY_INSTALLED}'
     assert name == "dummy_module"
