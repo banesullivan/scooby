@@ -9,7 +9,6 @@ import pytest
 
 import scooby
 
-
 # Write a package `no_version` without version number.
 ppath = os.path.join("tests", "no_version")
 try:
