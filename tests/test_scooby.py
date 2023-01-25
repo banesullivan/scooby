@@ -9,6 +9,18 @@ import pytest
 
 import scooby
 
+# Write a package `dummy_module` without version number.
+ppath = os.path.join("tests", "dummy_module")
+try:
+    os.mkdir(ppath)
+except FileExistsError:
+    pass
+
+with open(os.path.join(ppath, "__init__.py"), "w") as f:
+    f.write("info = 'Package without __version__ number.'\n")
+
+sys.path.append('tests')
+
 
 def test_report():
     report = scooby.Report()
@@ -86,9 +98,17 @@ def test_get_version():
     name, version = scooby.get_version(numpy)
     assert version == numpy.__version__
     assert name == "numpy"
+
+    # Package that was no version given by owner; gets 0.1.0 from setup/pip
     name, version = scooby.get_version("no_version")
-    assert version == "0.1.0"  # Assuming this package never updates
+    assert version == "0.1.0"
     assert name == "no_version"
+
+    # Dummy module without version (not installed properly)
+    name, version = scooby.get_version("dummy_module")
+    assert version == scooby.report.VERSION_NOT_FOUND
+    assert name == "dummy_module"
+
     name, version = scooby.get_version("does_not_exist")
     assert version == scooby.report.MODULE_NOT_FOUND
     assert name == "does_not_exist"
@@ -130,11 +150,13 @@ def test_tracking():
 
     report = scooby.TrackedReport()
     scooby.untrack_imports()
+    import dummy_module  # noqa
     import no_version  # noqa
 
     assert "numpy" in report.packages
     assert "scipy" in report.packages
     assert "no_version" not in report.packages
+    assert "dummy_module" not in report.packages
     assert "pytest" not in report.packages
     assert "mu_0" not in report.packages
 
