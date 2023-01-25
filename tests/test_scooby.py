@@ -9,8 +9,8 @@ import pytest
 
 import scooby
 
-# Write a package `no_version` without version number.
-ppath = os.path.join("tests", "no_version")
+# Write a package `dummy_module` without version number.
+ppath = os.path.join("tests", "dummy_module")
 try:
     os.mkdir(ppath)
 except FileExistsError:
@@ -98,9 +98,17 @@ def test_get_version():
     name, version = scooby.get_version(numpy)
     assert version == numpy.__version__
     assert name == "numpy"
+
+    # Package that was no version given by owner; gets 0.1.0 from setup/pip
     name, version = scooby.get_version("no_version")
-    assert version == scooby.report.VERSION_NOT_FOUND
+    assert version == "0.1.0"
     assert name == "no_version"
+
+    # Dummy module without version (not installed properly)
+    name, version = scooby.get_version("dummy_module")
+    assert version == scooby.report.VERSION_NOT_FOUND
+    assert name == "dummy_module"
+
     name, version = scooby.get_version("does_not_exist")
     assert version == scooby.report.MODULE_NOT_FOUND
     assert name == "does_not_exist"
