@@ -23,9 +23,6 @@ with open(os.path.join(ppath, "__init__.py"), "w") as f:
 sys.path.append('tests')
 
 
-import no_version
-
-
 def test_report():
     report = scooby.Report()
     text = str(report)
