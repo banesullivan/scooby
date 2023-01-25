@@ -278,10 +278,7 @@ else:
 A couple of locations are checked, and we are happy to implement more if
 needed, just open an issue!
 
-Currently, it looks in the following places:
-- `__version__`
-- `version`
-- lookup distribution version with `importlib.metadata.version`
+Currently, it uses `importlib.metadata.version` to get the distribution version.
 
 ### Using scooby to get version information.
 

@@ -435,49 +435,23 @@ def get_version(module):
     # If (1), we have to load it, if (2), we have to get its name.
     if isinstance(module, str):  # Case 1: module is a string; import
         name = module  # The name is stored in module in this case.
-
-        # Import module `name`; set to None if it fails.
-        try:
-            module = importlib.import_module(name)
-        except ImportError:
-            module = None
-        except:  # noqa
-            return name, MODULE_TROUBLE
-
     elif isinstance(module, ModuleType):  # Case 2: module is module; get name
         name = module.__name__
-
     else:  # If not str nor module raise error
         raise TypeError("Cannot fetch version from type " "({})".format(type(module)))
 
-    ver = None
-    # Now get the version info from the module
-    if module is None:
-        try:
-            ver = importlib.metadata.version(name)
-            return name, ver
-        except (importlib.metadata.PackageNotFoundError):
-            pass
+    # Use importlib.metadata to get the version
+    try:
+        ver = importlib.metadata.version(name)
+    except (importlib.metadata.PackageNotFoundError):  # pragma: no cover
         return name, MODULE_NOT_FOUND
-    else:
-        # Try common version names.
-        for v_string in ('__version__', 'version'):
-            try:
-                ver = getattr(module, v_string)
-                if isinstance(ver, str):
-                    return name, ver
-            except AttributeError:
-                pass
+    except:  # noqa
+        return name, MODULE_TROUBLE
 
-        # Try importlib distribution version
-        try:
-            ver = importlib.metadata.version(name)
-            return name, ver
-        except (importlib.metadata.PackageNotFoundError):  # pragma: no cover
-            pass
-
-        # If not found, return VERSION_NOT_FOUND
+    if ver is None:
         return name, VERSION_NOT_FOUND
+
+    return name, ver
 
 
 def platform():
