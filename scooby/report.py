@@ -427,7 +427,8 @@ def pkg_resources_version_fallback(name):
         return
     try:
         return get_distribution(name).version
-    except DistributionNotFound:  # pragma: no cover
+    except (DistributionNotFound, Exception):  # pragma: no cover
+        # Can run into ParseException, etc. when a bad name is passed
         pass
 
 
