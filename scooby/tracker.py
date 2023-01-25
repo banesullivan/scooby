@@ -25,7 +25,7 @@ MODULES_TO_IGNORE = {
 }
 
 
-STDLIB_PKGS = get_standard_lib_modules()
+STDLIB_PKGS = None
 
 
 def _criterion(name):
@@ -54,6 +54,8 @@ def track_imports():
     """Track all imported modules for the remainder of this session."""
     if not TRACKING_SUPPORTED:
         raise RuntimeError(SUPPORT_MESSAGE)
+    global STDLIB_PKGS
+    STDLIB_PKGS = get_standard_lib_modules()
     builtins.__import__ = scooby_import
     return
 
