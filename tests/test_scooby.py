@@ -97,7 +97,7 @@ def test_ipy():
 
 def test_get_version():
     name, version = scooby.get_version(numpy)
-    # assert version == numpy.__version__
+    assert version == numpy.__version__
     assert name == "numpy"
 
     # Package that has no `__version__` but has `0.1.0` from distribution
