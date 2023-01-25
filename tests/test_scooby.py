@@ -150,8 +150,8 @@ def test_tracking():
 
     report = scooby.TrackedReport()
     scooby.untrack_imports()
-    import no_version  # noqa
     import dummy_module  # noqa
+    import no_version  # noqa
 
     assert "numpy" in report.packages
     assert "scipy" in report.packages
