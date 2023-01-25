@@ -19,7 +19,7 @@ scooby/version.py
 .pytest_cache/
 tests/.coverage
 tests/htmlcov/
-no_version/
+tests/no_version/
 
 # windows
 test.bat

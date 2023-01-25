@@ -11,13 +11,16 @@ import scooby
 
 
 # Write a package `no_version` without version number.
+ppath = os.path.join("tests", "no_version")
 try:
-    os.mkdir("no_version")
+    os.mkdir(ppath)
 except FileExistsError:
     pass
 
-with open(os.path.join("no_version", "__init__.py"), "w") as f:
+with open(os.path.join(ppath, "__init__.py"), "w") as f:
     f.write("info = 'Package without __version__ number.'\n")
+
+sys.path.append('tests')
 
 
 import no_version
