@@ -4,33 +4,12 @@ The knowledge base.
 Knowledge
 =========
 
-It contains, for instance, known odd locations of version information for
-particular modules (``VERSION_ATTRIBUTES``, ``VERSION_METHODS``)
+Utilities for detecting the environment.
 
 """
 import os
 import sys
 import sysconfig
-
-# Define unusual version locations
-VERSION_ATTRIBUTES = {
-    'vtk': 'VTK_VERSION',
-    'vtkmodules.all': 'VTK_VERSION',
-    'PyQt5': 'Qt.PYQT_VERSION_STR',
-    'sip': 'SIP_VERSION_STR',
-}
-
-
-def get_pyqt5_version():
-    """Return the PyQt5 version."""
-    from PyQt5.Qt import PYQT_VERSION_STR
-
-    return PYQT_VERSION_STR
-
-
-VERSION_METHODS = {
-    'PyQt5': get_pyqt5_version,
-}
 
 
 # Check the environments

@@ -1,17 +1,12 @@
 """The main module containing the `Report` class."""
 
 import importlib
+import importlib.metadata
 import sys
 import time
 from types import ModuleType
 
-from .knowledge import (
-    VERSION_ATTRIBUTES,
-    VERSION_METHODS,
-    get_filesystem_type,
-    in_ipykernel,
-    in_ipython,
-)
+from .knowledge import get_filesystem_type, in_ipykernel, in_ipython
 
 MODULE_NOT_FOUND = 'Module not found'
 MODULE_TROUBLE = 'Trouble importing'
@@ -419,19 +414,6 @@ class Report(PlatformInfo, PythonInfo):
         return out
 
 
-def pkg_resources_version_fallback(name):
-    """Use package-resources to get the distribution version."""
-    try:
-        from pkg_resources import DistributionNotFound, get_distribution
-    except ImportError:
-        return
-    try:
-        return get_distribution(name).version
-    except (DistributionNotFound, Exception):  # pragma: no cover
-        # Can run into ParseException, etc. when a bad name is passed
-        pass
-
-
 # This functionaliy might also be of interest on its own.
 def get_version(module):
     """Get the version of ``module`` by passing the package or it's name.
@@ -440,7 +422,6 @@ def get_version(module):
     ----------
     module : str or module
         Name of a module to import or the module itself.
-
 
     Returns
     -------
@@ -469,38 +450,31 @@ def get_version(module):
     else:  # If not str nor module raise error
         raise TypeError("Cannot fetch version from type " "({})".format(type(module)))
 
+    ver = None
     # Now get the version info from the module
     if module is None:
-        ver = pkg_resources_version_fallback(name)
-        if ver is not None:
+        try:
+            ver = importlib.metadata.version(name)
             return name, ver
+        except (importlib.metadata.PackageNotFoundError):
+            pass
         return name, MODULE_NOT_FOUND
     else:
         # Try common version names.
         for v_string in ('__version__', 'version'):
             try:
-                return name, getattr(module, v_string)
+                ver = getattr(module, v_string)
+                if isinstance(ver, str):
+                    return name, ver
             except AttributeError:
                 pass
 
-        # Try the VERSION_ATTRIBUTES library
+        # Try importlib distribution version
         try:
-            attr = VERSION_ATTRIBUTES[name]
-            return name, getattr(module, attr)
-        except (KeyError, AttributeError):
-            pass
-
-        # Try the VERSION_METHODS library
-        try:
-            method = VERSION_METHODS[name]
-            return name, method()
-        except (KeyError, ImportError):
-            pass
-
-        # Try package-resource distribution version
-        ver = pkg_resources_version_fallback(name)
-        if ver is not None:
+            ver = importlib.metadata.version(name)
             return name, ver
+        except (importlib.metadata.PackageNotFoundError):  # pragma: no cover
+            pass
 
         # If not found, return VERSION_NOT_FOUND
         return name, VERSION_NOT_FOUND
