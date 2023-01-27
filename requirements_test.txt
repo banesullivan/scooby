@@ -2,7 +2,7 @@ pytest
 pytest-console-scripts
 pytest-cov
 codecov
-bs4
+beautifulsoup4
 psutil
 mkl
 numpy
