@@ -1,21 +1,17 @@
 """The main module containing the `Report` class."""
 
 import importlib
+import importlib.metadata
 import sys
 import time
 from types import ModuleType
 
-from .knowledge import (
-    VERSION_ATTRIBUTES,
-    VERSION_METHODS,
-    get_filesystem_type,
-    in_ipykernel,
-    in_ipython,
-)
+from .knowledge import get_filesystem_type, in_ipykernel, in_ipython
 
 MODULE_NOT_FOUND = 'Module not found'
 MODULE_TROUBLE = 'Trouble importing'
 VERSION_NOT_FOUND = 'Version unknown'
+NOT_PROPERLY_INSTALLED = '(not properly installed)'
 
 
 # Info classes
@@ -419,19 +415,6 @@ class Report(PlatformInfo, PythonInfo):
         return out
 
 
-def pkg_resources_version_fallback(name):
-    """Use package-resources to get the distribution version."""
-    try:
-        from pkg_resources import DistributionNotFound, get_distribution
-    except ImportError:
-        return
-    try:
-        return get_distribution(name).version
-    except (DistributionNotFound, Exception):  # pragma: no cover
-        # Can run into ParseException, etc. when a bad name is passed
-        pass
-
-
 # This functionaliy might also be of interest on its own.
 def get_version(module):
     """Get the version of ``module`` by passing the package or it's name.
@@ -440,7 +423,6 @@ def get_version(module):
     ----------
     module : str or module
         Name of a module to import or the module itself.
-
 
     Returns
     -------
@@ -454,56 +436,40 @@ def get_version(module):
     # If (1), we have to load it, if (2), we have to get its name.
     if isinstance(module, str):  # Case 1: module is a string; import
         name = module  # The name is stored in module in this case.
-
-        # Import module `name`; set to None if it fails.
-        try:
-            module = importlib.import_module(name)
-        except ImportError:
-            module = None
-        except:  # noqa
-            return name, MODULE_TROUBLE
-
     elif isinstance(module, ModuleType):  # Case 2: module is module; get name
         name = module.__name__
-
     else:  # If not str nor module raise error
         raise TypeError("Cannot fetch version from type " "({})".format(type(module)))
 
-    # Now get the version info from the module
-    if module is None:
-        ver = pkg_resources_version_fallback(name)
-        if ver is not None:
-            return name, ver
-        return name, MODULE_NOT_FOUND
-    else:
-        # Try common version names.
+    # Use importlib.metadata to get the version
+    try:
+        ver = importlib.metadata.version(name)
+    except (importlib.metadata.PackageNotFoundError):  # pragma: no cover
+        ver = None  # Package be be in PATH
+    except:  # noqa
+        return name, MODULE_TROUBLE
+
+    if ver is None:
+        # Handle scenario when package is on path but not installed
+        # `importlib.metadata.version` should handle this for py3.11+
+        try:
+            module = importlib.import_module(name)
+        except ImportError:
+            return name, MODULE_NOT_FOUND
+        except:  # noqa
+            return name, MODULE_TROUBLE
+        # Try common version names
         for v_string in ('__version__', 'version'):
             try:
-                return name, getattr(module, v_string)
+                ver = getattr(module, v_string)
+                break
             except AttributeError:
                 pass
-
-        # Try the VERSION_ATTRIBUTES library
-        try:
-            attr = VERSION_ATTRIBUTES[name]
-            return name, getattr(module, attr)
-        except (KeyError, AttributeError):
-            pass
-
-        # Try the VERSION_METHODS library
-        try:
-            method = VERSION_METHODS[name]
-            return name, method()
-        except (KeyError, ImportError):
-            pass
-
-        # Try package-resource distribution version
-        ver = pkg_resources_version_fallback(name)
         if ver is not None:
-            return name, ver
+            return name, f'{ver} {NOT_PROPERLY_INSTALLED}'
+        return name, f'{VERSION_NOT_FOUND} {NOT_PROPERLY_INSTALLED}'
 
-        # If not found, return VERSION_NOT_FOUND
-        return name, VERSION_NOT_FOUND
+    return name, ver
 
 
 def platform():

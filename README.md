@@ -278,23 +278,7 @@ else:
 A couple of locations are checked, and we are happy to implement more if
 needed, just open an issue!
 
-Currently, it looks in the following places:
-- `__version__`
-- `version`
-- lookup `VERSION_ATTRIBUTES` in the scooby knowledge base
-- lookup `VERSION_METHODS` in the scooby knowledge base
-
-`VERSION_ATTRIBUTES` is a dictionary of attributes for known python packages
-with a non-standard place for the version, e.g. `VERSION_ATTRIBUTES['vtk'] =
-'VTK_VERSION'`. You can add other known places via:
-
-```py
-scooby.knowledge.VERSION_ATTRIBUTES['a_module'] = 'Awesome_version_location'
-```
-
-Similarly, `VERSION_METHODS` is a dictionary for methods to retrieve the
-version, and you can similarly add your methods which will get the version
-of a package.
+Currently, it uses `importlib.metadata.version` to get the distribution version.
 
 ### Using scooby to get version information.
 
