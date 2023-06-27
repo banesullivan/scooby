@@ -35,7 +35,7 @@ VERSION_METHODS: Dict[str, Callable[[], str]] = {
 
 
 # Check the environments
-def in_ipython():
+def in_ipython() -> bool:
     """Check if we are in a IPython environment.
 
     Returns
@@ -50,7 +50,7 @@ def in_ipython():
         return False
 
 
-def in_ipykernel():
+def in_ipykernel() -> bool:
     """Check if in a ipykernel (most likely Jupyter) environment.
 
     Warning
@@ -68,13 +68,13 @@ def in_ipykernel():
     ipykernel = False
     if in_ipython():
         try:
-            ipykernel = type(get_ipython()).__module__.startswith('ipykernel.')
+            ipykernel: bool = type(get_ipython()).__module__.startswith('ipykernel.')
         except NameError:
             pass
     return ipykernel
 
 
-def get_standard_lib_modules():
+def get_standard_lib_modules() -> set[str]:
     """Return a set of the names of all modules in the standard library."""
     site_path = sysconfig.get_path('stdlib')
     if getattr(sys, 'frozen', False):  # within pyinstaller

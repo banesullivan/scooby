@@ -25,6 +25,7 @@ class PlatformInfo:
 
     def __init__(self):
         self._mkl_info: Optional[str]  # for typing purpose
+        self._filesystem: str | Literal[False]
 
     @property
     def system(self) -> str:
@@ -116,7 +117,7 @@ class PlatformInfo:
         return time.strftime('%a %b %d %H:%M:%S %Y %Z')
 
     @property
-    def filesystem(self):
+    def filesystem(self) -> str | Literal[False]:
         """Get the type of the file system at the path of the scooby package."""
         if not hasattr(self, '_filesystem'):
             self._filesystem = get_filesystem_type()
@@ -232,7 +233,7 @@ class Report(PlatformInfo, PythonInfo):
         sort: bool = False,
         extra_meta: Optional[Tuple[str, str]] = None,
         max_width: Optional[int] = None,
-    ):
+    ) -> None:
         """Initialize report."""
         # Set default optional packages to investigate
         if optional is None:
@@ -423,7 +424,7 @@ class Report(PlatformInfo, PythonInfo):
         return out
 
 
-def pkg_resources_version_fallback(name: str):
+def pkg_resources_version_fallback(name: str) -> Optional[str]:
     """Use package-resources to get the distribution version."""
     try:
         from pkg_resources import DistributionNotFound, get_distribution
