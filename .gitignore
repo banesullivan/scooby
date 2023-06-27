@@ -34,3 +34,4 @@ coverage.xml
 *,cover
 
 .tox
+venv

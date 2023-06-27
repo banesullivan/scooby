@@ -11,6 +11,7 @@ particular modules (``VERSION_ATTRIBUTES``, ``VERSION_METHODS``)
 import os
 import sys
 import sysconfig
+from typing import Callable, Dict, Literal, Tuple
 
 # Define unusual version locations
 VERSION_ATTRIBUTES = {
@@ -21,14 +22,14 @@ VERSION_ATTRIBUTES = {
 }
 
 
-def get_pyqt5_version():
+def get_pyqt5_version() -> str:
     """Return the PyQt5 version."""
     from PyQt5.Qt import PYQT_VERSION_STR
 
     return PYQT_VERSION_STR
 
 
-VERSION_METHODS = {
+VERSION_METHODS: Dict[str, Callable[[], str]] = {
     'PyQt5': get_pyqt5_version,
 }
 
@@ -81,13 +82,9 @@ def get_standard_lib_modules():
         if os.path.isdir(lib_path):
             names = os.listdir(lib_path)
         else:
-            names = []
+            names: list[str] = []
 
-        stdlib_pkgs = []
-        for name in names:
-            if name.endswith(".py"):
-                stdlib_pkgs.append(name[:-3])
-        stdlib_pkgs = set(stdlib_pkgs)
+        stdlib_pkgs = {name[:-3] for name in names if name.endswith(".py")}
 
     else:
         names = os.listdir(site_path)
@@ -116,7 +113,7 @@ def get_standard_lib_modules():
     return stdlib_pkgs
 
 
-def version_tuple(v):
+def version_tuple(v: str) -> Tuple[int, ...]:
     """Convert a version string to a tuple containing ints.
 
     Non-numeric version strings will be converted to 0.  For example:
@@ -135,7 +132,7 @@ def version_tuple(v):
     if len(split_v) > 3:
         raise ValueError('Version strings containing more than three parts ' 'cannot be parsed')
 
-    vals = []
+    vals: list[int] = []
     for item in split_v:
         if item.isnumeric():
             vals.append(int(item))
@@ -145,7 +142,7 @@ def version_tuple(v):
     return tuple(vals)
 
 
-def meets_version(version, meets):
+def meets_version(version: str, meets: str) -> bool:
     """Check if a version string meets a minimum version.
 
     This is a simplified way to compare version strings. For a more robust
@@ -190,7 +187,7 @@ def meets_version(version, meets):
     return True
 
 
-def get_filesystem_type():
+def get_filesystem_type() -> str | Literal[False]:
     """Get the type of the file system at the path of the scooby package."""
     try:
         import psutil  # lazy-load see PR#85

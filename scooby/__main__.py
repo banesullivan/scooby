@@ -2,12 +2,13 @@
 import argparse
 import importlib
 import sys
+from typing import Any, Dict, Optional
 
 import scooby
 from scooby.report import Report
 
 
-def main(args=None):
+def main(args: Optional[list[str]] = None):
     """Parse command line inputs of CLI interface."""
     # If not explicitly called, catch arguments
     if args is None:
@@ -51,7 +52,7 @@ def main(args=None):
     act(vars(parser.parse_args(args)))
 
 
-def act(args_dict):
+def act(args_dict: Dict[str, Any]) -> None:
     """Act upon CLI inputs."""
     # Quick exit if only scooby version.
     if args_dict.pop('version'):
