@@ -187,7 +187,7 @@ def meets_version(version: str, meets: str) -> bool:
     return True
 
 
-def get_filesystem_type() -> str | Literal[False]:
+def get_filesystem_type() -> Union[str, Literal[False]]:
     """Get the type of the file system at the path of the scooby package."""
     try:
         import psutil  # lazy-load see PR#85
