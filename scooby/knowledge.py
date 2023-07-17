@@ -11,7 +11,7 @@ particular modules (``VERSION_ATTRIBUTES``, ``VERSION_METHODS``)
 import os
 import sys
 import sysconfig
-from typing import Callable, Dict, Literal, Tuple
+from typing import Callable, Dict, Literal, Tuple, Union, List
 
 # Define unusual version locations
 VERSION_ATTRIBUTES = {
@@ -82,7 +82,7 @@ def get_standard_lib_modules() -> set[str]:
         if os.path.isdir(lib_path):
             names = os.listdir(lib_path)
         else:
-            names: list[str] = []
+            names = []
 
         stdlib_pkgs = {name[:-3] for name in names if name.endswith(".py")}
 
@@ -132,7 +132,7 @@ def version_tuple(v: str) -> Tuple[int, ...]:
     if len(split_v) > 3:
         raise ValueError('Version strings containing more than three parts ' 'cannot be parsed')
 
-    vals: list[int] = []
+    vals: List[int] = []
     for item in split_v:
         if item.isnumeric():
             vals.append(int(item))
@@ -197,6 +197,7 @@ def get_filesystem_type() -> str | Literal[False]:
     import platform  # lazy-load see PR#85
 
     # Skip Windows due to https://github.com/banesullivan/scooby/issues/75
+    fs_type: Union[str, Literal[False]]
     if psutil and platform.system() != 'Windows':
         # Code by https://stackoverflow.com/a/35291824/10504481
         my_path = str(Path(__file__).resolve())

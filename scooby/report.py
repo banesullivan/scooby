@@ -4,7 +4,7 @@ import importlib
 import sys
 import time
 from types import ModuleType
-from typing import Any, Dict, Literal, Optional, Tuple, cast
+from typing import Any, Dict, Literal, Optional, Tuple, cast, Union, List
 
 from .knowledge import (
     VERSION_ATTRIBUTES,
@@ -25,7 +25,7 @@ class PlatformInfo:
 
     def __init__(self):
         self._mkl_info: Optional[str]  # for typing purpose
-        self._filesystem: str | Literal[False]
+        self._filesystem: Union[str, Literal[False]]
 
     @property
     def system(self) -> str:
@@ -117,7 +117,7 @@ class PlatformInfo:
         return time.strftime('%a %b %d %H:%M:%S %Y %Z')
 
     @property
-    def filesystem(self) -> str | Literal[False]:
+    def filesystem(self) -> Union[str, Literal[False]]:
         """Get the type of the file system at the path of the scooby package."""
         if not hasattr(self, '_filesystem'):
             self._filesystem = get_filesystem_type()
@@ -127,7 +127,7 @@ class PlatformInfo:
 class PythonInfo:
     """Internal helper class to access Python info and package versions."""
 
-    def __init__(self, additional: Optional[list[str | ModuleType]], core: Optional[list[str | ModuleType]], optional: Optional[list[str | ModuleType]], sort: bool):
+    def __init__(self, additional: Optional[List[Union[str, ModuleType]]], core: Optional[List[Union[str, ModuleType]]], optional: Optional[List[Union[str, ModuleType]]], sort: bool):
         """Initialize python info."""
         self._packages: Dict[str, Any] = {}  # Holds name of packages and their version
         self._sort = sort
@@ -137,15 +137,15 @@ class PythonInfo:
         self._add_packages(core)  # Provided by a module dev
         self._add_packages(optional, optional=True)  # Optional packages
 
-    def _add_packages(self, packages: Optional[list[str | ModuleType]], optional: bool = False):
+    def _add_packages(self, packages: Optional[List[Union[str, ModuleType]]], optional: bool = False):
         """Add all packages to list; optional ones only if available."""
         # Ensure arguments are a list
         if isinstance(packages, (str, ModuleType)):
-            pckgs = [
+            pckgs: List[Union[str, ModuleType]] = [
                 packages,
             ]
         elif packages is None or len(packages) < 1:
-            pckgs: list[str | ModuleType] = list()
+            pckgs = list()
         else:
             pckgs = list(packages)
 
@@ -215,7 +215,7 @@ class Report(PlatformInfo, PythonInfo):
     sort : bool, optional
         Sort the packages when the report is shown.
 
-    extra_meta : tuple(str, str), optional
+    extra_meta : tuple(tuple(str, str), ...), optional
         Additional two component pairs of meta information to display.
 
     max_width : int, optional
@@ -225,13 +225,13 @@ class Report(PlatformInfo, PythonInfo):
 
     def __init__(
         self,
-        additional: Optional[list[str | ModuleType]] = None,
-        core: Optional[list[str | ModuleType]] = None,
-        optional: Optional[list[str | ModuleType]] = None,
+        additional: Optional[List[Union[str, ModuleType]]] = None,
+        core: Optional[List[Union[str, ModuleType]]] = None,
+        optional: Optional[List[Union[str, ModuleType]]] = None,
         ncol: int = 4,
         text_width: int = 80,
         sort: bool = False,
-        extra_meta: Optional[Tuple[str, str]] = None,
+        extra_meta: Optional[Union[Tuple[Tuple[str, str], ...], List[Tuple[str, str]]]] = None,
         max_width: Optional[int] = None,
     ) -> None:
         """Initialize report."""
@@ -429,7 +429,7 @@ def pkg_resources_version_fallback(name: str) -> Optional[str]:
     try:
         from pkg_resources import DistributionNotFound, get_distribution
     except ImportError:
-        return
+        return None
     try:
         return get_distribution(name).version
     except (DistributionNotFound, Exception):  # pragma: no cover
@@ -438,7 +438,7 @@ def pkg_resources_version_fallback(name: str) -> Optional[str]:
 
 
 # This functionaliy might also be of interest on its own.
-def get_version(module: str | ModuleType) -> Tuple[str, Optional[str]]:
+def get_version(module: Union[str, ModuleType]) -> Tuple[str, Optional[str]]:
     """Get the version of ``module`` by passing the package or it's name.
 
     Parameters
