@@ -1,7 +1,6 @@
 pytest
 pytest-console-scripts
 pytest-cov
-codecov
 beautifulsoup4
 psutil
 mkl
