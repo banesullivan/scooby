@@ -65,7 +65,6 @@ class PlatformInfo:
         If not available, returns 'unknown'.
         """
         if not hasattr(self, '_total_ram'):
-
             try:
                 import psutil  # lazy-load see PR#85
 
