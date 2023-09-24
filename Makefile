@@ -20,11 +20,11 @@ lint:
 	flake8 --ignore=E501,W503,D10,E123,E203 scooby tests
 
 doctest:
-	@echo "Runnig module doctesting"
+	@echo "Running module doctesting"
 	pytest -v --doctest-modules scooby
 
 apitest:
-	@echo "Runnig full API tests"
+	@echo "Running full API tests"
 	pytest -v --cov scooby --cov-report xml
 
 format:
