@@ -11,7 +11,7 @@ particular modules (``VERSION_ATTRIBUTES``, ``VERSION_METHODS``)
 import os
 import sys
 import sysconfig
-from typing import Callable, Dict, Literal, Tuple, Union, List
+from typing import Callable, Dict, List, Literal, Set, Tuple, Union
 
 # Define unusual version locations
 VERSION_ATTRIBUTES = {
@@ -77,7 +77,7 @@ def in_ipykernel() -> bool:
     return ipykernel
 
 
-def get_standard_lib_modules() -> set[str]:
+def get_standard_lib_modules() -> Set[str]:
     """Return a set of the names of all modules in the standard library."""
     site_path = sysconfig.get_path('stdlib')
     if getattr(sys, 'frozen', False):  # within pyinstaller
