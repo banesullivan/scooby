@@ -23,7 +23,10 @@ VERSION_ATTRIBUTES = {
 
 def get_pyqt5_version():
     """Return the PyQt5 version."""
-    from PyQt5.Qt import PYQT_VERSION_STR
+    try:
+        from PyQt5.Qt import PYQT_VERSION_STR
+    except ImportError:
+        return 'Version unknown'
 
     return PYQT_VERSION_STR
 
