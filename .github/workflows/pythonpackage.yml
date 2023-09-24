@@ -44,7 +44,7 @@ jobs:
       run: make apitest
     - name: Doctests
       run: make doctest
-    - uses: codecov/codecov-action@v2
+    - uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: coverage.xml

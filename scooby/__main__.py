@@ -56,7 +56,6 @@ def act(args_dict: Dict[str, Any]) -> None:
     """Act upon CLI inputs."""
     # Quick exit if only scooby version.
     if args_dict.pop('version'):
-
         print(f"scooby v{scooby.__version__}")
         return
 
@@ -76,7 +75,6 @@ def act(args_dict: Dict[str, Any]) -> None:
 
     # Scooby report with additional options.
     else:
-
         # Collect input.
         inp = {'additional': args_dict['packages'], 'sort': args_dict['sort']}
 

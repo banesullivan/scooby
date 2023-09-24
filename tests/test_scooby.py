@@ -213,7 +213,6 @@ def test_import_time():
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_cli(script_runner):
-
     # help
     for inp in ['--help', '-h']:
         ret = script_runner.run('scooby', inp)
