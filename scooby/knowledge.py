@@ -11,6 +11,7 @@ particular modules (``VERSION_ATTRIBUTES``, ``VERSION_METHODS``)
 import os
 import sys
 import sysconfig
+from typing import Callable, Dict, List, Literal, Set, Tuple, Union
 
 # Define unusual version locations
 VERSION_ATTRIBUTES = {
@@ -21,7 +22,7 @@ VERSION_ATTRIBUTES = {
 }
 
 
-def get_pyqt5_version():
+def get_pyqt5_version() -> str:
     """Return the PyQt5 version."""
     try:
         from PyQt5.Qt import PYQT_VERSION_STR
@@ -31,13 +32,13 @@ def get_pyqt5_version():
     return PYQT_VERSION_STR
 
 
-VERSION_METHODS = {
+VERSION_METHODS: Dict[str, Callable[[], str]] = {
     'PyQt5': get_pyqt5_version,
 }
 
 
 # Check the environments
-def in_ipython():
+def in_ipython() -> bool:
     """Check if we are in a IPython environment.
 
     Returns
@@ -52,7 +53,7 @@ def in_ipython():
         return False
 
 
-def in_ipykernel():
+def in_ipykernel() -> bool:
     """Check if in a ipykernel (most likely Jupyter) environment.
 
     Warning
@@ -70,13 +71,13 @@ def in_ipykernel():
     ipykernel = False
     if in_ipython():
         try:
-            ipykernel = type(get_ipython()).__module__.startswith('ipykernel.')
+            ipykernel: bool = type(get_ipython()).__module__.startswith('ipykernel.')
         except NameError:
             pass
     return ipykernel
 
 
-def get_standard_lib_modules():
+def get_standard_lib_modules() -> Set[str]:
     """Return a set of the names of all modules in the standard library."""
     site_path = sysconfig.get_path('stdlib')
     if getattr(sys, 'frozen', False):  # within pyinstaller
@@ -86,11 +87,7 @@ def get_standard_lib_modules():
         else:
             names = []
 
-        stdlib_pkgs = []
-        for name in names:
-            if name.endswith(".py"):
-                stdlib_pkgs.append(name[:-3])
-        stdlib_pkgs = set(stdlib_pkgs)
+        stdlib_pkgs = {name[:-3] for name in names if name.endswith(".py")}
 
     else:
         names = os.listdir(site_path)
@@ -119,7 +116,7 @@ def get_standard_lib_modules():
     return stdlib_pkgs
 
 
-def version_tuple(v):
+def version_tuple(v: str) -> Tuple[int, ...]:
     """Convert a version string to a tuple containing ints.
 
     Non-numeric version strings will be converted to 0.  For example:
@@ -138,7 +135,7 @@ def version_tuple(v):
     if len(split_v) > 3:
         raise ValueError('Version strings containing more than three parts ' 'cannot be parsed')
 
-    vals = []
+    vals: List[int] = []
     for item in split_v:
         if item.isnumeric():
             vals.append(int(item))
@@ -148,7 +145,7 @@ def version_tuple(v):
     return tuple(vals)
 
 
-def meets_version(version, meets):
+def meets_version(version: str, meets: str) -> bool:
     """Check if a version string meets a minimum version.
 
     This is a simplified way to compare version strings. For a more robust
@@ -193,7 +190,7 @@ def meets_version(version, meets):
     return True
 
 
-def get_filesystem_type():
+def get_filesystem_type() -> Union[str, Literal[False]]:
     """Get the type of the file system at the path of the scooby package."""
     try:
         import psutil  # lazy-load see PR#85
@@ -203,6 +200,7 @@ def get_filesystem_type():
     import platform  # lazy-load see PR#85
 
     # Skip Windows due to https://github.com/banesullivan/scooby/issues/75
+    fs_type: Union[str, Literal[False]]
     if psutil and platform.system() != 'Windows':
         # Code by https://stackoverflow.com/a/35291824/10504481
         my_path = str(Path(__file__).resolve())

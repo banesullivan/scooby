@@ -38,4 +38,5 @@ setuptools.setup(
         "write_to": os.path.join("scooby", "version.py"),
     },
     setup_requires=["setuptools_scm"],
+    package_data={"scooby": ["py.typed"]},
 )

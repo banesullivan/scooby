@@ -1,4 +1,7 @@
 """Track imports."""
+from types import ModuleType
+from typing import List, Mapping, Optional, Sequence, Set, Union
+
 from scooby.knowledge import get_standard_lib_modules
 from scooby.report import Report
 
@@ -15,7 +18,7 @@ except (ImportError, AttributeError):
     pass
 
 # The variable we track all imports in
-TRACKED_IMPORTS = ["scooby"]
+TRACKED_IMPORTS: List[Union[str, ModuleType]] = ["scooby"]
 
 MODULES_TO_IGNORE = {
     "pyMKL",
@@ -25,10 +28,10 @@ MODULES_TO_IGNORE = {
 }
 
 
-STDLIB_PKGS = None
+STDLIB_PKGS: Optional[Set[str]] = None
 
 
-def _criterion(name):
+def _criterion(name: str):
     if (
         len(name) > 0
         and name not in STDLIB_PKGS
@@ -41,7 +44,13 @@ def _criterion(name):
 
 if TRACKING_SUPPORTED:
 
-    def scooby_import(name, globals=None, locals=None, fromlist=(), level=0):
+    def scooby_import(
+        name: str,
+        globals: Optional[Mapping[str, object]] = None,
+        locals: Optional[Mapping[str, object]] = None,
+        fromlist: Sequence[str] = (),
+        level: int = 0,
+    ) -> ModuleType:
         """Override of the import method to track package names."""
         m = CLASSIC_IMPORT(name, globals=globals, locals=locals, fromlist=fromlist, level=level)
         name = name.split(".")[0]
@@ -50,7 +59,7 @@ if TRACKING_SUPPORTED:
         return m
 
 
-def track_imports():
+def track_imports() -> None:
     """Track all imported modules for the remainder of this session."""
     if not TRACKING_SUPPORTED:
         raise RuntimeError(SUPPORT_MESSAGE)
@@ -60,7 +69,7 @@ def track_imports():
     return
 
 
-def untrack_imports():
+def untrack_imports() -> None:
     """Stop tracking imports and return to the builtin import method.
 
     This will also clear the tracked imports.
@@ -80,7 +89,13 @@ class TrackedReport(Report):
     ``globals()`` dictionary.
     """
 
-    def __init__(self, additional=None, ncol=3, text_width=80, sort=False):
+    def __init__(
+        self,
+        additional: Optional[List[Union[str, ModuleType]]] = None,
+        ncol: int = 3,
+        text_width: int = 80,
+        sort: bool = False,
+    ):
         """Initialize."""
         if not TRACKING_SUPPORTED:
             raise RuntimeError(SUPPORT_MESSAGE)
