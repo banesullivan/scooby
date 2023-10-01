@@ -336,7 +336,7 @@ class Report(PlatformInfo, PythonInfo):
             html += "  </tr>\n"
             return html
 
-        def cols(html: str, version: str, name: str, ncol: int, i: int) -> tuple[str, int]:
+        def cols(html: str, version: str, name: str, ncol: int, i: int) -> Tuple[str, int]:
             r"""Print package information in two cells."""
             # Check if we have to start a new row
             if i > 0 and i % ncol == 0:

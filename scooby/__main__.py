@@ -2,13 +2,13 @@
 import argparse
 import importlib
 import sys
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import scooby
 from scooby.report import Report
 
 
-def main(args: Optional[list[str]] = None):
+def main(args: Optional[List[str]] = None):
     """Parse command line inputs of CLI interface."""
     # If not explicitly called, catch arguments
     if args is None:
