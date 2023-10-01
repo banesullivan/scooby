@@ -4,7 +4,7 @@ import importlib
 import sys
 import time
 from types import ModuleType
-from typing import Any, Dict, Literal, Optional, Tuple, cast, Union, List
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union, cast
 
 from .knowledge import (
     VERSION_ATTRIBUTES,
@@ -24,6 +24,7 @@ class PlatformInfo:
     """Internal helper class to access details about the computer platform."""
 
     def __init__(self):
+        """Initialize."""
         self._mkl_info: Optional[str]  # for typing purpose
         self._filesystem: Union[str, Literal[False]]
 
@@ -126,7 +127,13 @@ class PlatformInfo:
 class PythonInfo:
     """Internal helper class to access Python info and package versions."""
 
-    def __init__(self, additional: Optional[List[Union[str, ModuleType]]], core: Optional[List[Union[str, ModuleType]]], optional: Optional[List[Union[str, ModuleType]]], sort: bool):
+    def __init__(
+        self,
+        additional: Optional[List[Union[str, ModuleType]]],
+        core: Optional[List[Union[str, ModuleType]]],
+        optional: Optional[List[Union[str, ModuleType]]],
+        sort: bool,
+    ):
         """Initialize python info."""
         self._packages: Dict[str, Any] = {}  # Holds name of packages and their version
         self._sort = sort
@@ -136,7 +143,9 @@ class PythonInfo:
         self._add_packages(core)  # Provided by a module dev
         self._add_packages(optional, optional=True)  # Optional packages
 
-    def _add_packages(self, packages: Optional[List[Union[str, ModuleType]]], optional: bool = False):
+    def _add_packages(
+        self, packages: Optional[List[Union[str, ModuleType]]], optional: bool = False
+    ):
         """Add all packages to list; optional ones only if available."""
         # Ensure arguments are a list
         if isinstance(packages, (str, ModuleType)):
@@ -169,7 +178,7 @@ class PythonInfo:
         return 'Python'
 
     @property
-    def packages(self) -> dict[str, Any]:
+    def packages(self) -> Dict[str, Any]:
         """Return versions of all packages.
 
         Includes available and unavailable/unknown.
@@ -389,7 +398,7 @@ class Report(PlatformInfo, PythonInfo):
 
         return html
 
-    def to_dict(self) -> dict[str, str]:
+    def to_dict(self) -> Dict[str, str]:
         """Return report as dict for storage."""
         out: Dict[str, str] = {}
 

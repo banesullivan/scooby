@@ -1,6 +1,6 @@
 """Track imports."""
 from types import ModuleType
-from typing import Mapping, Optional, Sequence, Union, Set, List
+from typing import List, Mapping, Optional, Sequence, Set, Union
 
 from scooby.knowledge import get_standard_lib_modules
 from scooby.report import Report
@@ -18,7 +18,7 @@ except (ImportError, AttributeError):
     pass
 
 # The variable we track all imports in
-TRACKED_IMPORTS: List[str | ModuleType] = ["scooby"]
+TRACKED_IMPORTS: List[Union[str, ModuleType]] = ["scooby"]
 
 MODULES_TO_IGNORE = {
     "pyMKL",
@@ -44,7 +44,13 @@ def _criterion(name: str):
 
 if TRACKING_SUPPORTED:
 
-    def scooby_import(name: str, globals: Optional[Mapping[str, object]] = None, locals: Optional[Mapping[str, object]] = None, fromlist: Sequence[str] = (), level: int = 0) -> ModuleType:
+    def scooby_import(
+        name: str,
+        globals: Optional[Mapping[str, object]] = None,
+        locals: Optional[Mapping[str, object]] = None,
+        fromlist: Sequence[str] = (),
+        level: int = 0,
+    ) -> ModuleType:
         """Override of the import method to track package names."""
         m = CLASSIC_IMPORT(name, globals=globals, locals=locals, fromlist=fromlist, level=level)
         name = name.split(".")[0]
@@ -83,7 +89,13 @@ class TrackedReport(Report):
     ``globals()`` dictionary.
     """
 
-    def __init__(self, additional: Optional[List[Union[str, ModuleType]]] = None, ncol: int = 3, text_width: int = 80, sort: bool = False):
+    def __init__(
+        self,
+        additional: Optional[List[Union[str, ModuleType]]] = None,
+        ncol: int = 3,
+        text_width: int = 80,
+        sort: bool = False,
+    ):
         """Initialize."""
         if not TRACKING_SUPPORTED:
             raise RuntimeError(SUPPORT_MESSAGE)
