@@ -215,7 +215,7 @@ def test_import_time():
 def test_cli(script_runner):
     # help
     for inp in ['--help', '-h']:
-        ret = script_runner.run('scooby', inp)
+        ret = script_runner.run(['scooby', inp])
         assert ret.success
         assert "Great Dane turned Python environment detective" in ret.stdout
 
@@ -231,12 +231,12 @@ def test_cli(script_runner):
         return out
 
     # default: scooby-Report
-    ret = script_runner.run('scooby')
+    ret = script_runner.run(['scooby'])
     assert ret.success
     assert rep_comp(scooby.Report().__repr__()) == rep_comp(ret.stdout)
 
     # default: scooby-Report with sort and no-opt
-    ret = script_runner.run('scooby', 'numpy', '--no-opt', '--sort')
+    ret = script_runner.run(['scooby', 'numpy', '--no-opt', '--sort'])
     assert ret.success
     test = scooby.Report('numpy', optional=[], sort=True).__repr__()
     print(rep_comp(test))
@@ -244,11 +244,11 @@ def test_cli(script_runner):
     assert rep_comp(test) == rep_comp(ret.stdout)
 
     # version -- VIA scooby/__main__.py by calling the folder scooby.
-    ret = script_runner.run('python', 'scooby', '--version')
+    ret = script_runner.run(['python', 'scooby', '--version'])
     assert ret.success
     assert "scooby v" in ret.stdout
 
     # version -- VIA scooby/__main__.py by calling the file.
-    ret = script_runner.run('python', os.path.join('scooby', '__main__.py'), '--version')
+    ret = script_runner.run(['python', os.path.join('scooby', '__main__.py'), '--version'])
     assert ret.success
     assert "scooby v" in ret.stdout
