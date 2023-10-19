@@ -13,10 +13,13 @@ import sys
 import sysconfig
 from typing import Callable, Dict, List, Literal, Set, Tuple, Union
 
+PACKAGE_ALIASES = {
+    'vtkmodules': 'vtk',
+    'vtkmodules.all': 'vtk',
+}
+
 # Define unusual version locations
 VERSION_ATTRIBUTES = {
-    'vtk': 'VTK_VERSION',
-    'vtkmodules.all': 'VTK_VERSION',
     'PyQt5': 'Qt.PYQT_VERSION_STR',
     'sip': 'SIP_VERSION_STR',
 }

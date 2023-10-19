@@ -1,12 +1,14 @@
 """The main module containing the `Report` class."""
 
 import importlib
+from importlib.metadata import PackageNotFoundError, version as importlib_version
 import sys
 import time
 from types import ModuleType
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union, cast
 
 from .knowledge import (
+    PACKAGE_ALIASES,
     VERSION_ATTRIBUTES,
     VERSION_METHODS,
     get_filesystem_type,
@@ -432,19 +434,6 @@ class Report(PlatformInfo, PythonInfo):
         return out
 
 
-def pkg_resources_version_fallback(name: str) -> Optional[str]:
-    """Use package-resources to get the distribution version."""
-    try:
-        from pkg_resources import DistributionNotFound, get_distribution
-    except ImportError:
-        return None
-    try:
-        return get_distribution(name).version
-    except (DistributionNotFound, Exception):  # pragma: no cover
-        # Can run into ParseException, etc. when a bad name is passed
-        pass
-
-
 # This functionaliy might also be of interest on its own.
 def get_version(module: Union[str, ModuleType]) -> Tuple[str, Optional[str]]:
     """Get the version of ``module`` by passing the package or it's name.
@@ -463,60 +452,59 @@ def get_version(module: Union[str, ModuleType]) -> Tuple[str, Optional[str]]:
     version : str or None
         Version of module.
     """
-    # module is (1) a string or (2) a module.
-    # If (1), we have to load it, if (2), we have to get its name.
-    if isinstance(module, str):  # Case 1: module is a string; import
-        name = module  # The name is stored in module in this case.
+    # module is (1) a module or (2) a string.
+    if not isinstance(module, (str, ModuleType)):
+        raise TypeError("Cannot fetch version from type " "({})".format(type(module)))
 
-        # Import module `name`; set to None if it fails.
+    # module is module; get name
+    if isinstance(module, ModuleType):
+        name = module.__name__
+    else:
+        name = module
+        module = None
+
+    # Check aliased names
+    if name in PACKAGE_ALIASES:
+        name = PACKAGE_ALIASES[name]
+
+    # try importlib.metadata before loading the module
+    try:
+        return name, importlib_version(name)
+    except PackageNotFoundError:
+        module = None
+
+    # importlib could not find the package, try to load it
+    if module is None:
         try:
             module = importlib.import_module(name)
         except ImportError:
-            module = None
-        except:  # noqa
+            return name, MODULE_NOT_FOUND
+        except Exception:
             return name, MODULE_TROUBLE
 
-    elif isinstance(module, ModuleType):  # Case 2: module is module; get name
-        name = module.__name__
-
-    else:  # If not str nor module raise error
-        raise TypeError("Cannot fetch version from type " "({})".format(type(module)))
-
-    # Now get the version info from the module
-    if module is None:
-        ver = pkg_resources_version_fallback(name)
-        if ver is not None:
-            return name, ver
-        return name, MODULE_NOT_FOUND
-    else:
-        # Try common version names.
-        for v_string in ('__version__', 'version'):
-            try:
-                return name, getattr(module, v_string)
-            except AttributeError:
-                pass
-
-        # Try the VERSION_ATTRIBUTES library
+    # Try common version names on loaded module
+    for v_string in ('__version__', 'version'):
         try:
-            attr = VERSION_ATTRIBUTES[name]
-            return name, getattr(module, attr)
-        except (KeyError, AttributeError):
+            return name, getattr(module, v_string)
+        except AttributeError:
             pass
 
-        # Try the VERSION_METHODS library
-        try:
-            method = VERSION_METHODS[name]
-            return name, method()
-        except (KeyError, ImportError):
-            pass
+    # Try the VERSION_ATTRIBUTES library
+    try:
+        attr = VERSION_ATTRIBUTES[name]
+        return name, getattr(module, attr)
+    except (KeyError, AttributeError):
+        pass
 
-        # Try package-resource distribution version
-        ver = pkg_resources_version_fallback(name)
-        if ver is not None:
-            return name, ver
+    # Try the VERSION_METHODS library
+    try:
+        method = VERSION_METHODS[name]
+        return name, method()
+    except (KeyError, ImportError):
+        pass
 
-        # If not found, return VERSION_NOT_FOUND
-        return name, VERSION_NOT_FOUND
+    # If still not found, return VERSION_NOT_FOUND
+    return name, VERSION_NOT_FOUND
 
 
 def platform() -> ModuleType:

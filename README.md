@@ -285,8 +285,7 @@ Currently, it looks in the following places:
 - lookup `VERSION_METHODS` in the scooby knowledge base
 
 `VERSION_ATTRIBUTES` is a dictionary of attributes for known python packages
-with a non-standard place for the version, e.g. `VERSION_ATTRIBUTES['vtk'] =
-'VTK_VERSION'`. You can add other known places via:
+with a non-standard place for the version. You can add other known places via:
 
 ```py
 scooby.knowledge.VERSION_ATTRIBUTES['a_module'] = 'Awesome_version_location'
