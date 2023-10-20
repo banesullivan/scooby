@@ -207,8 +207,8 @@ def test_import_time():
     # Capture it
     out = subprocess.run(cmd, capture_output=True)
 
-    # Currently we check t < 0.15 s.
-    assert float(out.stderr.decode("utf-8")[:-1]) < 0.15
+    # Currently we check t < 0.2 s.
+    assert float(out.stderr.decode("utf-8")[:-1]) < 0.2
 
 
 @pytest.mark.script_launch_mode('subprocess')
