@@ -364,8 +364,8 @@ scooby
 ```
 
 in a terminal will display the default report. You can also use the CLI to show
-the scooby Report of another package if that package has scooby implemented as
-suggested above, using `packagename.Report()`.
+the scooby Report of another package if that package has implemented a Report
+class as suggested above, using `packagename.Report()`.
 
 As an example, to print the report of pyvista you can run
 
@@ -373,11 +373,11 @@ As an example, to print the report of pyvista you can run
 scooby -r pyvista
 ```
 
-which will show the report implemented in PyVista.
+which will show the Report implemented in PyVista.
 
 The CLI can also generate a report based on the dependencies of a package's
-distribution where that package hasn't implemented a report class. For example,
-we can generate a Report on `matplotlib` and its dependencies:
+distribution where that package hasn't implemented a Report class. For example,
+we can generate a Report for `matplotlib` and its dependencies:
 
 ```bash
 $ scooby -r matplotlib
