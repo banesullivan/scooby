@@ -512,3 +512,27 @@ def platform() -> ModuleType:
     import platform
 
     return platform
+
+
+def get_distribution_dependencies(dist_name: str):
+    """Get the dependencies of a specified package distribution.
+
+    Parameters
+    ----------
+    dist_name : str
+        Name of the package distribution.
+
+    Returns
+    -------
+    dependencies : list
+        List of dependency names.
+    """
+    try:
+        import pkg_resources
+    except ImportError:
+        raise ImportError('Package `pkg_resources` could not be imported.')
+    try:
+        dist = pkg_resources.get_distribution(dist_name)
+    except pkg_resources.DistributionNotFound:
+        raise ImportError(f"Package `{dist_name}` has no distribution.")
+    return [pkg.name for pkg in dist.requires()]

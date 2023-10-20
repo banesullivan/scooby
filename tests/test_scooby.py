@@ -262,7 +262,7 @@ def test_cli(script_runner):
     # handle error -- no distribution
     ret = script_runner.run(['scooby', '--report', 'pathlib'])
     assert not ret.success
-    assert "no distribution" in ret.stderr
+    assert "pkg_resources" in ret.stderr
 
     # handle error -- not found
     ret = script_runner.run(['scooby', '--report', 'foobar'])

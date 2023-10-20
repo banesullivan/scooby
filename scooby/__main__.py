@@ -5,7 +5,7 @@ import sys
 from typing import Any, Dict, List, Optional
 
 import scooby
-from scooby.report import Report
+from scooby.report import Report, get_distribution_dependencies
 
 
 def main(args: Optional[List[str]] = None):
@@ -63,10 +63,11 @@ def act(args_dict: Dict[str, Any]) -> None:
     no_opt = args_dict.pop('no_opt')
     packages = args_dict.pop('packages')
 
-    if no_opt is None and report is None:
-        no_opt = False
-    elif no_opt is None:
-        no_opt = True
+    if no_opt is None:
+        if report is None:
+            no_opt = False
+        else:
+            no_opt = True
 
     # Report of another package.
     if report:
@@ -83,20 +84,13 @@ def act(args_dict: Dict[str, Any]) -> None:
             pass
 
         try:
-            import pkg_resources
-
-            # Generate our own report based on package requirements
-            dist = pkg_resources.get_distribution(report)
-            dist.requires()
-            packages = [report] + [pkg.name for pkg in dist.requires()] + packages
+            dist_deps = get_distribution_dependencies(report)
+            packages = [report, *dist_deps, *packages]
         except ImportError:
             print(
-                f"Package `{report}` has no report and `pkg_resources` could not be used to autogenerate one.",
+                f"Package `{report}` has no Report class and `pkg_resources` could not be used to autogenerate one.",
                 file=sys.stderr,
             )
-            sys.exit(1)
-        except pkg_resources.DistributionNotFound:
-            print(f"Package `{report}` has no distribution or Report class.", file=sys.stderr)
             sys.exit(1)
 
     # Collect input.
