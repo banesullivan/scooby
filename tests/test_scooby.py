@@ -254,10 +254,10 @@ def test_cli(script_runner):
     assert "scooby v" in ret.stdout
 
     # default: scooby-Report for matplotlibe
-    ret = script_runner.run(['scooby', '--report', 'matplotlib'])
+    ret = script_runner.run(['scooby', '--report', 'pytest'])
     assert ret.success
-    assert "matplotlib" in ret.stdout
-    assert "cycler" in ret.stdout
+    assert "pytest" in ret.stdout
+    assert "iniconfig" in ret.stdout
 
     # handle error -- no distribution
     ret = script_runner.run(['scooby', '--report', 'pathlib'])
