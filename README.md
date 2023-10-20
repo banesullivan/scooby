@@ -363,24 +363,49 @@ Scooby comes with a command-line interface. Simply typing
 scooby
 ```
 
-in a terminal will display the default report. You can also use it to show the
-scooby-report of another package: if that package has scooby implemented as
-suggested above, using `packagename.Report()`, otherwise it will get that
-packages dependences from its distribution to generate a report.
+in a terminal will display the default report. You can also use the CLI to show
+the scooby Report of another package if that package has scooby implemented as
+suggested above, using `packagename.Report()`.
 
 As an example, to print the report of pyvista you can run
 
 ```bash
-scooby --report pyvista
+scooby -r pyvista
 ```
 
 which will show the report implemented in PyVista.
 
-Or you could generate a report of a package and its dependencies that hasn't
-implemented a report class:
+The CLI can also generate a report based on the dependencies of a package's
+distribution where that package hasn't implemented a report class. For example,
+we can generate a Report on `matplotlib` and its dependencies:
 
 ```bash
-scooby --report matplotlib
+$ scooby -r matplotlib
+--------------------------------------------------------------------------------
+  Date: Fri Oct 20 16:28:13 2023 PDT
+
+                OS : Darwin
+            CPU(s) : 8
+           Machine : arm64
+      Architecture : 64bit
+               RAM : 16.0 GiB
+       Environment : Python
+       File system : apfs
+
+  Python 3.11.3 | packaged by conda-forge | (main, Apr  6 2023, 08:58:31)
+  [Clang 14.0.6 ]
+
+        matplotlib : 3.7.1
+         contourpy : 1.0.7
+            cycler : 0.11.0
+         fonttools : 4.39.4
+        kiwisolver : 1.4.4
+             numpy : 1.24.3
+         packaging : 23.1
+            pillow : 9.5.0
+         pyparsing : 3.0.9
+   python-dateutil : 2.8.2
+--------------------------------------------------------------------------------
 ```
 
 Simply type
@@ -390,7 +415,6 @@ scooby --help
 ```
 
 to see all the possibilities.
-
 
 ## Optional Requirements
 
