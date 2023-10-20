@@ -4,8 +4,6 @@ import importlib
 import sys
 from typing import Any, Dict, List, Optional
 
-import pkg_resources
-
 import scooby
 from scooby.report import Report
 
@@ -85,10 +83,18 @@ def act(args_dict: Dict[str, Any]) -> None:
             pass
 
         try:
+            import pkg_resources
+
             # Generate our own report based on package requirements
             dist = pkg_resources.get_distribution(report)
             dist.requires()
             packages = [report] + [pkg.name for pkg in dist.requires()] + packages
+        except ImportError:
+            print(
+                f"Package `{report}` has no report and `pkg_resources` could not be used to autogenerate one.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
         except pkg_resources.DistributionNotFound:
             print(f"Package `{report}` has no distribution or Report class.", file=sys.stderr)
             sys.exit(1)
