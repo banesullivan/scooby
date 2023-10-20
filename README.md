@@ -364,15 +364,24 @@ scooby
 ```
 
 in a terminal will display the default report. You can also use it to show the
-scooby-report of another package, if that package has scooby implemented as
-suggested above, using `packagename.Report()`. As an example, to print the
-report of pyvista you can run
+scooby-report of another package: if that package has scooby implemented as
+suggested above, using `packagename.Report()`, otherwise it will get that
+packages dependences from its distribution to generate a report.
+
+As an example, to print the report of pyvista you can run
 
 ```bash
 scooby --report pyvista
 ```
 
-which will show the report of PyVista.
+which will show the report implemented in PyVista.
+
+Or you could generate a report of a package and its dependencies that hasn't
+implemented a report class:
+
+```bash
+scooby --report matplotlib
+```
 
 Simply type
 

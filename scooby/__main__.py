@@ -4,6 +4,8 @@ import importlib
 import sys
 from typing import Any, Dict, List, Optional
 
+import pkg_resources
+
 import scooby
 from scooby.report import Report
 
@@ -31,8 +33,8 @@ def main(args: Optional[List[str]] = None):
     parser.add_argument(
         "--no-opt",
         action="store_true",
-        default=False,
-        help="do not show the default optional packages",
+        default=None,
+        help="do not show the default optional packages. Defaults to True if using --report and defaults to False otherwise.",
     )
 
     # arg: Sort
@@ -45,7 +47,7 @@ def main(args: Optional[List[str]] = None):
 
     # arg: Version
     parser.add_argument(
-        "--version", action="store_true", default=False, help="only display scooby version"
+        "--version", "-v", action="store_true", default=False, help="only display scooby version"
     )
 
     # Call act with command line arguments as dict.
@@ -59,32 +61,48 @@ def act(args_dict: Dict[str, Any]) -> None:
         print(f"scooby v{scooby.__version__}")
         return
 
-    # Report of another package.
     report = args_dict.pop('report')
+    no_opt = args_dict.pop('no_opt')
+    packages = args_dict.pop('packages')
+
+    if no_opt is None and report is None:
+        no_opt = False
+    elif no_opt is None:
+        no_opt = True
+
+    # Report of another package.
     if report:
         try:
             module = importlib.import_module(report)
         except ImportError:
             print(f"Package `{report}` could not be imported.", file=sys.stderr)
-            return
+            sys.exit(1)
 
         try:
             print(module.Report())
+            return
         except AttributeError:
-            print(f"Package `{report}` has no attribute `Report()`.", file=sys.stderr)
+            pass
 
-    # Scooby report with additional options.
-    else:
-        # Collect input.
-        inp = {'additional': args_dict['packages'], 'sort': args_dict['sort']}
+        try:
+            # Generate our own report based on package requirements
+            dist = pkg_resources.get_distribution(report)
+            dist.requires()
+            packages = [report] + [pkg.name for pkg in dist.requires()] + packages
+        except pkg_resources.DistributionNotFound:
+            print(f"Package `{report}` has no distribution or Report class.", file=sys.stderr)
+            sys.exit(1)
 
-        # Define optional as empty list if no-opt.
-        if args_dict['no_opt']:
-            inp['optional'] = []
+    # Collect input.
+    inp = {'additional': packages, 'sort': args_dict['sort']}
 
-        # Print the report.
-        print(Report(**inp))
+    # Define optional as empty list if no-opt.
+    if no_opt:
+        inp['optional'] = []
+
+    # Print the report.
+    print(Report(**inp))
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
