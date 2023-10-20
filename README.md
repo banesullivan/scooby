@@ -1,5 +1,6 @@
 # 🐶🕵️ Scooby
 
+[![Downloads](https://img.shields.io/pypi/dm/scooby.svg?label=PyPI%20downloads)](https://pypi.org/project/scooby/)
 [![Tests](https://github.com/banesullivan/scooby/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/banesullivan/scooby/actions/workflows/pythonpackage.yml)
 [![PyPI Status](https://img.shields.io/pypi/v/scooby.svg?logo=python&logoColor=white)](https://pypi.org/project/scooby/)
 [![Conda Status](https://img.shields.io/conda/vn/conda-forge/scooby.svg)](https://anaconda.org/conda-forge/scooby)
