@@ -24,7 +24,7 @@ def main(args: Optional[List[str]] = None):
 
     # arg: Report of a package
     parser.add_argument(
-        "--report", default=None, type=str, help=("print `Report()` of this package")
+        "--report", "-r", default=None, type=str, help=("print `Report()` of this package")
     )
 
     # arg: Sort
