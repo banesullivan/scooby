@@ -1,7 +1,7 @@
 """The main module containing the `Report` class."""
 
 import importlib
-from importlib.metadata import PackageNotFoundError, version as importlib_version
+from importlib.metadata import PackageNotFoundError, distribution, version as importlib_version
 import sys
 import time
 from types import ModuleType
@@ -563,11 +563,7 @@ def get_distribution_dependencies(dist_name: str):
         List of dependency names.
     """
     try:
-        import pkg_resources
-    except ImportError:
-        raise ImportError('Package `pkg_resources` could not be imported.')
-    try:
-        dist = pkg_resources.get_distribution(dist_name)
-    except pkg_resources.DistributionNotFound:
+        dist = distribution(dist_name)
+    except PackageNotFoundError:
         raise ImportError(f"Package `{dist_name}` has no distribution.")
-    return [pkg.name for pkg in dist.requires()]
+    return [pkg.split()[0] for pkg in dist.requires]

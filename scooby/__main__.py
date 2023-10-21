@@ -88,7 +88,7 @@ def act(args_dict: Dict[str, Any]) -> None:
             packages = [report, *dist_deps, *packages]
         except ImportError:
             print(
-                f"Package `{report}` has no Report class and `pkg_resources` could not be used to autogenerate one.",
+                f"Package `{report}` has no Report class and `importlib` could not be used to autogenerate one.",
                 file=sys.stderr,
             )
             sys.exit(1)
