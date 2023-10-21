@@ -292,7 +292,6 @@ distribution requirements with the `AutoReport` class:
          pyparsing : 3.0.9
    python-dateutil : 2.8.2
 --------------------------------------------------------------------------------
->>>
 ```
 
 ### Solving Mysteries
