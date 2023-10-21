@@ -75,14 +75,13 @@ def act(args_dict: Dict[str, Any]) -> None:
         try:
             module = importlib.import_module(report)
         except ImportError:
-            print(f"Package `{report}` could not be imported.", file=sys.stderr)
-            sys.exit(1)
-
-        try:
-            print(module.Report())
-            return
-        except AttributeError:
             pass
+        else:
+            try:
+                print(module.Report())
+                return
+            except AttributeError:
+                pass
 
         try:
             dist_deps = get_distribution_dependencies(report)

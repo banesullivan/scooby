@@ -267,7 +267,7 @@ def test_cli(script_runner):
     # handle error -- not found
     ret = script_runner.run(['scooby', '--report', 'foobar'])
     assert not ret.success
-    assert "could not be imported" in ret.stderr
+    assert "no Report" in ret.stderr
 
 
 def test_auto_report():
