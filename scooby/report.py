@@ -437,8 +437,7 @@ class Report(PlatformInfo, PythonInfo):
 class AutoReport(Report):
     """Auto-generate a scooby.Report for a package.
 
-    This will check if the specified package has a ``Report`` class and use that or
-    fallback to generating a report based on the distribution requirements of the package.
+    This will generate a report based on the distribution requirements of the package.
     """
 
     def __init__(self, module, additional=None, ncol=3, text_width=80, sort=False):
@@ -449,24 +448,17 @@ class AutoReport(Report):
         if isinstance(module, ModuleType):
             module = module.__name__
 
-        try:
-            package = importlib.import_module(module)
-            if issubclass(package.Report, Report):
-                package.Report.__init__(
-                    self, additional=additional, ncol=ncol, text_width=text_width, sort=sort
-                )
-        except (AttributeError, ImportError):
-            # Autogenerate from distribution requirements
-            core = [module, *get_distribution_dependencies(module)]
-            Report.__init__(
-                self,
-                additional=additional,
-                core=core,
-                optional=[],
-                ncol=ncol,
-                text_width=text_width,
-                sort=sort,
-            )
+        # Autogenerate from distribution requirements
+        core = [module, *get_distribution_dependencies(module)]
+        Report.__init__(
+            self,
+            additional=additional,
+            core=core,
+            optional=[],
+            ncol=ncol,
+            text_width=text_width,
+            sort=sort,
+        )
 
 
 # This functionaliy might also be of interest on its own.
