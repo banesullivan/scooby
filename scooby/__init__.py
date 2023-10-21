@@ -22,12 +22,13 @@ from scooby.knowledge import (  # noqa
     meets_version,
     version_tuple,
 )
-from scooby.report import Report, get_version
+from scooby.report import AutoReport, Report, get_version
 from scooby.tracker import TrackedReport, track_imports, untrack_imports
 
 doo = Report
 
 __all__ = [
+    'AutoReport',
     'Report',
     'TrackedReport',
     'doo',

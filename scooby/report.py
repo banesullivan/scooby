@@ -1,7 +1,7 @@
 """The main module containing the `Report` class."""
 
 import importlib
-from importlib.metadata import PackageNotFoundError, version as importlib_version
+from importlib.metadata import PackageNotFoundError, distribution, version as importlib_version
 import sys
 import time
 from types import ModuleType
@@ -434,6 +434,41 @@ class Report(PlatformInfo, PythonInfo):
         return out
 
 
+class AutoReport(Report):
+    """Auto-generate a scooby.Report for a package.
+
+    This will check if the specified package has a ``Report`` class and use that or
+    fallback to generating a report based on the distribution requirements of the package.
+    """
+
+    def __init__(self, module, additional=None, ncol=3, text_width=80, sort=False):
+        """Initialize."""
+        if not isinstance(module, (str, ModuleType)):
+            raise TypeError("Cannot generate report for type " "({})".format(type(module)))
+
+        if isinstance(module, ModuleType):
+            module = module.__name__
+
+        try:
+            package = importlib.import_module(module)
+            if issubclass(package.Report, Report):
+                package.Report.__init__(
+                    self, additional=additional, ncol=ncol, text_width=text_width, sort=sort
+                )
+        except (AttributeError, ImportError):
+            # Autogenerate from distribution requirements
+            core = [module, *get_distribution_dependencies(module)]
+            Report.__init__(
+                self,
+                additional=additional,
+                core=core,
+                optional=[],
+                ncol=ncol,
+                text_width=text_width,
+                sort=sort,
+            )
+
+
 # This functionaliy might also be of interest on its own.
 def get_version(module: Union[str, ModuleType]) -> Tuple[str, Optional[str]]:
     """Get the version of ``module`` by passing the package or it's name.
@@ -512,3 +547,23 @@ def platform() -> ModuleType:
     import platform
 
     return platform
+
+
+def get_distribution_dependencies(dist_name: str):
+    """Get the dependencies of a specified package distribution.
+
+    Parameters
+    ----------
+    dist_name : str
+        Name of the package distribution.
+
+    Returns
+    -------
+    dependencies : list
+        List of dependency names.
+    """
+    try:
+        dist = distribution(dist_name)
+    except PackageNotFoundError:
+        raise PackageNotFoundError(f"Package `{dist_name}` has no distribution.")
+    return [pkg.split()[0] for pkg in dist.requires]

@@ -252,3 +252,25 @@ def test_cli(script_runner):
     ret = script_runner.run(['python', os.path.join('scooby', '__main__.py'), '--version'])
     assert ret.success
     assert "scooby v" in ret.stdout
+
+    # default: scooby-Report for matplotlibe
+    ret = script_runner.run(['scooby', '--report', 'pytest'])
+    assert ret.success
+    assert "pytest" in ret.stdout
+    assert "iniconfig" in ret.stdout
+
+    # handle error -- no distribution
+    ret = script_runner.run(['scooby', '--report', 'pathlib'])
+    assert not ret.success
+    assert "importlib" in ret.stderr
+
+    # handle error -- not found
+    ret = script_runner.run(['scooby', '--report', 'foobar'])
+    assert not ret.success
+    assert "could not be imported" in ret.stderr
+
+
+def test_auto_report():
+    report = scooby.AutoReport('pytest')
+    assert 'pytest' in report.packages
+    assert 'iniconfig' in report.packages
