@@ -1,6 +1,7 @@
 """Create entry point for the command-line interface (CLI)."""
 import argparse
 import importlib
+from importlib.metadata import PackageNotFoundError
 import sys
 from typing import Any, Dict, List, Optional
 
@@ -86,7 +87,7 @@ def act(args_dict: Dict[str, Any]) -> None:
         try:
             dist_deps = get_distribution_dependencies(report)
             packages = [report, *dist_deps, *packages]
-        except ImportError:
+        except PackageNotFoundError:
             print(
                 f"Package `{report}` has no Report class and `importlib` could not be used to autogenerate one.",
                 file=sys.stderr,

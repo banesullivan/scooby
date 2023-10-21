@@ -455,7 +455,7 @@ class AutoReport(Report):
                 package.Report.__init__(
                     self, additional=additional, ncol=ncol, text_width=text_width, sort=sort
                 )
-        except (AttributeError, TypeError):
+        except (AttributeError, ImportError):
             # Autogenerate from distribution requirements
             core = [module, *get_distribution_dependencies(module)]
             Report.__init__(
@@ -565,5 +565,5 @@ def get_distribution_dependencies(dist_name: str):
     try:
         dist = distribution(dist_name)
     except PackageNotFoundError:
-        raise ImportError(f"Package `{dist_name}` has no distribution.")
+        raise PackageNotFoundError(f"Package `{dist_name}` has no distribution.")
     return [pkg.split()[0] for pkg in dist.requires]
