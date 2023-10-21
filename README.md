@@ -265,7 +265,8 @@ distribution requirements with the `AutoReport` class:
 ```py
 >>> import scooby
 >>> scooby.AutoReport('matplotlib')
-
+```
+```
 --------------------------------------------------------------------------------
   Date: Fri Oct 20 16:49:34 2023 PDT
 
