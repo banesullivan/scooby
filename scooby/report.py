@@ -34,10 +34,23 @@ class PlatformInfo:
     def system(self) -> str:
         """Return the system/OS name.
 
-        E.g. ``'Linux'``, ``'Windows'``, or ``'Java'``. An empty string is
+        E.g. ``'Linux (name version)'``, ``'Windows'``, or ``'Java'``. An empty string is
         returned if the value cannot be determined.
         """
-        return platform().system()
+        s = platform().system()
+        if s == 'Linux':
+            s += f' ({platform().freedesktop_os_release()["NAME"]} ' +\
+                 f'{platform().freedesktop_os_release()["VERSION_ID"]})'
+        elif s == 'Windows':
+            # parse platform().win32_ver()
+            pass
+        elif s == 'Mac':
+            # parse platform().mac_ver()
+            pass
+        elif s == 'Java':
+            # parse platform().java_ver()
+            pass
+        return s
 
     @property
     def platform(self) -> str:
