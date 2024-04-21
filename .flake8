@@ -18,4 +18,6 @@ ignore =
     # Quotes (temporary)
     Q0,
     # bare excepts (temporary)
-    B001, E722
+    B001, E722,
+    # Ignore "black" formatting errors, since black is already checked
+    BLK100
