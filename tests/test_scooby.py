@@ -200,7 +200,7 @@ def test_import_os_error():
 def test_import_time():
     # Relevant for packages which provide a CLI:
     # How long does it take to import?
-    cmd = ["time", "-f", "%U", "python", "-c", "import scooby"]
+    cmd = ["time", "-f", "%U", sys.executable, "-c", "import scooby"]
     # Run it twice, just in case.
     subprocess.run(cmd)
     subprocess.run(cmd)
@@ -244,12 +244,12 @@ def test_cli(script_runner):
     assert rep_comp(test) == rep_comp(ret.stdout)
 
     # version -- VIA scooby/__main__.py by calling the folder scooby.
-    ret = script_runner.run(['python', 'scooby', '--version'])
+    ret = script_runner.run([sys.executable, 'scooby', '--version'])
     assert ret.success
     assert "scooby v" in ret.stdout
 
     # version -- VIA scooby/__main__.py by calling the file.
-    ret = script_runner.run(['python', os.path.join('scooby', '__main__.py'), '--version'])
+    ret = script_runner.run([sys.executable, os.path.join('scooby', '__main__.py'), '--version'])
     assert ret.success
     assert "scooby v" in ret.stdout
 
