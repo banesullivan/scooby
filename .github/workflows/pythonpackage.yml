@@ -24,14 +24,14 @@ jobs:
         os: [ubuntu-latest, macOS-latest, windows-latest]
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 100
         persist-credentials: false
     - name: Fetch git tags
       run: git fetch origin 'refs/tags/*:refs/tags/*'
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Build Wheel and Install
@@ -44,7 +44,7 @@ jobs:
       run: make apitest
     - name: Doctests
       run: make doctest
-    - uses: codecov/codecov-action@v3
+    - uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: coverage.xml
