@@ -8,6 +8,7 @@ It contains, for instance, known odd locations of version information for
 particular modules (``VERSION_ATTRIBUTES``, ``VERSION_METHODS``)
 
 """
+
 import os
 import sys
 import sysconfig

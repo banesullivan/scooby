@@ -1,4 +1,5 @@
 """Track imports."""
+
 from types import ModuleType
 from typing import List, Mapping, Optional, Sequence, Set, Union
 

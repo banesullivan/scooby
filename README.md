@@ -195,7 +195,7 @@ class Report(scooby.Report):
 
 This makes it particularly easy for a user of your project to quickly generate
 a report on all of the relevant package versions and environment details when
-sumbitting a bug.
+submitting a bug.
 
 ```py
 >>> import your_package
