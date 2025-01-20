@@ -3,7 +3,7 @@ pytest-console-scripts
 pytest-cov
 beautifulsoup4
 psutil
-mkl
+mkl; platform_system != 'Darwin'
 numpy
 scipy
 no_version
