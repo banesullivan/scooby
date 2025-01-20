@@ -1,2 +1,2 @@
 psutil
-mkl
+mkl; platform_system != 'Darwin'

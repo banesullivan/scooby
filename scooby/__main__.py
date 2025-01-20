@@ -1,4 +1,5 @@
 """Create entry point for the command-line interface (CLI)."""
+
 import argparse
 import importlib
 from importlib.metadata import PackageNotFoundError
