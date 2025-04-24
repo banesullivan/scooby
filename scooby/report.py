@@ -328,7 +328,7 @@ class Report(PlatformInfo, PythonInfo):
             text += '\n'
 
         # Loop over packages
-        for name, version in self._packages.items():
+        for name, version in self.packages.items():
             text += f'{name:>{row_width}} : {version}\n'
 
         # MKL details
