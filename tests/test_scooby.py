@@ -50,6 +50,10 @@ def test_report():
     report = scooby.Report(additional=['collections', 'foo', 'aaa'], sort=True)
 
 
+def test_timezone():
+    assert 'UTC' in str(scooby.Report())
+
+
 def test_dict():
     report = scooby.Report(['no_version', 'does_not_exist'])
     for key, value in report.to_dict().items():
