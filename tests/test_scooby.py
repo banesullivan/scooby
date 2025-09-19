@@ -57,7 +57,9 @@ def test_timezone(monkeypatch):
         @classmethod
         def now(cls, tz=None):
             # Return a fixed time in, e.g., US/Eastern (UTC-5)
-            return datetime.datetime(2025, 1, 1, 12, 0, 0, tzinfo=datetime.timezone(datetime.timedelta(hours=-5)))
+            return datetime.datetime(
+                2025, 1, 1, 12, 0, 0, tzinfo=datetime.timezone(datetime.timedelta(hours=-5))
+            )
     
     monkeypatch.setattr(datetime, "datetime", FixedDatetime)
     assert 'UTC' in str(scooby.Report())
