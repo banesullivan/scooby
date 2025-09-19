@@ -1,5 +1,5 @@
-import os
 import datetime
+import os
 import re
 import subprocess
 import sys
@@ -60,7 +60,7 @@ def test_timezone(monkeypatch):
             return datetime.datetime(
                 2025, 1, 1, 12, 0, 0, tzinfo=datetime.timezone(datetime.timedelta(hours=-5))
             )
-    
+
     monkeypatch.setattr(datetime, "datetime", FixedDatetime)
     assert 'UTC' in str(scooby.Report())
 
