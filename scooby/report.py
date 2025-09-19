@@ -583,3 +583,7 @@ def get_distribution_dependencies(dist_name: str):
     except PackageNotFoundError:
         raise PackageNotFoundError(f"Package `{dist_name}` has no distribution.")
     return [pkg.split()[0].split(';')[0].split('<')[0].split('=')[0].split('>')[0] for pkg in dist.requires]
+    return [
+        pkg.split()[0].split(';')[0].split('<')[0].split('=')[0].split('>')[0]
+        for pkg in dist.requires
+    ]
