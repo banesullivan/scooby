@@ -1,3 +1,4 @@
+import datetime
 import os
 import re
 import subprocess
@@ -48,6 +49,20 @@ def test_report():
     )
     report = scooby.Report(additional=pytest)
     report = scooby.Report(additional=['collections', 'foo', 'aaa'], sort=True)
+
+
+def test_timezone(monkeypatch):
+    # Patch datetime to simulate non-UTC system time
+    class FixedDatetime(datetime.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            # Return a fixed time in, e.g., US/Eastern (UTC-5)
+            return datetime.datetime(
+                2025, 1, 1, 12, 0, 0, tzinfo=datetime.timezone(datetime.timedelta(hours=-5))
+            )
+
+    monkeypatch.setattr(datetime, "datetime", FixedDatetime)
+    assert 'UTC' in str(scooby.Report())
 
 
 def test_dict():

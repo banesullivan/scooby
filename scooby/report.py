@@ -1,9 +1,9 @@
 """The main module containing the `Report` class."""
 
+from datetime import datetime, timezone
 import importlib
 from importlib.metadata import PackageNotFoundError, distribution, version as importlib_version
 import sys
-import time
 from types import ModuleType
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union, cast
 
@@ -140,7 +140,8 @@ class PlatformInfo:
     @property
     def date(self) -> str:
         """Return the date formatted as a string."""
-        return time.strftime('%a %b %d %H:%M:%S %Y %Z')
+        now_utc = datetime.now(timezone.utc)
+        return now_utc.strftime('%a %b %d %H:%M:%S %Y %Z')
 
     @property
     def filesystem(self) -> Union[str, Literal[False]]:
