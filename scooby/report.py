@@ -2,7 +2,13 @@
 
 from datetime import datetime, timezone
 import importlib
-from importlib.metadata import PackageNotFoundError, distribution, version as importlib_version
+from importlib.metadata import (
+    PackageNotFoundError,
+    distribution,
+    distributions,
+    version as importlib_version,
+)
+import json
 import sys
 from types import ModuleType
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union, cast
@@ -206,7 +212,7 @@ class PythonInfo:
 
     @property
     def packages(self) -> Dict[str, Any]:
-        """Return versions of all packages.
+        """Return versions of all additional, core, and optional packages.
 
         Includes available and unavailable/unknown.
 
@@ -218,6 +224,37 @@ class PythonInfo:
                 packages[name] = pckg_dict[name]
             pckg_dict = packages
         return pckg_dict
+
+    @property
+    def installed_packages(self) -> dict[str, str]:
+        """Return versions of all installed packages.
+
+        .. versionadded:: 0.11
+        """
+        # sort case-insensitively by name
+        installed = sorted(
+            (dist.metadata['Name'] for dist in distributions()),
+            key=str.lower,
+        )
+        packages: dict[str, str] = {}
+        for pkg in installed:
+            name, version = get_version(pkg)
+            packages[name] = version
+        return packages
+
+    @property
+    def other_packages(self):
+        """Packages which are installed but not labeled as additional, core, or optional.
+
+        This is effectively ``installed_packages`` - ``packages``.
+        """
+        packages = self.packages
+        installed: dict[str, str] = self.installed_packages
+        other: dict[str, str] = installed.copy()
+        for key, value in installed.items():
+            if key in packages:
+                other.pop(key)
+        return other
 
 
 # The main Report instance
@@ -256,6 +293,12 @@ class Report(PlatformInfo, PythonInfo):
     max_width : int, optional
         Max-width of html-table. By default None.
 
+    show_other : bool, default: False
+        Show all other installed packages not already included in ``additional``,
+        ``core``, or ``other``. These packages are always sorted alphabetically.
+
+        .. versionadded:: 0.10
+
     """
 
     def __init__(
@@ -268,6 +311,7 @@ class Report(PlatformInfo, PythonInfo):
         sort: bool = False,
         extra_meta: Optional[Union[Tuple[Tuple[str, str], ...], List[Tuple[str, str]]]] = None,
         max_width: Optional[int] = None,
+        show_other: bool = False,
     ) -> None:
         """Initialize report."""
         # Set default optional packages to investigate
@@ -278,6 +322,7 @@ class Report(PlatformInfo, PythonInfo):
         self.ncol = int(ncol)
         self.text_width = int(text_width)
         self.max_width = max_width
+        self.show_other = show_other
 
         if extra_meta is not None:
             if not isinstance(extra_meta, (list, tuple)):
@@ -293,10 +338,15 @@ class Report(PlatformInfo, PythonInfo):
 
     def __repr__(self) -> str:
         """Return Plain-text version information."""
+
+        def line_sep(sep: str = '-', *, newlines: bool = False) -> str:
+            line = self.text_width * sep
+            return '\n' + line + '\n' if newlines else line
+
         import textwrap  # lazy-load see PR#85
 
         # Width for text-version
-        text = '\n' + self.text_width * '-' + '\n'
+        text = line_sep(newlines=True)
 
         # Date and time info as title
         date_text = '  Date: '
@@ -329,8 +379,9 @@ class Report(PlatformInfo, PythonInfo):
             text += '\n'
 
         # Loop over packages
+        package_template = "{name:>{row_width}} : {version}\n"
         for name, version in self.packages.items():
-            text += f'{name:>{row_width}} : {version}\n'
+            text += package_template.format(name=name, version=version, row_width=row_width)
 
         # MKL details
         if self.mkl_info:
@@ -338,8 +389,15 @@ class Report(PlatformInfo, PythonInfo):
             for txt in textwrap.wrap(self.mkl_info, self.text_width - 4):
                 text += '  ' + txt + '\n'
 
+        if self.show_other:
+            text = text.rstrip()
+            text += line_sep("·", newlines=True)
+
+            for name, version in self.other_packages.items():
+                text += package_template.format(name=name, version=version, row_width=row_width)
+
         # Finish
-        text += self.text_width * '-'
+        text += line_sep()
 
         return text
 
@@ -452,6 +510,8 @@ class Report(PlatformInfo, PythonInfo):
         for name, version in self._packages.items():
             out[name] = version
 
+        out['other'] = json.dumps(self.other_packages)
+
         # MKL details
         if self.mkl_info:
             out['MKL'] = self.mkl_info
@@ -465,7 +525,9 @@ class AutoReport(Report):
     This will generate a report based on the distribution requirements of the package.
     """
 
-    def __init__(self, module, additional=None, ncol=3, text_width=80, sort=False):
+    def __init__(
+        self, module, additional=None, ncol=3, text_width=80, sort=False, show_other=False
+    ):
         """Initialize."""
         if not isinstance(module, (str, ModuleType)):
             raise TypeError("Cannot generate report for type " "({})".format(type(module)))
@@ -483,6 +545,7 @@ class AutoReport(Report):
             ncol=ncol,
             text_width=text_width,
             sort=sort,
+            show_other=show_other,
         )
 
 
