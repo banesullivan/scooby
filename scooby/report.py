@@ -247,6 +247,8 @@ class PythonInfo:
         """Packages which are installed but not labeled as additional, core, or optional.
 
         This is effectively ``installed_packages`` - ``packages``.
+
+        .. versionadded:: 0.11
         """
         packages = self.packages
         installed: dict[str, str] = self.installed_packages
@@ -297,7 +299,7 @@ class Report(PlatformInfo, PythonInfo):
         Show all other installed packages not already included in ``additional``,
         ``core``, or ``other``. These packages are always sorted alphabetically.
 
-        .. versionadded:: 0.10
+        .. versionadded:: 0.11
 
     """
 
