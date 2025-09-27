@@ -585,8 +585,9 @@ def get_distribution_dependencies(dist_name: str):
         raise PackageNotFoundError(f"Package `{dist_name}` has no distribution.")
 
     def _package_name(requirement: str) -> str:
-        for sep in (" ", ";", "<", "=", ">"):
+        for sep in (" ", ";", "<", "=", ">", "!"):
             requirement = requirement.split(sep, 1)[0]
         return requirement.strip()
 
-    return [_package_name(pkg) for pkg in dist.requires]
+    # Use dict for ordered and unique keys
+    return list({_package_name(pkg): None for pkg in dist.requires}.keys())
