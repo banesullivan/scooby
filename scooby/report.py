@@ -3,6 +3,7 @@
 from datetime import datetime, timezone
 import importlib
 from importlib.metadata import PackageNotFoundError, distribution, version as importlib_version
+import re
 import sys
 from types import ModuleType
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union, cast
@@ -566,18 +567,26 @@ def platform() -> ModuleType:
     return platform
 
 
-def get_distribution_dependencies(dist_name: str):
-    """Get the dependencies of a specified package distribution.
+def get_distribution_dependencies(dist_name: str, *, separate_extras: bool = False):
+    """Get required and extra dependencies of a package distribution.
 
     Parameters
     ----------
     dist_name : str
         Name of the package distribution.
 
+    separate_extras : bool, default: False
+        Separate extra optional dependencies by name. If ``True`` a ``dict``
+        is returned with a ``'required'`` key with all required dependencies,
+        and any additional key(s) for each extra.
+
+        .. versionadded:: 0.11
+
     Returns
     -------
-    dependencies : list
-        List of dependency names.
+    dependencies : list | dict[str, list[str]]
+        List of dependency names, or dict of dependencies separated by extras
+        name if ``separate_extras`` is ``True``.
     """
     try:
         dist = distribution(dist_name)
@@ -589,5 +598,23 @@ def get_distribution_dependencies(dist_name: str):
             requirement = requirement.split(sep, 1)[0]
         return requirement.strip()
 
-    # Use dict for ordered and unique keys
-    return list({_package_name(pkg): None for pkg in dist.requires}.keys())
+    if not separate_extras:
+        # Use dict for ordered and unique keys
+        return list({_package_name(pkg): None for pkg in dist.requires}.keys())
+
+    deps_dict: dict[str, dict[str, None]] = {"required": {}}
+
+    for req in dist.requires or []:
+        name = _package_name(req)
+        # Extract the extra name from a requirement string like "extra == 'dev'"
+        extras_match = re.search(r"extra\s*==\s*['\"]?([\w-]+)['\"]?", req)
+        if extras_match:
+            extra_name = extras_match.group(1)
+            if extra_name not in deps_dict:
+                deps_dict[extra_name] = {}
+            deps_dict[extra_name][name] = None
+        else:
+            deps_dict["required"][name] = None
+
+    # Convert inner dicts to lists while preserving order
+    return {k: list(v.keys()) for k, v in deps_dict.items()}

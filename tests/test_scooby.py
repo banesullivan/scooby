@@ -1,4 +1,5 @@
 import datetime
+from importlib.metadata import distribution
 import os
 import re
 import subprocess
@@ -329,3 +330,38 @@ def test_get_distribution_dependencies_uniqueness_and_order(monkeypatch):
 
     # 'y' comes first, then 'x' (deduplicated but ordered by first occurrence)
     assert deps == ["y", "x"]
+
+
+def test_get_distribution_dependencies_separate_extras():
+    all_deps = scooby.report.get_distribution_dependencies('beautifulsoup4', separate_extras=False)
+    assert all_deps == [
+        'soupsieve',
+        'typing-extensions',
+        'cchardet',
+        'chardet',
+        'charset-normalizer',
+        'html5lib',
+        'lxml',
+    ]
+
+    separate_deps = scooby.report.get_distribution_dependencies(
+        'beautifulsoup4', separate_extras=True
+    )
+    assert separate_deps == {
+        'required': ['soupsieve', 'typing-extensions'],
+        'cchardet': ['cchardet'],
+        'chardet': ['chardet'],
+        'charset-normalizer': ['charset-normalizer'],
+        'html5lib': ['html5lib'],
+        'lxml': ['lxml'],
+    }
+
+    flat_list = [pkg for dep_list in separate_deps.values() for pkg in dep_list]
+    assert flat_list == all_deps
+
+    # Check that extras keys matches actual extras from distribution
+    dist = distribution("beautifulsoup4")
+    extras_names = list(dist.metadata.get_all("Provides-Extra") or [])
+    extras_returned = list(separate_deps.keys())
+    extras_returned.remove('required')
+    assert extras_returned == extras_names
