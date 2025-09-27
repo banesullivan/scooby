@@ -289,3 +289,43 @@ def test_auto_report():
     report = scooby.AutoReport('pytest')
     assert 'pytest' in report.packages
     assert 'iniconfig' in report.packages
+
+
+@pytest.mark.parametrize(
+    "requirement, expected",
+    [
+        ("x==0.4", "x"),
+        ("x<0.2", "x"),
+        ("x!=0.42", "x"),
+        ("y>1.0", "y"),
+        ("z; python_version<'3.10'", "z"),
+        ("w >= 1.2", "w"),
+        ("x @ git+https://github.com/foo/bar.git@main", "x"),
+    ],
+)
+def test_get_distribution_dependencies(monkeypatch, requirement, expected):
+    class FakeDist:
+        requires = [requirement]
+
+    def fake_distribution(dist_name):
+        return FakeDist()
+
+    monkeypatch.setattr("scooby.report.distribution", fake_distribution)
+
+    deps = scooby.report.get_distribution_dependencies("fakepkg")
+    assert deps == [expected]
+
+
+def test_get_distribution_dependencies_uniqueness_and_order(monkeypatch):
+    class FakeDist:
+        requires = ["y==0.42", "x<1.5", "x>1.0"]
+
+    def fake_distribution(dist_name):
+        return FakeDist()
+
+    monkeypatch.setattr("scooby.report.distribution", fake_distribution)
+
+    deps = scooby.report.get_distribution_dependencies("fakepkg")
+
+    # 'y' comes first, then 'x' (deduplicated but ordered by first occurrence)
+    assert deps == ["y", "x"]
