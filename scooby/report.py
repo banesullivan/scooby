@@ -475,12 +475,17 @@ class AutoReport(Report):
             module = module.__name__
 
         # Autogenerate from distribution requirements
-        core = [module, *get_distribution_dependencies(module)]
+        deps = get_distribution_dependencies(module, separate_extras=True)
+        core = [module, *deps.pop('core')]
+        optional = [  # flatten all extras from the nested "optional" dict
+            pkg for dep_list in deps["optional"].values() for pkg in dep_list
+        ]
+
         Report.__init__(
             self,
             additional=additional,
             core=core,
-            optional=[],
+            optional=optional,
             ncol=ncol,
             text_width=text_width,
             sort=sort,
@@ -576,9 +581,9 @@ def get_distribution_dependencies(dist_name: str, *, separate_extras: bool = Fal
         Name of the package distribution.
 
     separate_extras : bool, default: False
-        Separate extra optional dependencies by name. If ``True`` a ``dict``
-        is returned with a ``'required'`` key with all required dependencies,
-        and any additional key(s) for each extra.
+        Separate extra (optional) dependencies by name. If ``True`` a ``dict``
+        is returned with a ``'core'`` key with all required dependencies,
+        and a ``'optional'`` key which includes any extras as separate keys.
 
         .. versionadded:: 0.11
 
@@ -602,7 +607,7 @@ def get_distribution_dependencies(dist_name: str, *, separate_extras: bool = Fal
         # Use dict for ordered and unique keys
         return list({_package_name(pkg): None for pkg in dist.requires}.keys())
 
-    deps_dict: dict[str, dict[str, None]] = {"required": {}}
+    deps_dict: dict[str, dict[str, None | dict[str, None]]] = {"core": {}, "optional": {}}
 
     for req in dist.requires or []:
         name = _package_name(req)
@@ -610,11 +615,14 @@ def get_distribution_dependencies(dist_name: str, *, separate_extras: bool = Fal
         extras_match = re.search(r"extra\s*==\s*['\"]?([\w-]+)['\"]?", req)
         if extras_match:
             extra_name = extras_match.group(1)
-            if extra_name not in deps_dict:
-                deps_dict[extra_name] = {}
-            deps_dict[extra_name][name] = None
+            if extra_name not in deps_dict['optional']:
+                deps_dict['optional'][extra_name] = {}
+            deps_dict['optional'][extra_name][name] = None
         else:
-            deps_dict["required"][name] = None
+            deps_dict["core"][name] = None
 
-    # Convert inner dicts to lists while preserving order
-    return {k: list(v.keys()) for k, v in deps_dict.items()}
+    # Convert dicts of names → lists while preserving order
+    return {
+        "core": list(deps_dict["core"].keys()),
+        "optional": {k: list(v.keys()) for k, v in deps_dict["optional"].items()},
+    }

@@ -333,35 +333,38 @@ def test_get_distribution_dependencies_uniqueness_and_order(monkeypatch):
 
 
 def test_get_distribution_dependencies_separate_extras():
-    all_deps = scooby.report.get_distribution_dependencies('beautifulsoup4', separate_extras=False)
+    all_deps = scooby.report.get_distribution_dependencies("beautifulsoup4", separate_extras=False)
     assert all_deps == [
-        'soupsieve',
-        'typing-extensions',
-        'cchardet',
-        'chardet',
-        'charset-normalizer',
-        'html5lib',
-        'lxml',
+        "soupsieve",
+        "typing-extensions",
+        "cchardet",
+        "chardet",
+        "charset-normalizer",
+        "html5lib",
+        "lxml",
     ]
 
     separate_deps = scooby.report.get_distribution_dependencies(
-        'beautifulsoup4', separate_extras=True
+        "beautifulsoup4", separate_extras=True
     )
     assert separate_deps == {
-        'required': ['soupsieve', 'typing-extensions'],
-        'cchardet': ['cchardet'],
-        'chardet': ['chardet'],
-        'charset-normalizer': ['charset-normalizer'],
-        'html5lib': ['html5lib'],
-        'lxml': ['lxml'],
+        'core': ['soupsieve', 'typing-extensions'],
+        'optional': {
+            'cchardet': ['cchardet'],
+            'chardet': ['chardet'],
+            'charset-normalizer': ['charset-normalizer'],
+            'html5lib': ['html5lib'],
+            'lxml': ['lxml'],
+        },
     }
 
-    flat_list = [pkg for dep_list in separate_deps.values() for pkg in dep_list]
+    # Flatten back into one list
+    flat_list = separate_deps["core"] + [
+        pkg for dep_list in separate_deps["optional"].values() for pkg in dep_list
+    ]
     assert flat_list == all_deps
 
-    # Check that extras keys matches actual extras from distribution
+    # Check that optional keys match actual extras from distribution
     dist = distribution("beautifulsoup4")
     extras_names = list(dist.metadata.get_all("Provides-Extra") or [])
-    extras_returned = list(separate_deps.keys())
-    extras_returned.remove('required')
-    assert extras_returned == extras_names
+    assert list(separate_deps["optional"].keys()) == extras_names
