@@ -668,13 +668,14 @@ def get_distribution_dependencies(dist_name: str, *, separate_extras: bool = Fal
             requirement = requirement.split(sep, 1)[0]
         return requirement.strip()
 
+    requires = dist.requires or []
     if not separate_extras:
         # Use dict for ordered and unique keys
-        return list({_package_name(pkg): None for pkg in dist.requires}.keys())
+        return list({_package_name(pkg): None for pkg in requires}.keys())
 
     deps_dict: dict[str, dict[str, None | dict[str, None]]] = {"core": {}, "optional": {}}
 
-    for req in dist.requires or []:
+    for req in requires:
         name = _package_name(req)
         # Extract the extra name from a requirement string like "extra == 'dev'"
         extras_match = re.search(r"extra\s*==\s*['\"]?([\w-]+)['\"]?", req)

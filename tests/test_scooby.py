@@ -348,6 +348,13 @@ def test_get_distribution_dependencies(monkeypatch, requirement, expected):
     assert deps == [expected]
 
 
+def test_get_distribution_dependencies_no_deps():
+    deps = scooby.report.get_distribution_dependencies('numpy')
+    assert deps == []
+    deps = scooby.report.get_distribution_dependencies('numpy', separate_extras=True)
+    assert deps == {'core': [], 'optional': {}}
+
+
 def test_get_distribution_dependencies_uniqueness_and_order(monkeypatch):
     class FakeDist:
         requires = ["y==0.42", "x<1.5", "x>1.0"]
