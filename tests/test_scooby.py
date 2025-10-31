@@ -1,9 +1,11 @@
 import datetime
 from importlib.metadata import distribution
+import json
 import os
 import re
 import subprocess
 import sys
+from types import SimpleNamespace
 
 from bs4 import BeautifulSoup
 import numpy
@@ -66,12 +68,41 @@ def test_timezone(monkeypatch):
     assert 'UTC' in str(scooby.Report())
 
 
-def test_dict():
-    report = scooby.Report(['no_version', 'does_not_exist'])
-    for key, value in report.to_dict().items():
+# Global fake packages dict
+FAKE_INSTALLED_PACKAGES = {
+    "numpy": "1.27.0",
+    "scipy": "1.12.0",
+    "misc_pkg1": "0.1",
+    "misc_pkg2": "0.2",
+}
+
+
+def fake_distributions():
+    """Yield fake Distribution-like objects from the global dict."""
+    for name, version in FAKE_INSTALLED_PACKAGES.items():
+        yield SimpleNamespace(metadata={"Name": name, "Version": version})
+
+
+def test_dict(monkeypatch):
+    # Patch distributions to return fake installed packages
+    monkeypatch.setattr("importlib.metadata.distributions", fake_distributions)
+    report = scooby.Report(['no_version', 'does_not_exist'], show_other=True)
+    report_repr = repr(report)
+
+    # Test regular dict items separately from other items
+    report_dict = report.to_dict()
+    assert 'other' in report_dict.keys()
+    other = report_dict.pop('other')
+
+    for key, value in report_dict.items():
         if key != 'MKL':
-            assert key in report.__repr__()
-        assert value[:10] in report.__repr__()
+            assert key in report_repr
+        assert value[:10] in report_repr
+
+    # Test other items (converted from JSON)
+    other_dict = json.loads(other)
+    for key, value in other_dict.items():
+        assert key in report_repr
 
 
 def test_inheritence_example():
