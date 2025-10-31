@@ -1,4 +1,5 @@
 import datetime
+from importlib.metadata import distribution
 import json
 import os
 import re
@@ -320,3 +321,81 @@ def test_auto_report():
     report = scooby.AutoReport('pytest')
     assert 'pytest' in report.packages
     assert 'iniconfig' in report.packages
+
+
+@pytest.mark.parametrize(
+    "requirement, expected",
+    [
+        ("x==0.4", "x"),
+        ("x<0.2", "x"),
+        ("x!=0.42", "x"),
+        ("y>1.0", "y"),
+        ("z; python_version<'3.10'", "z"),
+        ("w >= 1.2", "w"),
+        ("x @ git+https://github.com/foo/bar.git@main", "x"),
+    ],
+)
+def test_get_distribution_dependencies(monkeypatch, requirement, expected):
+    class FakeDist:
+        requires = [requirement]
+
+    def fake_distribution(dist_name):
+        return FakeDist()
+
+    monkeypatch.setattr("scooby.report.distribution", fake_distribution)
+
+    deps = scooby.report.get_distribution_dependencies("fakepkg")
+    assert deps == [expected]
+
+
+def test_get_distribution_dependencies_uniqueness_and_order(monkeypatch):
+    class FakeDist:
+        requires = ["y==0.42", "x<1.5", "x>1.0"]
+
+    def fake_distribution(dist_name):
+        return FakeDist()
+
+    monkeypatch.setattr("scooby.report.distribution", fake_distribution)
+
+    deps = scooby.report.get_distribution_dependencies("fakepkg")
+
+    # 'y' comes first, then 'x' (deduplicated but ordered by first occurrence)
+    assert deps == ["y", "x"]
+
+
+def test_get_distribution_dependencies_separate_extras():
+    all_deps = scooby.report.get_distribution_dependencies("beautifulsoup4", separate_extras=False)
+    assert all_deps == [
+        "soupsieve",
+        "typing-extensions",
+        "cchardet",
+        "chardet",
+        "charset-normalizer",
+        "html5lib",
+        "lxml",
+    ]
+
+    separate_deps = scooby.report.get_distribution_dependencies(
+        "beautifulsoup4", separate_extras=True
+    )
+    assert separate_deps == {
+        'core': ['soupsieve', 'typing-extensions'],
+        'optional': {
+            'cchardet': ['cchardet'],
+            'chardet': ['chardet'],
+            'charset-normalizer': ['charset-normalizer'],
+            'html5lib': ['html5lib'],
+            'lxml': ['lxml'],
+        },
+    }
+
+    # Flatten back into one list
+    flat_list = separate_deps["core"] + [
+        pkg for dep_list in separate_deps["optional"].values() for pkg in dep_list
+    ]
+    assert flat_list == all_deps
+
+    # Check that optional keys match actual extras from distribution
+    dist = distribution("beautifulsoup4")
+    extras_names = list(dist.metadata.get_all("Provides-Extra") or [])
+    assert list(separate_deps["optional"].keys()) == extras_names

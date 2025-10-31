@@ -9,6 +9,7 @@ from importlib.metadata import (
     version as importlib_version,
 )
 import json
+import re
 import sys
 from types import ModuleType
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union, cast
@@ -538,12 +539,17 @@ class AutoReport(Report):
             module = module.__name__
 
         # Autogenerate from distribution requirements
-        core = [module, *get_distribution_dependencies(module)]
+        deps = get_distribution_dependencies(module, separate_extras=True)
+        core = [module, *deps.pop('core')]
+        optional = [  # flatten all extras from the nested "optional" dict
+            pkg for dep_list in deps["optional"].values() for pkg in dep_list
+        ]
+
         Report.__init__(
             self,
             additional=additional,
             core=core,
-            optional=[],
+            optional=optional,
             ncol=ncol,
             text_width=text_width,
             sort=sort,
@@ -631,18 +637,26 @@ def platform() -> ModuleType:
     return platform
 
 
-def get_distribution_dependencies(dist_name: str):
-    """Get the dependencies of a specified package distribution.
+def get_distribution_dependencies(dist_name: str, *, separate_extras: bool = False):
+    """Get required and extra dependencies of a package distribution.
 
     Parameters
     ----------
     dist_name : str
         Name of the package distribution.
 
+    separate_extras : bool, default: False
+        Separate extra (optional) dependencies by name. If ``True`` a ``dict``
+        is returned with a ``'core'`` key with all required dependencies,
+        and a ``'optional'`` key which includes any extras as separate keys.
+
+        .. versionadded:: 0.11
+
     Returns
     -------
-    dependencies : list
-        List of dependency names.
+    dependencies : list | dict[str, list[str]]
+        List of dependency names, or dict of dependencies separated by extras
+        name if ``separate_extras`` is ``True``.
     """
     try:
         dist = distribution(dist_name)
@@ -650,8 +664,30 @@ def get_distribution_dependencies(dist_name: str):
         raise PackageNotFoundError(f"Package `{dist_name}` has no distribution.")
 
     def _package_name(requirement: str) -> str:
-        for sep in (" ", ";", "<", "=", ">"):
+        for sep in (" ", ";", "<", "=", ">", "!"):
             requirement = requirement.split(sep, 1)[0]
         return requirement.strip()
 
-    return [_package_name(pkg) for pkg in dist.requires]
+    if not separate_extras:
+        # Use dict for ordered and unique keys
+        return list({_package_name(pkg): None for pkg in dist.requires}.keys())
+
+    deps_dict: dict[str, dict[str, None | dict[str, None]]] = {"core": {}, "optional": {}}
+
+    for req in dist.requires or []:
+        name = _package_name(req)
+        # Extract the extra name from a requirement string like "extra == 'dev'"
+        extras_match = re.search(r"extra\s*==\s*['\"]?([\w-]+)['\"]?", req)
+        if extras_match:
+            extra_name = extras_match.group(1)
+            if extra_name not in deps_dict['optional']:
+                deps_dict['optional'][extra_name] = {}
+            deps_dict['optional'][extra_name][name] = None
+        else:
+            deps_dict["core"][name] = None
+
+    # Convert dicts of names → lists while preserving order
+    return {
+        "core": list(deps_dict["core"].keys()),
+        "optional": {k: list(v.keys()) for k, v in deps_dict["optional"].items()},
+    }
