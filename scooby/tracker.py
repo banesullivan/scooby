@@ -32,7 +32,7 @@ MODULES_TO_IGNORE = {
 STDLIB_PKGS: Optional[Set[str]] = None
 
 
-def _criterion(name: str):
+def _criterion(name: str) -> bool:
     if (
         len(name) > 0
         and name not in STDLIB_PKGS
@@ -47,8 +47,8 @@ if TRACKING_SUPPORTED:
 
     def scooby_import(
         name: str,
-        globals: Optional[Mapping[str, object]] = None,
-        locals: Optional[Mapping[str, object]] = None,
+        globals: Optional[Mapping[str, object]] = None,  # noqa: A002
+        locals: Optional[Mapping[str, object]] = None,  # noqa: A002
         fromlist: Sequence[str] = (),
         level: int = 0,
     ) -> ModuleType:
@@ -96,7 +96,7 @@ class TrackedReport(Report):
         ncol: int = 3,
         text_width: int = 80,
         sort: bool = False,
-    ):
+    ) -> None:
         """Initialize."""
         if not TRACKING_SUPPORTED:
             raise RuntimeError(SUPPORT_MESSAGE)

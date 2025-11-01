@@ -32,7 +32,7 @@ VERSION_NOT_FOUND = 'Version unknown'
 class PlatformInfo:
     """Internal helper class to access details about the computer platform."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize."""
         self._mkl_info: Optional[str]  # for typing purpose
         self._filesystem: Union[str, Literal[False]]
@@ -167,7 +167,7 @@ class PythonInfo:
         core: Optional[List[Union[str, ModuleType]]],
         optional: Optional[List[Union[str, ModuleType]]],
         sort: bool,
-    ):
+    ) -> None:
         """Initialize python info."""
         self._packages: Dict[str, Any] = {}  # Holds name of packages and their version
         self._sort = sort
@@ -179,7 +179,7 @@ class PythonInfo:
 
     def _add_packages(
         self, packages: Optional[List[Union[str, ModuleType]]], optional: bool = False
-    ):
+    ) -> None:
         """Add all packages to list; optional ones only if available."""
         # Ensure arguments are a list
         if isinstance(packages, (str, ModuleType)):
@@ -244,7 +244,7 @@ class PythonInfo:
         return packages
 
     @property
-    def other_packages(self):
+    def other_packages(self) -> dict[str, str]:
         """Packages which are installed but not labeled as additional, core, or optional.
 
         This is effectively ``installed_packages`` - ``packages``.
@@ -545,8 +545,14 @@ class AutoReport(Report):
     """
 
     def __init__(
-        self, module, additional=None, ncol=3, text_width=80, sort=False, show_other=False
-    ):
+        self,
+        module: str | ModuleType,
+        additional: str | None = None,
+        ncol: int = 3,
+        text_width: int = 80,
+        sort: bool = False,
+        show_other: bool = False,
+    ) -> None:
         """Initialize."""
         if not isinstance(module, (str, ModuleType)):
             raise TypeError('Cannot generate report for type ({})'.format(type(module)))
@@ -653,7 +659,9 @@ def platform() -> ModuleType:
     return platform
 
 
-def get_distribution_dependencies(dist_name: str, *, separate_extras: bool = False):
+def get_distribution_dependencies(
+    dist_name: str, *, separate_extras: bool = False
+) -> list[str] | dict[str, list[str]]:
     """Get required and extra dependencies of a package distribution.
 
     Parameters

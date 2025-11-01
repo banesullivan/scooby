@@ -10,6 +10,8 @@ from types import SimpleNamespace
 from bs4 import BeautifulSoup
 import numpy
 import pytest
+from pytest import MonkeyPatch
+from pytest_console_scripts import ScriptRunner
 
 import scooby
 
@@ -26,7 +28,7 @@ with open(os.path.join(ppath, '__init__.py'), 'w') as f:
 sys.path.append('tests')
 
 
-def test_report():
+def test_report() -> None:
     report = scooby.Report()
     text = str(report)
     assert len(text) > 0
@@ -54,11 +56,11 @@ def test_report():
     report = scooby.Report(additional=['collections', 'foo', 'aaa'], sort=True)
 
 
-def test_timezone(monkeypatch):
+def test_timezone(monkeypatch: MonkeyPatch) -> None:
     # Patch datetime to simulate non-UTC system time
     class FixedDatetime(datetime.datetime):
         @classmethod
-        def now(cls, tz=None):
+        def now(cls, _tz: datetime.timezone | None = None) -> None:
             # Return a fixed time in, e.g., US/Eastern (UTC-5)
             return datetime.datetime(
                 2025, 1, 1, 12, 0, 0, tzinfo=datetime.timezone(datetime.timedelta(hours=-5))
@@ -77,13 +79,13 @@ FAKE_INSTALLED_PACKAGES = {
 }
 
 
-def fake_distributions():
+def fake_distributions() -> None:
     """Yield fake Distribution-like objects from the global dict."""
     for name, version in FAKE_INSTALLED_PACKAGES.items():
         yield SimpleNamespace(metadata={'Name': name, 'Version': version})
 
 
-def test_dict(monkeypatch):
+def test_dict(monkeypatch: MonkeyPatch) -> None:
     # Patch distributions to return fake installed packages
     monkeypatch.setattr('importlib.metadata.distributions', fake_distributions)
     report = scooby.Report(['no_version', 'does_not_exist'], show_other=True)
@@ -105,9 +107,15 @@ def test_dict(monkeypatch):
         assert key in report_repr
 
 
-def test_inheritence_example():
+def test_inheritence_example() -> None:
     class Report(scooby.Report):
-        def __init__(self, additional=None, ncol=3, text_width=80, sort=False):
+        def __init__(
+            self,
+            additional: list[str] | None = None,
+            ncol: int = 3,
+            text_width: int = 80,
+            sort: bool = False,
+        ) -> None:
             """Initiate a scooby.Report instance."""
 
             # Mandatory packages.
@@ -137,11 +145,11 @@ def test_inheritence_example():
     assert 'numpy' in report.packages
 
 
-def test_ipy():
+def test_ipy() -> None:
     scooby.in_ipykernel()
 
 
-def test_get_version():
+def test_get_version() -> None:
     name, version = scooby.get_version(numpy)
     assert version == numpy.__version__
     assert name == 'numpy'
@@ -161,7 +169,7 @@ def test_get_version():
     assert name == 'does_not_exist'
 
 
-def test_plain_vs_html():
+def test_plain_vs_html() -> None:
     report = scooby.Report()
     text_html = BeautifulSoup(report._repr_html_(), features='html.parser').get_text()
     text_plain = report.__repr__()
@@ -171,10 +179,10 @@ def test_plain_vs_html():
 
     # Plain text currently starts with `Date :`;
     # we should remove that, or add it to the html version too.
-    assert text_html[20:] == text_plain[25:]
+    assert text_html[20:].strip() == text_plain[25:].strip()
 
 
-def test_extra_meta():
+def test_extra_meta() -> None:
     report = scooby.Report(extra_meta=('key', 'value'))
     assert 'key : value' in report.__repr__()
     report = scooby.Report(extra_meta=(('key', 'value'),))
@@ -191,7 +199,7 @@ def test_extra_meta():
 
 
 @pytest.mark.skipif(sys.version_info.major < 3, reason='Tracking not supported on Python 2.')
-def test_tracking():
+def test_tracking() -> None:
     scooby.track_imports()
     from scipy.constants import mu_0  # noqa ; a float value
 
@@ -208,7 +216,7 @@ def test_tracking():
     assert 'mu_0' not in report.packages
 
 
-def test_version_compare():
+def test_version_compare() -> None:
     assert scooby.meets_version('2', '1')
     assert not scooby.meets_version('1', '2')
 
@@ -234,7 +242,7 @@ def test_version_compare():
         scooby.meets_version('0.25.2.0', '0.26')
 
 
-def test_import_os_error():
+def test_import_os_error() -> None:
     # pyvips requires libvips, etc., to be installed
     # We don't have this on CI, so this should throw an error on import
     # Make sure scooby can handle it.
@@ -244,7 +252,7 @@ def test_import_os_error():
 
 
 @pytest.mark.skipif(not sys.platform.startswith('linux'), reason='Not Linux.')
-def test_import_time():
+def test_import_time() -> None:
     # Relevant for packages which provide a CLI:
     # How long does it take to import?
     cmd = ['time', '-f', '%U', sys.executable, '-c', 'import scooby']
@@ -259,14 +267,14 @@ def test_import_time():
 
 
 @pytest.mark.script_launch_mode('subprocess')
-def test_cli(script_runner):
+def test_cli(script_runner: ScriptRunner) -> None:
     # help
     for inp in ['--help', '-h']:
         ret = script_runner.run(['scooby', inp])
         assert ret.success
         assert 'Great Dane turned Python environment detective' in ret.stdout
 
-    def rep_comp(inp):
+    def rep_comp(inp: str) -> str:
         # Exclude time to avoid errors.
         # Exclude scooby-version, because if run locally without having scooby
         # installed it will be "unknown" for the __main__ one.
@@ -317,7 +325,7 @@ def test_cli(script_runner):
     assert 'no Report' in ret.stderr
 
 
-def test_auto_report():
+def test_auto_report() -> None:
     report = scooby.AutoReport('pytest')
     assert 'pytest' in report.packages
     assert 'iniconfig' in report.packages
@@ -335,11 +343,13 @@ def test_auto_report():
         ('x @ git+https://github.com/foo/bar.git@main', 'x'),
     ],
 )
-def test_get_distribution_dependencies(monkeypatch, requirement, expected):
+def test_get_distribution_dependencies(
+    monkeypatch: MonkeyPatch, requirement: str, expected: str
+) -> None:
     class FakeDist:
         requires = [requirement]
 
-    def fake_distribution(dist_name):
+    def fake_distribution(_dist_name: str) -> None:
         return FakeDist()
 
     monkeypatch.setattr('scooby.report.distribution', fake_distribution)
@@ -348,11 +358,11 @@ def test_get_distribution_dependencies(monkeypatch, requirement, expected):
     assert deps == [expected]
 
 
-def test_get_distribution_dependencies_uniqueness_and_order(monkeypatch):
+def test_get_distribution_dependencies_uniqueness_and_order(monkeypatch: MonkeyPatch) -> None:
     class FakeDist:
         requires = ['y==0.42', 'x<1.5', 'x>1.0']
 
-    def fake_distribution(dist_name):
+    def fake_distribution(_dist_name: str) -> None:
         return FakeDist()
 
     monkeypatch.setattr('scooby.report.distribution', fake_distribution)
@@ -363,7 +373,7 @@ def test_get_distribution_dependencies_uniqueness_and_order(monkeypatch):
     assert deps == ['y', 'x']
 
 
-def test_get_distribution_dependencies_separate_extras():
+def test_get_distribution_dependencies_separate_extras() -> None:
     all_deps = scooby.report.get_distribution_dependencies('beautifulsoup4', separate_extras=False)
     assert all_deps == [
         'soupsieve',

@@ -10,7 +10,7 @@ import scooby
 from scooby.report import Report, get_distribution_dependencies
 
 
-def main(args: Optional[List[str]] = None):
+def main(args: Optional[List[str]] = None) -> None:
     """Parse command line inputs of CLI interface."""
     # If not explicitly called, catch arguments
     if args is None:
