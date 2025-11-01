@@ -7,7 +7,7 @@ import sys
 from typing import Any, Dict, List, Optional
 
 import scooby
-from scooby.report import Report, get_distribution_dependencies
+from scooby.report import AutoReport, Report
 
 
 def main(args: Optional[List[str]] = None):
@@ -85,8 +85,8 @@ def act(args_dict: Dict[str, Any]) -> None:
                 pass
 
         try:
-            dist_deps = get_distribution_dependencies(report)
-            packages = [report, *dist_deps, *packages]
+            print(AutoReport(report))
+            return
         except PackageNotFoundError:
             print(
                 f"Package `{report}` has no Report class and `importlib` could not be used to autogenerate one.",
