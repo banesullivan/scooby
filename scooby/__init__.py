@@ -15,12 +15,14 @@ Werthmüller for ``empymod``, ``emg3d``, and the ``SimPEG`` framework
 ``watermark.py`` from https://github.com/rasbt/watermark.
 """
 
-from scooby.knowledge import (  # noqa
+from __future__ import annotations
+
+from scooby.knowledge import (
     get_standard_lib_modules,
     in_ipykernel,
     in_ipython,
-    meets_version,
-    version_tuple,
+    meets_version,  # noqa: F401
+    version_tuple,  # noqa: F401
 )
 from scooby.report import AutoReport, Report, get_version
 from scooby.tracker import TrackedReport, track_imports, untrack_imports
@@ -33,9 +35,9 @@ __all__ = [
     'TrackedReport',
     'doo',
     'get_standard_lib_modules',
-    'in_ipython',
-    'in_ipykernel',
     'get_version',
+    'in_ipykernel',
+    'in_ipython',
     'track_imports',
     'untrack_imports',
 ]
@@ -47,6 +49,6 @@ __copyright__ = '2019, Dieter Werthmüller & Bane Sullivan'
 try:
     from scooby.version import version as __version__
 except ImportError:  # Only happens if not properly installed.
-    from datetime import datetime
+    from datetime import datetime, timezone
 
-    __version__ = 'unknown-' + datetime.today().strftime('%Y%m%d')
+    __version__ = 'unknown-' + datetime.now(timezone.utc).strftime('%Y%m%d')
