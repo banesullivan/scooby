@@ -100,7 +100,7 @@ def test_dict(monkeypatch: pytest.MonkeyPatch) -> None:
 
     # Test regular dict items separately from other items
     report_dict = report.to_dict()
-    assert 'other' in report_dict.keys()
+    assert 'other' in report_dict
     other = report_dict.pop('other')
 
     for key, value in report_dict.items():

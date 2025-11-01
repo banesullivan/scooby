@@ -40,14 +40,12 @@ STDLIB_PKGS: set[str] | None = None
 
 
 def _criterion(name: str) -> bool:
-    if (
+    return (
         len(name) > 0
         and name not in STDLIB_PKGS
         and not name.startswith('_')
         and name not in MODULES_TO_IGNORE
-    ):
-        return True
-    return False
+    )
 
 
 if TRACKING_SUPPORTED:

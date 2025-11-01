@@ -36,13 +36,10 @@ extend-select = [
   'EM',
   'F',
   'FA',
-  # 'FBT001',
-  # 'FBT002',
   'FLY',
   'FURB',
   'I',
   'ICN',
-  # 'INP',
   'INT',
   'ISC',
   'LOG',
@@ -51,18 +48,13 @@ extend-select = [
   'PERF',
   'PGH',
   'PIE',
-  # 'PL',
-  # 'PLR0917',
   'PT',
   'PTH',
   'PYI',
-#   'Q',
   'RET',
   'RSE',
-  # 'RUF',
-  # 'SIM',
+  'SIM',
   'T10',
-  # 'T20',
   'TCH',
   'TID',
   'TRY',
@@ -72,6 +64,8 @@ extend-select = [
 ]
 ignore = [
   'COM812', # May cause conflicts when used with the formatter
+  'SIM105', # contextlib.suppress is slower and try/except seems more Pythonic
+  'SIM108', # long ternery operators are sometimes confusing
 ]
 
 [tool.ruff.lint.isort]
