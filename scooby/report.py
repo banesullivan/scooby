@@ -51,19 +51,19 @@ class PlatformInfo:
                     f' ({platform().freedesktop_os_release()["NAME"]} '
                     + f'{platform().freedesktop_os_release()["VERSION_ID"]})'
                 )
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
         elif s == 'Windows':
             try:
                 release, version, csd, ptype = platform().win32_ver()
                 s += f' ({release} {version} {csd} {ptype})'
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
         elif s == 'Darwin':
             try:
                 release, _, _ = platform().mac_ver()
                 s += f' (macOS {release})'
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
         elif s == 'Java':
             # TODO: parse platform().java_ver()
@@ -178,7 +178,9 @@ class PythonInfo:
         self._add_packages(optional, optional=True)  # Optional packages
 
     def _add_packages(
-        self, packages: Optional[List[Union[str, ModuleType]]], optional: bool = False
+        self,
+        packages: Optional[List[Union[str, ModuleType]]],
+        optional: bool = False,
     ) -> None:
         """Add all packages to list; optional ones only if available."""
         # Ensure arguments are a list
@@ -187,7 +189,7 @@ class PythonInfo:
                 packages,
             ]
         elif packages is None or len(packages) < 1:
-            pckgs = list()
+            pckgs = []
         else:
             pckgs = list(packages)
 
@@ -254,7 +256,7 @@ class PythonInfo:
         packages = self.packages
         installed: dict[str, str] = self.installed_packages
         other: dict[str, str] = installed.copy()
-        for key, value in installed.items():
+        for key in installed:
             if key in packages:
                 other.pop(key)
         return other
@@ -329,12 +331,14 @@ class Report(PlatformInfo, PythonInfo):
 
         if extra_meta is not None:
             if not isinstance(extra_meta, (list, tuple)):
-                raise TypeError('`extra_meta` must be a list/tuple of key-value pairs.')
+                msg = '`extra_meta` must be a list/tuple of key-value pairs.'
+                raise TypeError(msg)
             if len(extra_meta) == 2 and isinstance(extra_meta[0], str):
                 extra_meta = [extra_meta]
             for meta in extra_meta:
                 if not isinstance(meta, (list, tuple)) or len(meta) != 2:
-                    raise TypeError('Each chunk of meta info must have two values.')
+                    msg = 'Each chunk of meta info must have two values.'
+                    raise TypeError(msg)
         else:
             extra_meta = []
         self._extra_meta = extra_meta
@@ -555,7 +559,8 @@ class AutoReport(Report):
     ) -> None:
         """Initialize."""
         if not isinstance(module, (str, ModuleType)):
-            raise TypeError('Cannot generate report for type ({})'.format(type(module)))
+            msg = 'Cannot generate report for type ({})'.format(type(module))
+            raise TypeError(msg)
 
         if isinstance(module, ModuleType):
             module = module.__name__
@@ -596,10 +601,12 @@ def get_version(module: Union[str, ModuleType]) -> Tuple[str, Optional[str]]:
 
     version : str or None
         Version of module.
+
     """
     # module is (1) a module or (2) a string.
     if not isinstance(module, (str, ModuleType)):
-        raise TypeError('Cannot fetch version from type ({})'.format(type(module)))
+        msg = 'Cannot fetch version from type ({})'.format(type(module))
+        raise TypeError(msg)
 
     # module is module; get name
     if isinstance(module, ModuleType):
@@ -624,7 +631,7 @@ def get_version(module: Union[str, ModuleType]) -> Tuple[str, Optional[str]]:
             module = importlib.import_module(name)
         except ImportError:
             return name, MODULE_NOT_FOUND
-        except Exception:
+        except Exception:  # noqa: BLE001
             return name, MODULE_TROUBLE
 
     # Try common version names on loaded module
@@ -660,7 +667,9 @@ def platform() -> ModuleType:
 
 
 def get_distribution_dependencies(
-    dist_name: str, *, separate_extras: bool = False
+    dist_name: str,
+    *,
+    separate_extras: bool = False,
 ) -> list[str] | dict[str, list[str]]:
     """Get required and extra dependencies of a package distribution.
 
@@ -681,11 +690,13 @@ def get_distribution_dependencies(
     dependencies : list | dict[str, list[str]]
         List of dependency names, or dict of dependencies separated by extras
         name if ``separate_extras`` is ``True``.
+
     """
     try:
         dist = distribution(dist_name)
     except PackageNotFoundError:
-        raise PackageNotFoundError(f'Package `{dist_name}` has no distribution.')
+        msg = f'Package `{dist_name}` has no distribution.'
+        raise PackageNotFoundError(msg) from None
 
     def _package_name(requirement: str) -> str:
         for sep in (' ', ';', '<', '=', '>', '!'):

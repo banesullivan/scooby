@@ -21,12 +21,20 @@ def main(args: Optional[List[str]] = None) -> None:
 
     # arg: Packages
     parser.add_argument(
-        'packages', nargs='*', default=None, type=str, help=('names of the packages to report')
+        'packages',
+        nargs='*',
+        default=None,
+        type=str,
+        help=('names of the packages to report'),
     )
 
     # arg: Report of a package
     parser.add_argument(
-        '--report', '-r', default=None, type=str, help=('print `Report()` of this package')
+        '--report',
+        '-r',
+        default=None,
+        type=str,
+        help=('print `Report()` of this package'),
     )
 
     # arg: Sort
@@ -34,7 +42,8 @@ def main(args: Optional[List[str]] = None) -> None:
         '--no-opt',
         action='store_true',
         default=None,
-        help='do not show the default optional packages. Defaults to True if using --report and defaults to False otherwise.',
+        help='do not show the default optional packages. Defaults to True if '
+        'using --report and defaults to False otherwise.',
     )
 
     # arg: Sort
@@ -47,7 +56,11 @@ def main(args: Optional[List[str]] = None) -> None:
 
     # arg: Version
     parser.add_argument(
-        '--version', '-v', action='store_true', default=False, help='only display scooby version'
+        '--version',
+        '-v',
+        action='store_true',
+        default=False,
+        help='only display scooby version',
     )
 
     # Call act with command line arguments as dict.
@@ -89,7 +102,8 @@ def act(args_dict: Dict[str, Any]) -> None:
             packages = [report, *dist_deps, *packages]
         except PackageNotFoundError:
             print(
-                f'Package `{report}` has no Report class and `importlib` could not be used to autogenerate one.',
+                f'Package `{report}` has no Report class and `importlib` could not '
+                'be used to autogenerate one.',
                 file=sys.stderr,
             )
             sys.exit(1)

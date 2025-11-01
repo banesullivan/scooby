@@ -47,6 +47,6 @@ __copyright__ = '2019, Dieter Werthmüller & Bane Sullivan'
 try:
     from scooby.version import version as __version__
 except ImportError:  # Only happens if not properly installed.
-    from datetime import datetime
+    from datetime import datetime, timezone
 
-    __version__ = 'unknown-' + datetime.today().strftime('%Y%m%d')
+    __version__ = 'unknown-' + datetime.now(timezone.utc).strftime('%Y%m%d')

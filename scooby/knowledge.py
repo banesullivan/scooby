@@ -1,5 +1,4 @@
-"""
-The knowledge base.
+"""The knowledge base.
 
 Knowledge
 =========
@@ -49,9 +48,10 @@ def in_ipython() -> bool:
     -------
     bool : True
         ``True`` when in an IPython environment.
+
     """
     try:
-        __IPYTHON__
+        __IPYTHON__  # noqa: B018
         return True
     except NameError:
         return False
@@ -60,7 +60,7 @@ def in_ipython() -> bool:
 def in_ipykernel() -> bool:
     """Check if in a ipykernel (most likely Jupyter) environment.
 
-    Warning
+    Warning:
     -------
     There is no way to tell if the code is being executed in a notebook
     (Jupyter Notebook or Jupyter Lab) or a kernel is used but executed in a
@@ -68,9 +68,10 @@ def in_ipykernel() -> bool:
     `in_ipykernel` returns True, you are most likely in a Jupyter Notebook/Lab,
     just keep it in mind that there are other possibilities.
 
-    Returns
+    Returns:
     -------
     bool : True if using an ipykernel
+
     """
     ipykernel = False
     if in_ipython():
@@ -96,7 +97,7 @@ def get_standard_lib_modules() -> Set[str]:
     else:
         names = os.listdir(site_path)
 
-        stdlib_pkgs = set([name if not name.endswith('.py') else name[:-3] for name in names])
+        stdlib_pkgs = {name if not name.endswith('.py') else name[:-3] for name in names}
 
     stdlib_pkgs = {
         'python',
@@ -131,13 +132,15 @@ def version_tuple(v: str) -> Tuple[int, ...]:
     ver_tuple : tuple
         Length 3 tuple representing the major, minor, and patch
         version.
+
     """
     split_v = v.split('.')
     while len(split_v) < 3:
         split_v.append('0')
 
     if len(split_v) > 3:
-        raise ValueError('Version strings containing more than three parts cannot be parsed')
+        msg = 'Version strings containing more than three parts cannot be parsed'
+        raise ValueError(msg)
 
     vals: List[int] = []
     for item in split_v:
@@ -177,12 +180,14 @@ def meets_version(version: str, meets: str) -> bool:
 
     >>> meets_version('0.26.0', '0.25.2')
     True
+
     """
     va = version_tuple(version)
     vb = version_tuple(meets)
 
     if len(va) != len(vb):
-        raise AssertionError('Versions are not comparable.')
+        msg = 'Versions are not comparable.'
+        raise AssertionError(msg)
 
     for i in range(len(va)):
         if va[i] > vb[i]:

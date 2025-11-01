@@ -101,10 +101,13 @@ class TrackedReport(Report):
         if not TRACKING_SUPPORTED:
             raise RuntimeError(SUPPORT_MESSAGE)
         if len(TRACKED_IMPORTS) < 2:
-            raise RuntimeError(
+            msg = (
                 'There are no tracked imports, please use '
                 '`scooby.track_imports()` before running your '
                 'code.'
+            )
+            raise RuntimeError(
+                msg,
             )
 
         Report.__init__(

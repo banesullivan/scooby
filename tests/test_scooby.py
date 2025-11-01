@@ -45,12 +45,12 @@ def test_report() -> None:
     report = scooby.Report(
         additional=[
             'foo',
-        ]
+        ],
     )
     report = scooby.Report(
         additional=[
             pytest,
-        ]
+        ],
     )
     report = scooby.Report(additional=pytest)
     report = scooby.Report(additional=['collections', 'foo', 'aaa'], sort=True)
@@ -63,7 +63,13 @@ def test_timezone(monkeypatch: MonkeyPatch) -> None:
         def now(cls, _tz: datetime.timezone | None = None) -> None:
             # Return a fixed time in, e.g., US/Eastern (UTC-5)
             return datetime.datetime(
-                2025, 1, 1, 12, 0, 0, tzinfo=datetime.timezone(datetime.timedelta(hours=-5))
+                2025,
+                1,
+                1,
+                12,
+                0,
+                0,
+                tzinfo=datetime.timezone(datetime.timedelta(hours=-5)),
             )
 
     monkeypatch.setattr(datetime, 'datetime', FixedDatetime)
@@ -103,7 +109,7 @@ def test_dict(monkeypatch: MonkeyPatch) -> None:
 
     # Test other items (converted from JSON)
     other_dict = json.loads(other)
-    for key, value in other_dict.items():
+    for key in other_dict:
         assert key in report_repr
 
 
@@ -117,7 +123,6 @@ def test_inheritence_example() -> None:
             sort: bool = False,
         ) -> None:
             """Initiate a scooby.Report instance."""
-
             # Mandatory packages.
             core = ['psutil', 'mkl', 'numpy', 'scooby']
 
@@ -344,7 +349,9 @@ def test_auto_report() -> None:
     ],
 )
 def test_get_distribution_dependencies(
-    monkeypatch: MonkeyPatch, requirement: str, expected: str
+    monkeypatch: MonkeyPatch,
+    requirement: str,
+    expected: str,
 ) -> None:
     class FakeDist:
         requires = [requirement]
@@ -386,7 +393,8 @@ def test_get_distribution_dependencies_separate_extras() -> None:
     ]
 
     separate_deps = scooby.report.get_distribution_dependencies(
-        'beautifulsoup4', separate_extras=True
+        'beautifulsoup4',
+        separate_extras=True,
     )
     assert separate_deps == {
         'core': ['soupsieve', 'typing-extensions'],
