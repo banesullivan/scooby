@@ -9,8 +9,7 @@ import sys
 from typing import Any
 
 import scooby
-from scooby.report import AutoReport
-from scooby.report import Report
+from scooby.report import AutoReport, Report
 
 
 def main(args: list[str] | None = None) -> None:

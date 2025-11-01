@@ -17,17 +17,15 @@ Werthmüller for ``empymod``, ``emg3d``, and the ``SimPEG`` framework
 
 from __future__ import annotations
 
-from scooby.knowledge import get_standard_lib_modules
-from scooby.knowledge import in_ipykernel
-from scooby.knowledge import in_ipython
-from scooby.knowledge import meets_version  # noqa: F401
-from scooby.knowledge import version_tuple  # noqa: F401
-from scooby.report import AutoReport
-from scooby.report import Report
-from scooby.report import get_version
-from scooby.tracker import TrackedReport
-from scooby.tracker import track_imports
-from scooby.tracker import untrack_imports
+from scooby.knowledge import (
+    get_standard_lib_modules,
+    in_ipykernel,
+    in_ipython,
+    meets_version,  # noqa: F401
+    version_tuple,  # noqa: F401
+)
+from scooby.report import AutoReport, Report, get_version
+from scooby.tracker import TrackedReport, track_imports, untrack_imports
 
 doo = Report
 
@@ -51,7 +49,6 @@ __copyright__ = '2019, Dieter Werthmüller & Bane Sullivan'
 try:
     from scooby.version import version as __version__
 except ImportError:  # Only happens if not properly installed.
-    from datetime import datetime
-    from datetime import timezone
+    from datetime import datetime, timezone
 
     __version__ = 'unknown-' + datetime.now(timezone.utc).strftime('%Y%m%d')

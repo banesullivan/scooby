@@ -70,7 +70,7 @@ ignore = [
 
 [tool.ruff.lint.isort]
 combine-as-imports = true # Combines 'as' imports on the same line
-force-single-line = true # https://github.com/pyvista/pyvista/pull/5712
+# force-single-line = true # https://github.com/pyvista/pyvista/pull/5712
 force-sort-within-sections = true # Sort by name, don't cluster 'from' vs 'import'
 required-imports = [
   'from __future__ import annotations', # https://github.com/pyvista/pyvista/pull/5712

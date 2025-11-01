@@ -8,8 +8,7 @@ from scooby.knowledge import get_standard_lib_modules
 from scooby.report import Report
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
     from types import ModuleType
 
 

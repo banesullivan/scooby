@@ -2,27 +2,28 @@
 
 from __future__ import annotations
 
-from datetime import datetime
-from datetime import timezone
+from datetime import datetime, timezone
 import importlib
-from importlib.metadata import PackageNotFoundError
-from importlib.metadata import distribution
-from importlib.metadata import distributions
-from importlib.metadata import version as importlib_version
+from importlib.metadata import (
+    PackageNotFoundError,
+    distribution,
+    distributions,
+    version as importlib_version,
+)
 import json
 import re
 import sys
 from types import ModuleType
-from typing import Any
-from typing import Literal
-from typing import cast
+from typing import Any, Literal, cast
 
-from .knowledge import PACKAGE_ALIASES
-from .knowledge import VERSION_ATTRIBUTES
-from .knowledge import VERSION_METHODS
-from .knowledge import get_filesystem_type
-from .knowledge import in_ipykernel
-from .knowledge import in_ipython
+from .knowledge import (
+    PACKAGE_ALIASES,
+    VERSION_ATTRIBUTES,
+    VERSION_METHODS,
+    get_filesystem_type,
+    in_ipykernel,
+    in_ipython,
+)
 
 MODULE_NOT_FOUND = 'Module not found'
 MODULE_TROUBLE = 'Trouble importing'

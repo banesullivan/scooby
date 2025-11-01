@@ -13,8 +13,7 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 import sysconfig
-from typing import TYPE_CHECKING
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
     from collections.abc import Callable
