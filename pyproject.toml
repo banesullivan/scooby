@@ -1,13 +1,80 @@
-[tool.black]
-line-length = 100
-skip-string-normalization = true
-target-version = ["py38"]
-exclude='\.eggs|\.git|\.mypy_cache|\.tox|\.venv|_build|buck-out|build|dist|node_modules'
+[tool.ruff]
+exclude = ['.git', 'build', 'dist', 'pycache__']
+indent-width = 4
+line-length = 99
 
-[tool.isort]
-profile = "black"
-line_length = 100
-# Sort by name, don't cluster "from" vs "import"
-force_sort_within_sections = true
-# Combines "as" imports on the same line
-combine_as_imports = true
+[tool.ruff.format]
+docstring-code-format = true
+# From https://numpydoc.readthedocs.io/en/latest/format.html
+# Extended discussion: https://github.com/pyvista/pyvista/pull/4129
+# The length of docstring lines should be kept to 75 characters to facilitate
+# reading the docstrings in text terminals.
+docstring-code-line-length = 75
+
+quote-style = 'single'
+
+[tool.ruff.lint]
+explicit-preview-rules = true
+preview = true
+
+extend-safe-fixes = ['EM']
+# extend-select = [
+#   'A',
+#   'AIR',
+#   'ANN',
+#   'ARG',
+#   'ASYNC',
+#   'ASYNC1',
+#   'B',
+#   'BLE',
+#   'C4',
+#   'COM',
+#   'D',
+#   'DJ',
+#   'DTZ',
+#   'E',
+#   'EM',
+#   'F',
+#   'FA',
+#   'FBT001',
+#   'FBT002',
+#   'FLY',
+#   'FURB',
+#   'I',
+#   'ICN',
+#   'INP',
+#   'INT',
+#   'ISC',
+#   'LOG',
+#   'N',
+#   'NPY',
+#   'PERF',
+#   'PGH',
+#   'PIE',
+#   'PL',
+#   'PLR0917',
+#   'PT',
+#   'PTH',
+#   'PYI',
+#   'Q',
+#   'RET',
+#   'RSE',
+#   'RUF',
+#   'SIM',
+#   'T10',
+#   'T20',
+#   'TCH',
+#   'TID',
+#   'TRY',
+#   'UP',
+#   'W',
+#   'YTT',
+# ]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true # Combines 'as' imports on the same line
+force-single-line = true # https://github.com/pyvista/pyvista/pull/5712
+force-sort-within-sections = true # Sort by name, don't cluster 'from' vs 'import'
+required-imports = [
+  'from __future__ import annotations', # https://github.com/pyvista/pyvista/pull/5712
+]
