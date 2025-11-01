@@ -35,7 +35,7 @@ MODULES_TO_IGNORE = {
 }
 
 
-STDLIB_PKGS: set[str] | None = None
+STDLIB_PKGS: set[str] = set()
 
 
 def _criterion(name: str) -> bool:

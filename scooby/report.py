@@ -726,5 +726,5 @@ def get_distribution_dependencies(
     # Convert dicts of names → lists while preserving order
     return {
         'core': list(deps_dict['core'].keys()),
-        'optional': {k: list(v.keys()) for k, v in deps_dict['optional'].items()},
+        'optional': {k: list(v.keys()) for k, v in deps_dict['optional'].items() if v},
     }
