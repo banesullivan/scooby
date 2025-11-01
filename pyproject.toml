@@ -18,12 +18,13 @@ explicit-preview-rules = true
 preview = true
 
 extend-safe-fixes = ['EM']
-# extend-select = [
-#   'A',
-#   'AIR',
-#   'ANN',
-#   'ARG',
-#   'ASYNC',
+extend-select = [
+  'A',
+  'AIR',
+  'ANN',
+  'ARG',
+  'ASYNC',
+]
 #   'ASYNC1',
 #   'B',
 #   'BLE',
