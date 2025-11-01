@@ -14,13 +14,13 @@ import pytest
 import scooby
 
 # Write a package `dummy_module` without version number.
-ppath = os.path.join("tests", "dummy_module")
+ppath = os.path.join('tests', 'dummy_module')
 try:
     os.mkdir(ppath)
 except FileExistsError:
     pass
 
-with open(os.path.join(ppath, "__init__.py"), "w") as f:
+with open(os.path.join(ppath, '__init__.py'), 'w') as f:
     f.write("info = 'Package without __version__ number.'\n")
 
 sys.path.append('tests')
@@ -64,28 +64,28 @@ def test_timezone(monkeypatch):
                 2025, 1, 1, 12, 0, 0, tzinfo=datetime.timezone(datetime.timedelta(hours=-5))
             )
 
-    monkeypatch.setattr(datetime, "datetime", FixedDatetime)
+    monkeypatch.setattr(datetime, 'datetime', FixedDatetime)
     assert 'UTC' in str(scooby.Report())
 
 
 # Global fake packages dict
 FAKE_INSTALLED_PACKAGES = {
-    "numpy": "1.27.0",
-    "scipy": "1.12.0",
-    "misc_pkg1": "0.1",
-    "misc_pkg2": "0.2",
+    'numpy': '1.27.0',
+    'scipy': '1.12.0',
+    'misc_pkg1': '0.1',
+    'misc_pkg2': '0.2',
 }
 
 
 def fake_distributions():
     """Yield fake Distribution-like objects from the global dict."""
     for name, version in FAKE_INSTALLED_PACKAGES.items():
-        yield SimpleNamespace(metadata={"Name": name, "Version": version})
+        yield SimpleNamespace(metadata={'Name': name, 'Version': version})
 
 
 def test_dict(monkeypatch):
     # Patch distributions to return fake installed packages
-    monkeypatch.setattr("importlib.metadata.distributions", fake_distributions)
+    monkeypatch.setattr('importlib.metadata.distributions', fake_distributions)
     report = scooby.Report(['no_version', 'does_not_exist'], show_other=True)
     report_repr = repr(report)
 
@@ -144,30 +144,30 @@ def test_ipy():
 def test_get_version():
     name, version = scooby.get_version(numpy)
     assert version == numpy.__version__
-    assert name == "numpy"
+    assert name == 'numpy'
 
     # Package that was no version given by owner; gets 0.1.0 from setup/pip
-    name, version = scooby.get_version("no_version")
-    assert version == "0.1.0"
-    assert name == "no_version"
+    name, version = scooby.get_version('no_version')
+    assert version == '0.1.0'
+    assert name == 'no_version'
 
     # Dummy module without version (not installed properly)
-    name, version = scooby.get_version("dummy_module")
+    name, version = scooby.get_version('dummy_module')
     assert version == scooby.report.VERSION_NOT_FOUND
-    assert name == "dummy_module"
+    assert name == 'dummy_module'
 
-    name, version = scooby.get_version("does_not_exist")
+    name, version = scooby.get_version('does_not_exist')
     assert version == scooby.report.MODULE_NOT_FOUND
-    assert name == "does_not_exist"
+    assert name == 'does_not_exist'
 
 
 def test_plain_vs_html():
     report = scooby.Report()
-    text_html = BeautifulSoup(report._repr_html_(), features="html.parser").get_text()
+    text_html = BeautifulSoup(report._repr_html_(), features='html.parser').get_text()
     text_plain = report.__repr__()
 
-    text_plain = " ".join(re.findall("[a-zA-Z1-9]+", text_plain))
-    text_html = " ".join(re.findall("[a-zA-Z1-9]+", text_html))
+    text_plain = ' '.join(re.findall('[a-zA-Z1-9]+', text_plain))
+    text_html = ' '.join(re.findall('[a-zA-Z1-9]+', text_html))
 
     # Plain text currently starts with `Date :`;
     # we should remove that, or add it to the html version too.
@@ -175,22 +175,22 @@ def test_plain_vs_html():
 
 
 def test_extra_meta():
-    report = scooby.Report(extra_meta=("key", "value"))
-    assert "key : value" in report.__repr__()
-    report = scooby.Report(extra_meta=(("key", "value"),))
-    assert "key : value" in report.__repr__()
-    report = scooby.Report(extra_meta=(("key", "value"), ("another", "one")))
-    assert "key : value" in report.__repr__()
-    assert "another : one" in report.__repr__()
+    report = scooby.Report(extra_meta=('key', 'value'))
+    assert 'key : value' in report.__repr__()
+    report = scooby.Report(extra_meta=(('key', 'value'),))
+    assert 'key : value' in report.__repr__()
+    report = scooby.Report(extra_meta=(('key', 'value'), ('another', 'one')))
+    assert 'key : value' in report.__repr__()
+    assert 'another : one' in report.__repr__()
     with pytest.raises(TypeError):
-        report = scooby.Report(extra_meta=(("key", "value"), "foo"))
+        report = scooby.Report(extra_meta=(('key', 'value'), 'foo'))
     with pytest.raises(TypeError):
-        report = scooby.Report(extra_meta="foo")
+        report = scooby.Report(extra_meta='foo')
     with pytest.raises(TypeError):
-        report = scooby.Report(extra_meta="for")
+        report = scooby.Report(extra_meta='for')
 
 
-@pytest.mark.skipif(sys.version_info.major < 3, reason="Tracking not supported on Python 2.")
+@pytest.mark.skipif(sys.version_info.major < 3, reason='Tracking not supported on Python 2.')
 def test_tracking():
     scooby.track_imports()
     from scipy.constants import mu_0  # noqa ; a float value
@@ -200,12 +200,12 @@ def test_tracking():
     import dummy_module  # noqa
     import no_version  # noqa
 
-    assert "numpy" in report.packages
-    assert "scipy" in report.packages
-    assert "no_version" not in report.packages
-    assert "dummy_module" not in report.packages
-    assert "pytest" not in report.packages
-    assert "mu_0" not in report.packages
+    assert 'numpy' in report.packages
+    assert 'scipy' in report.packages
+    assert 'no_version' not in report.packages
+    assert 'dummy_module' not in report.packages
+    assert 'pytest' not in report.packages
+    assert 'mu_0' not in report.packages
 
 
 def test_version_compare():
@@ -243,11 +243,11 @@ def test_import_os_error():
     assert scooby.Report(['pyvips'])
 
 
-@pytest.mark.skipif(not sys.platform.startswith('linux'), reason="Not Linux.")
+@pytest.mark.skipif(not sys.platform.startswith('linux'), reason='Not Linux.')
 def test_import_time():
     # Relevant for packages which provide a CLI:
     # How long does it take to import?
-    cmd = ["time", "-f", "%U", sys.executable, "-c", "import scooby"]
+    cmd = ['time', '-f', '%U', sys.executable, '-c', 'import scooby']
     # Run it twice, just in case.
     subprocess.run(cmd)
     subprocess.run(cmd)
@@ -255,7 +255,7 @@ def test_import_time():
     out = subprocess.run(cmd, capture_output=True)
 
     # Currently we check t < 0.2 s.
-    assert float(out.stderr.decode("utf-8")[:-1]) < 0.2
+    assert float(out.stderr.decode('utf-8')[:-1]) < 0.2
 
 
 @pytest.mark.script_launch_mode('subprocess')
@@ -264,7 +264,7 @@ def test_cli(script_runner):
     for inp in ['--help', '-h']:
         ret = script_runner.run(['scooby', inp])
         assert ret.success
-        assert "Great Dane turned Python environment detective" in ret.stdout
+        assert 'Great Dane turned Python environment detective' in ret.stdout
 
     def rep_comp(inp):
         # Exclude time to avoid errors.
@@ -293,28 +293,28 @@ def test_cli(script_runner):
     # version -- VIA scooby/__main__.py by calling the folder scooby.
     ret = script_runner.run([sys.executable, 'scooby', '--version'])
     assert ret.success
-    assert "scooby v" in ret.stdout
+    assert 'scooby v' in ret.stdout
 
     # version -- VIA scooby/__main__.py by calling the file.
     ret = script_runner.run([sys.executable, os.path.join('scooby', '__main__.py'), '--version'])
     assert ret.success
-    assert "scooby v" in ret.stdout
+    assert 'scooby v' in ret.stdout
 
     # default: scooby-Report for matplotlibe
     ret = script_runner.run(['scooby', '--report', 'pytest'])
     assert ret.success
-    assert "pytest" in ret.stdout
-    assert "iniconfig" in ret.stdout
+    assert 'pytest' in ret.stdout
+    assert 'iniconfig' in ret.stdout
 
     # handle error -- no distribution
     ret = script_runner.run(['scooby', '--report', 'pathlib'])
     assert not ret.success
-    assert "importlib" in ret.stderr
+    assert 'importlib' in ret.stderr
 
     # handle error -- not found
     ret = script_runner.run(['scooby', '--report', 'foobar'])
     assert not ret.success
-    assert "no Report" in ret.stderr
+    assert 'no Report' in ret.stderr
 
 
 def test_auto_report():
@@ -324,15 +324,15 @@ def test_auto_report():
 
 
 @pytest.mark.parametrize(
-    "requirement, expected",
+    'requirement, expected',
     [
-        ("x==0.4", "x"),
-        ("x<0.2", "x"),
-        ("x!=0.42", "x"),
-        ("y>1.0", "y"),
-        ("z; python_version<'3.10'", "z"),
-        ("w >= 1.2", "w"),
-        ("x @ git+https://github.com/foo/bar.git@main", "x"),
+        ('x==0.4', 'x'),
+        ('x<0.2', 'x'),
+        ('x!=0.42', 'x'),
+        ('y>1.0', 'y'),
+        ("z; python_version<'3.10'", 'z'),
+        ('w >= 1.2', 'w'),
+        ('x @ git+https://github.com/foo/bar.git@main', 'x'),
     ],
 )
 def test_get_distribution_dependencies(monkeypatch, requirement, expected):
@@ -342,41 +342,41 @@ def test_get_distribution_dependencies(monkeypatch, requirement, expected):
     def fake_distribution(dist_name):
         return FakeDist()
 
-    monkeypatch.setattr("scooby.report.distribution", fake_distribution)
+    monkeypatch.setattr('scooby.report.distribution', fake_distribution)
 
-    deps = scooby.report.get_distribution_dependencies("fakepkg")
+    deps = scooby.report.get_distribution_dependencies('fakepkg')
     assert deps == [expected]
 
 
 def test_get_distribution_dependencies_uniqueness_and_order(monkeypatch):
     class FakeDist:
-        requires = ["y==0.42", "x<1.5", "x>1.0"]
+        requires = ['y==0.42', 'x<1.5', 'x>1.0']
 
     def fake_distribution(dist_name):
         return FakeDist()
 
-    monkeypatch.setattr("scooby.report.distribution", fake_distribution)
+    monkeypatch.setattr('scooby.report.distribution', fake_distribution)
 
-    deps = scooby.report.get_distribution_dependencies("fakepkg")
+    deps = scooby.report.get_distribution_dependencies('fakepkg')
 
     # 'y' comes first, then 'x' (deduplicated but ordered by first occurrence)
-    assert deps == ["y", "x"]
+    assert deps == ['y', 'x']
 
 
 def test_get_distribution_dependencies_separate_extras():
-    all_deps = scooby.report.get_distribution_dependencies("beautifulsoup4", separate_extras=False)
+    all_deps = scooby.report.get_distribution_dependencies('beautifulsoup4', separate_extras=False)
     assert all_deps == [
-        "soupsieve",
-        "typing-extensions",
-        "cchardet",
-        "chardet",
-        "charset-normalizer",
-        "html5lib",
-        "lxml",
+        'soupsieve',
+        'typing-extensions',
+        'cchardet',
+        'chardet',
+        'charset-normalizer',
+        'html5lib',
+        'lxml',
     ]
 
     separate_deps = scooby.report.get_distribution_dependencies(
-        "beautifulsoup4", separate_extras=True
+        'beautifulsoup4', separate_extras=True
     )
     assert separate_deps == {
         'core': ['soupsieve', 'typing-extensions'],
@@ -390,12 +390,12 @@ def test_get_distribution_dependencies_separate_extras():
     }
 
     # Flatten back into one list
-    flat_list = separate_deps["core"] + [
-        pkg for dep_list in separate_deps["optional"].values() for pkg in dep_list
+    flat_list = separate_deps['core'] + [
+        pkg for dep_list in separate_deps['optional'].values() for pkg in dep_list
     ]
     assert flat_list == all_deps
 
     # Check that optional keys match actual extras from distribution
-    dist = distribution("beautifulsoup4")
-    extras_names = list(dist.metadata.get_all("Provides-Extra") or [])
-    assert list(separate_deps["optional"].keys()) == extras_names
+    dist = distribution('beautifulsoup4')
+    extras_names = list(dist.metadata.get_all('Provides-Extra') or [])
+    assert list(separate_deps['optional'].keys()) == extras_names

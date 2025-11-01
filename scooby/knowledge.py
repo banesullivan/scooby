@@ -91,31 +91,31 @@ def get_standard_lib_modules() -> Set[str]:
         else:
             names = []
 
-        stdlib_pkgs = {name[:-3] for name in names if name.endswith(".py")}
+        stdlib_pkgs = {name[:-3] for name in names if name.endswith('.py')}
 
     else:
         names = os.listdir(site_path)
 
-        stdlib_pkgs = set([name if not name.endswith(".py") else name[:-3] for name in names])
+        stdlib_pkgs = set([name if not name.endswith('.py') else name[:-3] for name in names])
 
     stdlib_pkgs = {
-        "python",
-        "sys",
-        "__builtin__",
-        "__builtins__",
-        "builtins",
-        "session",
-        "math",
-        "itertools",
-        "binascii",
-        "array",
-        "atexit",
-        "fcntl",
-        "errno",
-        "gc",
-        "time",
-        "unicodedata",
-        "mmap",
+        'python',
+        'sys',
+        '__builtin__',
+        '__builtins__',
+        'builtins',
+        'session',
+        'math',
+        'itertools',
+        'binascii',
+        'array',
+        'atexit',
+        'fcntl',
+        'errno',
+        'gc',
+        'time',
+        'unicodedata',
+        'mmap',
     }.union(stdlib_pkgs)
     return stdlib_pkgs
 
@@ -132,12 +132,12 @@ def version_tuple(v: str) -> Tuple[int, ...]:
         Length 3 tuple representing the major, minor, and patch
         version.
     """
-    split_v = v.split(".")
+    split_v = v.split('.')
     while len(split_v) < 3:
         split_v.append('0')
 
     if len(split_v) > 3:
-        raise ValueError('Version strings containing more than three parts ' 'cannot be parsed')
+        raise ValueError('Version strings containing more than three parts cannot be parsed')
 
     vals: List[int] = []
     for item in split_v:
@@ -182,7 +182,7 @@ def meets_version(version: str, meets: str) -> bool:
     vb = version_tuple(meets)
 
     if len(va) != len(vb):
-        raise AssertionError("Versions are not comparable.")
+        raise AssertionError('Versions are not comparable.')
 
     for i in range(len(va)):
         if va[i] > vb[i]:
@@ -208,8 +208,8 @@ def get_filesystem_type() -> Union[str, Literal[False]]:
     if psutil and platform.system() != 'Windows':
         # Code by https://stackoverflow.com/a/35291824/10504481
         my_path = str(Path(__file__).resolve())
-        best_match = ""
-        fs_type = ""
+        best_match = ''
+        fs_type = ''
         for part in psutil.disk_partitions():
             if my_path.startswith(part.mountpoint) and len(best_match) < len(part.mountpoint):
                 fs_type = part.fstype

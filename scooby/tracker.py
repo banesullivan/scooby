@@ -8,7 +8,7 @@ from scooby.report import Report
 
 TRACKING_SUPPORTED = False
 SUPPORT_MESSAGE = (
-    "Tracking is not supported for this version of Python. " "Try using a modern version of Python."
+    'Tracking is not supported for this version of Python. Try using a modern version of Python.'
 )
 try:
     import builtins
@@ -19,13 +19,13 @@ except (ImportError, AttributeError):
     pass
 
 # The variable we track all imports in
-TRACKED_IMPORTS: List[Union[str, ModuleType]] = ["scooby"]
+TRACKED_IMPORTS: List[Union[str, ModuleType]] = ['scooby']
 
 MODULES_TO_IGNORE = {
-    "pyMKL",
-    "mkl",
-    "vtkmodules",
-    "mpl_toolkits",
+    'pyMKL',
+    'mkl',
+    'vtkmodules',
+    'mpl_toolkits',
 }
 
 
@@ -36,7 +36,7 @@ def _criterion(name: str):
     if (
         len(name) > 0
         and name not in STDLIB_PKGS
-        and not name.startswith("_")
+        and not name.startswith('_')
         and name not in MODULES_TO_IGNORE
     ):
         return True
@@ -54,7 +54,7 @@ if TRACKING_SUPPORTED:
     ) -> ModuleType:
         """Override of the import method to track package names."""
         m = CLASSIC_IMPORT(name, globals=globals, locals=locals, fromlist=fromlist, level=level)
-        name = name.split(".")[0]
+        name = name.split('.')[0]
         if level == 0 and _criterion(name):
             TRACKED_IMPORTS.append(name)
         return m
@@ -79,7 +79,7 @@ def untrack_imports() -> None:
         raise RuntimeError(SUPPORT_MESSAGE)
     builtins.__import__ = CLASSIC_IMPORT
     TRACKED_IMPORTS.clear()
-    TRACKED_IMPORTS.append("scooby")
+    TRACKED_IMPORTS.append('scooby')
     return
 
 
@@ -102,9 +102,9 @@ class TrackedReport(Report):
             raise RuntimeError(SUPPORT_MESSAGE)
         if len(TRACKED_IMPORTS) < 2:
             raise RuntimeError(
-                "There are no tracked imports, please use "
-                "`scooby.track_imports()` before running your "
-                "code."
+                'There are no tracked imports, please use '
+                '`scooby.track_imports()` before running your '
+                'code.'
             )
 
         Report.__init__(

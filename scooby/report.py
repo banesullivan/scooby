@@ -329,12 +329,12 @@ class Report(PlatformInfo, PythonInfo):
 
         if extra_meta is not None:
             if not isinstance(extra_meta, (list, tuple)):
-                raise TypeError("`extra_meta` must be a list/tuple of " "key-value pairs.")
+                raise TypeError('`extra_meta` must be a list/tuple of key-value pairs.')
             if len(extra_meta) == 2 and isinstance(extra_meta[0], str):
                 extra_meta = [extra_meta]
             for meta in extra_meta:
                 if not isinstance(meta, (list, tuple)) or len(meta) != 2:
-                    raise TypeError("Each chunk of meta info must have two values.")
+                    raise TypeError('Each chunk of meta info must have two values.')
         else:
             extra_meta = []
         self._extra_meta = extra_meta
@@ -368,7 +368,15 @@ class Report(PlatformInfo, PythonInfo):
 
         # Platform/OS details
         repr_dict = self.to_dict()
-        for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM', 'Environment', 'File system']:
+        for key in [
+            'OS',
+            'CPU(s)',
+            'Machine',
+            'Architecture',
+            'RAM',
+            'Environment',
+            'File system',
+        ]:
             if key in repr_dict:
                 text += f'{key:>{row_width}} : {repr_dict[key]}\n'
         for key, value in self._extra_meta:
@@ -382,7 +390,7 @@ class Report(PlatformInfo, PythonInfo):
             text += '\n'
 
         # Loop over packages
-        package_template = "{name:>{row_width}} : {version}\n"
+        package_template = '{name:>{row_width}} : {version}\n'
         for name, version in self.packages.items():
             text += package_template.format(name=name, version=version, row_width=row_width)
 
@@ -394,7 +402,7 @@ class Report(PlatformInfo, PythonInfo):
 
         if self.show_other:
             text = text.rstrip()
-            text += line_sep("·", newlines=True)
+            text += line_sep('·', newlines=True)
 
             for name, version in self.other_packages.items():
                 text += package_template.format(name=name, version=version, row_width=row_width)
@@ -411,59 +419,67 @@ class Report(PlatformInfo, PythonInfo):
 
         def colspan(html: str, txt: str, ncol: int, nrow: int) -> str:
             r"""Print txt in a row spanning whole table."""
-            html += "  <tr>\n"
+            html += '  <tr>\n'
             html += "     <td style='"
             if ncol == 1:
-                html += "text-align: left; "
+                html += 'text-align: left; '
             else:
-                html += "text-align: center; "
+                html += 'text-align: center; '
             if nrow == 0:
-                html += "font-weight: bold; font-size: 1.2em; "
+                html += 'font-weight: bold; font-size: 1.2em; '
             html += border + " colspan='"
             html += f"{2 * ncol}'>{txt}</td>\n"
-            html += "  </tr>\n"
+            html += '  </tr>\n'
             return html
 
         def cols(html: str, version: str, name: str, ncol: int, i: int) -> Tuple[str, int]:
             r"""Print package information in two cells."""
             # Check if we have to start a new row
             if i > 0 and i % ncol == 0:
-                html += "  </tr>\n"
-                html += "  <tr>\n"
+                html += '  </tr>\n'
+                html += '  <tr>\n'
 
-            align = "left" if ncol == 1 else "right"
+            align = 'left' if ncol == 1 else 'right'
             html += f"    <td style='text-align: {align};"
-            html += " " + border + ">%s</td>\n" % name
+            html += ' ' + border + '>%s</td>\n' % name
 
             html += "    <td style='text-align: left; "
-            html += border + ">%s</td>\n" % version
+            html += border + '>%s</td>\n' % version
 
             return html, i + 1
 
         # Start html-table
         html = "<table style='border: 1.5px solid;"
         if self.max_width:
-            html += f" max-width: {self.max_width}px;"
+            html += f' max-width: {self.max_width}px;'
         html += "'>\n"
 
         # Date and time info as title
         html = colspan(html, self.date, self.ncol, 0)
 
         # Platform/OS details
-        html += "  <tr>\n"
+        html += '  <tr>\n'
         repr_dict = self.to_dict()
         i = 0
-        for key in ['OS', 'CPU(s)', 'Machine', 'Architecture', 'RAM', 'Environment', "File system"]:
+        for key in [
+            'OS',
+            'CPU(s)',
+            'Machine',
+            'Architecture',
+            'RAM',
+            'Environment',
+            'File system',
+        ]:
             if key in repr_dict:
                 html, i = cols(html, repr_dict[key], key, self.ncol, i)
         for meta in self._extra_meta:
             html, i = cols(html, meta[1], meta[0], self.ncol, i)
         # Finish row
-        html += "  </tr>\n"
+        html += '  </tr>\n'
 
         # Python details
         html = colspan(html, 'Python ' + self.sys_version, self.ncol, 1)
-        html += "  <tr>\n"
+        html += '  <tr>\n'
 
         # Loop over packages
         i = 0  # Reset count for rows.
@@ -471,18 +487,18 @@ class Report(PlatformInfo, PythonInfo):
             html, i = cols(html, version, name, self.ncol, i)
         # Fill up the row
         while i % self.ncol != 0:
-            html += "    <td style= " + border + "></td>\n"
-            html += "    <td style= " + border + "></td>\n"
+            html += '    <td style= ' + border + '></td>\n'
+            html += '    <td style= ' + border + '></td>\n'
             i += 1
         # Finish row
-        html += "  </tr>\n"
+        html += '  </tr>\n'
 
         # MKL details
         if self.mkl_info:
             html = colspan(html, self.mkl_info, self.ncol, 2)
 
         # Finish
-        html += "</table>"
+        html += '</table>'
 
         return html
 
@@ -533,7 +549,7 @@ class AutoReport(Report):
     ):
         """Initialize."""
         if not isinstance(module, (str, ModuleType)):
-            raise TypeError("Cannot generate report for type " "({})".format(type(module)))
+            raise TypeError('Cannot generate report for type ({})'.format(type(module)))
 
         if isinstance(module, ModuleType):
             module = module.__name__
@@ -542,7 +558,7 @@ class AutoReport(Report):
         deps = get_distribution_dependencies(module, separate_extras=True)
         core = [module, *deps.pop('core')]
         optional = [  # flatten all extras from the nested "optional" dict
-            pkg for dep_list in deps["optional"].values() for pkg in dep_list
+            pkg for dep_list in deps['optional'].values() for pkg in dep_list
         ]
 
         Report.__init__(
@@ -577,7 +593,7 @@ def get_version(module: Union[str, ModuleType]) -> Tuple[str, Optional[str]]:
     """
     # module is (1) a module or (2) a string.
     if not isinstance(module, (str, ModuleType)):
-        raise TypeError("Cannot fetch version from type " "({})".format(type(module)))
+        raise TypeError('Cannot fetch version from type ({})'.format(type(module)))
 
     # module is module; get name
     if isinstance(module, ModuleType):
@@ -661,10 +677,10 @@ def get_distribution_dependencies(dist_name: str, *, separate_extras: bool = Fal
     try:
         dist = distribution(dist_name)
     except PackageNotFoundError:
-        raise PackageNotFoundError(f"Package `{dist_name}` has no distribution.")
+        raise PackageNotFoundError(f'Package `{dist_name}` has no distribution.')
 
     def _package_name(requirement: str) -> str:
-        for sep in (" ", ";", "<", "=", ">", "!"):
+        for sep in (' ', ';', '<', '=', '>', '!'):
             requirement = requirement.split(sep, 1)[0]
         return requirement.strip()
 
@@ -672,7 +688,7 @@ def get_distribution_dependencies(dist_name: str, *, separate_extras: bool = Fal
         # Use dict for ordered and unique keys
         return list({_package_name(pkg): None for pkg in dist.requires}.keys())
 
-    deps_dict: dict[str, dict[str, None | dict[str, None]]] = {"core": {}, "optional": {}}
+    deps_dict: dict[str, dict[str, None | dict[str, None]]] = {'core': {}, 'optional': {}}
 
     for req in dist.requires or []:
         name = _package_name(req)
@@ -684,10 +700,10 @@ def get_distribution_dependencies(dist_name: str, *, separate_extras: bool = Fal
                 deps_dict['optional'][extra_name] = {}
             deps_dict['optional'][extra_name][name] = None
         else:
-            deps_dict["core"][name] = None
+            deps_dict['core'][name] = None
 
     # Convert dicts of names → lists while preserving order
     return {
-        "core": list(deps_dict["core"].keys()),
-        "optional": {k: list(v.keys()) for k, v in deps_dict["optional"].items()},
+        'core': list(deps_dict['core'].keys()),
+        'optional': {k: list(v.keys()) for k, v in deps_dict['optional'].items()},
     }
