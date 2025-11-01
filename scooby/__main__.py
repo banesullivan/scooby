@@ -9,8 +9,8 @@ import sys
 from typing import Any
 
 import scooby
+from scooby.report import AutoReport
 from scooby.report import Report
-from scooby.report import get_distribution_dependencies
 
 
 def main(args: list[str] | None = None) -> None:
@@ -102,8 +102,7 @@ def act(args_dict: dict[str, Any]) -> None:
                 return
 
         try:
-            dist_deps = get_distribution_dependencies(report)
-            packages = [report, *dist_deps, *packages]
+            print(AutoReport(report))
         except PackageNotFoundError:
             print(
                 f'Package `{report}` has no Report class and `importlib` could not '
@@ -111,6 +110,8 @@ def act(args_dict: dict[str, Any]) -> None:
                 file=sys.stderr,
             )
             sys.exit(1)
+        else:
+            return
 
     # Collect input.
     inp = {'additional': packages, 'sort': args_dict['sort']}

@@ -319,11 +319,16 @@ def test_cli(script_runner: ScriptRunner) -> None:
     assert ret.success
     assert 'scooby v' in ret.stdout
 
-    # default: scooby-Report for matplotlibe
+    # default: scooby-Report for pytest
     ret = script_runner.run(['scooby', '--report', 'pytest'])
     assert ret.success
     assert 'pytest' in ret.stdout
     assert 'iniconfig' in ret.stdout
+
+    # CLI report should match AutoReport
+    from_cli = ret.stdout
+    from_autoreport = repr(scooby.AutoReport('pytest'))
+    assert rep_comp(from_cli) == rep_comp(from_autoreport)
 
     # handle error -- no distribution
     ret = script_runner.run(['scooby', '--report', 'pathlib'])
@@ -369,6 +374,13 @@ def test_get_distribution_dependencies(
 
     deps = scooby.report.get_distribution_dependencies('fakepkg')
     assert deps == [expected]
+
+
+def test_get_distribution_dependencies_no_deps() -> None:
+    deps = scooby.report.get_distribution_dependencies('numpy')
+    assert deps == []
+    deps = scooby.report.get_distribution_dependencies('numpy', separate_extras=True)
+    assert deps == {'core': [], 'optional': {}}
 
 
 def test_get_distribution_dependencies_uniqueness_and_order(
