@@ -8,10 +8,18 @@ particular modules (``VERSION_ATTRIBUTES``, ``VERSION_METHODS``)
 
 """
 
-import os
+from __future__ import annotations
+
+from pathlib import Path
 import sys
 import sysconfig
-from typing import Callable, Dict, List, Literal, Set, Tuple, Union
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import Literal
+from typing import Set
+from typing import Tuple
+from typing import Union
 
 PACKAGE_ALIASES = {
     'vtkmodules': 'vtk',
@@ -84,20 +92,18 @@ def in_ipykernel() -> bool:
 
 def get_standard_lib_modules() -> Set[str]:
     """Return a set of the names of all modules in the standard library."""
-    site_path = sysconfig.get_path('stdlib')
+    site_path = Path(sysconfig.get_path('stdlib'))
     if getattr(sys, 'frozen', False):  # within pyinstaller
-        lib_path = os.path.join(site_path, '..')
-        if os.path.isdir(lib_path):
-            names = os.listdir(lib_path)
+        lib_path = site_path / '..'
+        if lib_path.is_dir():
+            names = lib_path.iterdir()
+            stdlib_pkgs = {p.stem for p in names if p.suffix == '.py'}
         else:
-            names = []
-
-        stdlib_pkgs = {name[:-3] for name in names if name.endswith('.py')}
+            stdlib_pkgs = {}
 
     else:
-        names = os.listdir(site_path)
-
-        stdlib_pkgs = {name if not name.endswith('.py') else name[:-3] for name in names}
+        names = site_path.iterdir()
+        stdlib_pkgs = {p.stem if p.suffix == '.py' else p.name for p in names}
 
     stdlib_pkgs = {
         'python',

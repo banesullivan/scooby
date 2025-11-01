@@ -1,7 +1,14 @@
 """Track imports."""
 
+from __future__ import annotations
+
 from types import ModuleType
-from typing import List, Mapping, Optional, Sequence, Set, Union
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import Sequence
+from typing import Set
+from typing import Union
 
 from scooby.knowledge import get_standard_lib_modules
 from scooby.report import Report
@@ -67,7 +74,6 @@ def track_imports() -> None:
     global STDLIB_PKGS
     STDLIB_PKGS = get_standard_lib_modules()
     builtins.__import__ = scooby_import
-    return
 
 
 def untrack_imports() -> None:
@@ -80,7 +86,6 @@ def untrack_imports() -> None:
     builtins.__import__ = CLASSIC_IMPORT
     TRACKED_IMPORTS.clear()
     TRACKED_IMPORTS.append('scooby')
-    return
 
 
 class TrackedReport(Report):

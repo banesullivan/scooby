@@ -1,27 +1,28 @@
 """The main module containing the `Report` class."""
 
-from datetime import datetime, timezone
+from __future__ import annotations
+
+from datetime import datetime
+from datetime import timezone
 import importlib
-from importlib.metadata import (
-    PackageNotFoundError,
-    distribution,
-    distributions,
-    version as importlib_version,
-)
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import distribution
+from importlib.metadata import distributions
+from importlib.metadata import version as importlib_version
 import json
 import re
 import sys
 from types import ModuleType
-from typing import Any, Dict, List, Literal, Optional, Tuple, Union, cast
+from typing import Any
+from typing import Literal
+from typing import cast
 
-from .knowledge import (
-    PACKAGE_ALIASES,
-    VERSION_ATTRIBUTES,
-    VERSION_METHODS,
-    get_filesystem_type,
-    in_ipykernel,
-    in_ipython,
-)
+from .knowledge import PACKAGE_ALIASES
+from .knowledge import VERSION_ATTRIBUTES
+from .knowledge import VERSION_METHODS
+from .knowledge import get_filesystem_type
+from .knowledge import in_ipykernel
+from .knowledge import in_ipython
 
 MODULE_NOT_FOUND = 'Module not found'
 MODULE_TROUBLE = 'Trouble importing'
@@ -34,8 +35,8 @@ class PlatformInfo:
 
     def __init__(self) -> None:
         """Initialize."""
-        self._mkl_info: Optional[str]  # for typing purpose
-        self._filesystem: Union[str, Literal[False]]
+        self._mkl_info: str | None  # for typing purpose
+        self._filesystem: str | Literal[False]
 
     @property
     def system(self) -> str:
@@ -49,7 +50,7 @@ class PlatformInfo:
             try:
                 s += (
                     f' ({platform().freedesktop_os_release()["NAME"]} '
-                    + f'{platform().freedesktop_os_release()["VERSION_ID"]})'
+                    f'{platform().freedesktop_os_release()["VERSION_ID"]})'
                 )
             except Exception:  # noqa: BLE001
                 pass
@@ -115,7 +116,7 @@ class PlatformInfo:
         return self._total_ram
 
     @property
-    def mkl_info(self) -> Optional[str]:
+    def mkl_info(self) -> str | None:
         """Return MKL info.
 
         If not available, returns 'unknown'.
@@ -151,7 +152,7 @@ class PlatformInfo:
         return now_utc.strftime('%a %b %d %H:%M:%S %Y %Z')
 
     @property
-    def filesystem(self) -> Union[str, Literal[False]]:
+    def filesystem(self) -> str | Literal[False]:
         """Get the type of the file system at the path of the scooby package."""
         if not hasattr(self, '_filesystem'):
             self._filesystem = get_filesystem_type()
@@ -163,13 +164,13 @@ class PythonInfo:
 
     def __init__(
         self,
-        additional: Optional[List[Union[str, ModuleType]]],
-        core: Optional[List[Union[str, ModuleType]]],
-        optional: Optional[List[Union[str, ModuleType]]],
+        additional: list[str | ModuleType] | None,
+        core: list[str | ModuleType] | None,
+        optional: list[str | ModuleType] | None,
         sort: bool,
     ) -> None:
         """Initialize python info."""
-        self._packages: Dict[str, Any] = {}  # Holds name of packages and their version
+        self._packages: dict[str, Any] = {}  # Holds name of packages and their version
         self._sort = sort
 
         # Add packages in the following order:
@@ -179,13 +180,13 @@ class PythonInfo:
 
     def _add_packages(
         self,
-        packages: Optional[List[Union[str, ModuleType]]],
+        packages: list[str | ModuleType] | None,
         optional: bool = False,
     ) -> None:
         """Add all packages to list; optional ones only if available."""
         # Ensure arguments are a list
         if isinstance(packages, (str, ModuleType)):
-            pckgs: List[Union[str, ModuleType]] = [
+            pckgs: list[str | ModuleType] = [
                 packages,
             ]
         elif packages is None or len(packages) < 1:
@@ -214,7 +215,7 @@ class PythonInfo:
         return 'Python'
 
     @property
-    def packages(self) -> Dict[str, Any]:
+    def packages(self) -> dict[str, Any]:
         """Return versions of all additional, core, and optional packages.
 
         Includes available and unavailable/unknown.
@@ -222,7 +223,7 @@ class PythonInfo:
         """
         pckg_dict = dict(self._packages)
         if self._sort:
-            packages: Dict[str, Any] = {}
+            packages: dict[str, Any] = {}
             for name in sorted(pckg_dict.keys(), key=lambda x: x.lower()):
                 packages[name] = pckg_dict[name]
             pckg_dict = packages
@@ -308,14 +309,14 @@ class Report(PlatformInfo, PythonInfo):
 
     def __init__(
         self,
-        additional: Optional[List[Union[str, ModuleType]]] = None,
-        core: Optional[List[Union[str, ModuleType]]] = None,
-        optional: Optional[List[Union[str, ModuleType]]] = None,
+        additional: list[str | ModuleType] | None = None,
+        core: list[str | ModuleType] | None = None,
+        optional: list[str | ModuleType] | None = None,
         ncol: int = 4,
         text_width: int = 80,
         sort: bool = False,
-        extra_meta: Optional[Union[Tuple[Tuple[str, str], ...], List[Tuple[str, str]]]] = None,
-        max_width: Optional[int] = None,
+        extra_meta: tuple[tuple[str, str], ...] | list[tuple[str, str]] | None = None,
+        max_width: int | None = None,
         show_other: bool = False,
     ) -> None:
         """Initialize report."""
@@ -436,7 +437,7 @@ class Report(PlatformInfo, PythonInfo):
             html += '  </tr>\n'
             return html
 
-        def cols(html: str, version: str, name: str, ncol: int, i: int) -> Tuple[str, int]:
+        def cols(html: str, version: str, name: str, ncol: int, i: int) -> tuple[str, int]:
             r"""Print package information in two cells."""
             # Check if we have to start a new row
             if i > 0 and i % ncol == 0:
@@ -506,9 +507,9 @@ class Report(PlatformInfo, PythonInfo):
 
         return html
 
-    def to_dict(self) -> Dict[str, str]:
+    def to_dict(self) -> dict[str, str]:
         """Return report as dict for storage."""
-        out: Dict[str, str] = {}
+        out: dict[str, str] = {}
 
         # Date and time info
         out['Date'] = self.date
@@ -530,8 +531,7 @@ class Report(PlatformInfo, PythonInfo):
         out['Python'] = self.sys_version
 
         # Loop over packages
-        for name, version in self._packages.items():
-            out[name] = version
+        out.update(self._packages)
 
         out['other'] = json.dumps(self.other_packages)
 
@@ -585,7 +585,7 @@ class AutoReport(Report):
 
 
 # This functionaliy might also be of interest on its own.
-def get_version(module: Union[str, ModuleType]) -> Tuple[str, Optional[str]]:
+def get_version(module: str | ModuleType) -> tuple[str, str | None]:
     """Get the version of ``module`` by passing the package or it's name.
 
     Parameters
@@ -638,7 +638,7 @@ def get_version(module: Union[str, ModuleType]) -> Tuple[str, Optional[str]]:
     for v_string in ('__version__', 'version'):
         try:
             return name, getattr(module, v_string)
-        except AttributeError:
+        except AttributeError:  # noqa: PERF203
             pass
 
     # Try the VERSION_ATTRIBUTES library

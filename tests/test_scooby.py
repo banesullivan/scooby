@@ -1,28 +1,26 @@
+from __future__ import annotations
+
 import datetime
 from importlib.metadata import distribution
 import json
-import os
+from pathlib import Path
 import re
 import subprocess
 import sys
 from types import SimpleNamespace
 
 from bs4 import BeautifulSoup
-import numpy
+import numpy as np
 import pytest
-from pytest import MonkeyPatch
 from pytest_console_scripts import ScriptRunner
 
 import scooby
 
 # Write a package `dummy_module` without version number.
-ppath = os.path.join('tests', 'dummy_module')
-try:
-    os.mkdir(ppath)
-except FileExistsError:
-    pass
+ppath = Path('tests') / 'dummy_module'
+ppath.mkdir(exist_ok=True)
 
-with open(os.path.join(ppath, '__init__.py'), 'w') as f:
+with (ppath / '__init__.py').open('w') as f:
     f.write("info = 'Package without __version__ number.'\n")
 
 sys.path.append('tests')
@@ -56,7 +54,7 @@ def test_report() -> None:
     report = scooby.Report(additional=['collections', 'foo', 'aaa'], sort=True)
 
 
-def test_timezone(monkeypatch: MonkeyPatch) -> None:
+def test_timezone(monkeypatch: pytest.MonkeyPatch) -> None:
     # Patch datetime to simulate non-UTC system time
     class FixedDatetime(datetime.datetime):
         @classmethod
@@ -91,7 +89,7 @@ def fake_distributions() -> None:
         yield SimpleNamespace(metadata={'Name': name, 'Version': version})
 
 
-def test_dict(monkeypatch: MonkeyPatch) -> None:
+def test_dict(monkeypatch: pytest.MonkeyPatch) -> None:
     # Patch distributions to return fake installed packages
     monkeypatch.setattr('importlib.metadata.distributions', fake_distributions)
     report = scooby.Report(['no_version', 'does_not_exist'], show_other=True)
@@ -155,8 +153,8 @@ def test_ipy() -> None:
 
 
 def test_get_version() -> None:
-    name, version = scooby.get_version(numpy)
-    assert version == numpy.__version__
+    name, version = scooby.get_version(np)
+    assert version == np.__version__
     assert name == 'numpy'
 
     # Package that was no version given by owner; gets 0.1.0 from setup/pip
@@ -206,12 +204,13 @@ def test_extra_meta() -> None:
 @pytest.mark.skipif(sys.version_info.major < 3, reason='Tracking not supported on Python 2.')
 def test_tracking() -> None:
     scooby.track_imports()
-    from scipy.constants import mu_0  # noqa ; a float value
+    # import a float value which should not be tracked
+    from scipy.constants import mu_0  # noqa: F401, PLC0415
 
     report = scooby.TrackedReport()
     scooby.untrack_imports()
-    import dummy_module  # noqa
-    import no_version  # noqa
+    import dummy_module  # noqa: F401, PLC0415
+    import no_version  # noqa: F401, PLC0415
 
     assert 'numpy' in report.packages
     assert 'scipy' in report.packages
@@ -243,7 +242,10 @@ def test_version_compare() -> None:
 
     assert scooby.meets_version('0.28.0dev0', '0.25.2')
 
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError,
+        match='Version strings containing more than three parts cannot be parsed',
+    ):
         scooby.meets_version('0.25.2.0', '0.26')
 
 
@@ -251,8 +253,8 @@ def test_import_os_error() -> None:
     # pyvips requires libvips, etc., to be installed
     # We don't have this on CI, so this should throw an error on import
     # Make sure scooby can handle it.
-    with pytest.raises(OSError):
-        import pyvips  # noqa
+    with pytest.raises(OSError, match='cannot load'):
+        import pyvips  # noqa: F401, PLC0415
     assert scooby.Report(['pyvips'])
 
 
@@ -262,13 +264,14 @@ def test_import_time() -> None:
     # How long does it take to import?
     cmd = ['time', '-f', '%U', sys.executable, '-c', 'import scooby']
     # Run it twice, just in case.
-    subprocess.run(cmd)
-    subprocess.run(cmd)
+    subprocess.run(cmd, check=False)
+    subprocess.run(cmd, check=False)
     # Capture it
-    out = subprocess.run(cmd, capture_output=True)
+    out = subprocess.run(cmd, check=False, capture_output=True)
 
     # Currently we check t < 0.2 s.
-    assert float(out.stderr.decode('utf-8')[:-1]) < 0.2
+    t_expected = 0.2
+    assert float(out.stderr.decode('utf-8')[:-1]) < t_expected
 
 
 @pytest.mark.script_launch_mode('subprocess')
@@ -309,7 +312,7 @@ def test_cli(script_runner: ScriptRunner) -> None:
     assert 'scooby v' in ret.stdout
 
     # version -- VIA scooby/__main__.py by calling the file.
-    ret = script_runner.run([sys.executable, os.path.join('scooby', '__main__.py'), '--version'])
+    ret = script_runner.run([sys.executable, Path('scooby') / '__main__.py', '--version'])
     assert ret.success
     assert 'scooby v' in ret.stdout
 
@@ -337,7 +340,7 @@ def test_auto_report() -> None:
 
 
 @pytest.mark.parametrize(
-    'requirement, expected',
+    ('requirement', 'expected'),
     [
         ('x==0.4', 'x'),
         ('x<0.2', 'x'),
@@ -349,7 +352,7 @@ def test_auto_report() -> None:
     ],
 )
 def test_get_distribution_dependencies(
-    monkeypatch: MonkeyPatch,
+    monkeypatch: pytest.MonkeyPatch,
     requirement: str,
     expected: str,
 ) -> None:
@@ -365,7 +368,9 @@ def test_get_distribution_dependencies(
     assert deps == [expected]
 
 
-def test_get_distribution_dependencies_uniqueness_and_order(monkeypatch: MonkeyPatch) -> None:
+def test_get_distribution_dependencies_uniqueness_and_order(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     class FakeDist:
         requires = ['y==0.42', 'x<1.5', 'x>1.0']
 

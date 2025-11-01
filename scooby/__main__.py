@@ -1,13 +1,19 @@
 """Create entry point for the command-line interface (CLI)."""
 
+from __future__ import annotations
+
 import argparse
 import importlib
 from importlib.metadata import PackageNotFoundError
 import sys
-from typing import Any, Dict, List, Optional
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
 
 import scooby
-from scooby.report import Report, get_distribution_dependencies
+from scooby.report import Report
+from scooby.report import get_distribution_dependencies
 
 
 def main(args: Optional[List[str]] = None) -> None:

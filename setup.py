@@ -1,4 +1,6 @@
 # coding=utf-8
+from __future__ import annotations
+
 import io
 import os
 
@@ -35,7 +37,7 @@ setuptools.setup(
     use_scm_version={
         'root': '.',
         'relative_to': __file__,
-        'write_to': os.path.join('scooby', 'version.py'),
+        'write_to': os.path.join('scooby', 'version.py'),  # noqa: PTH118
     },
     setup_requires=['setuptools_scm'],
     package_data={'scooby': ['py.typed']},
