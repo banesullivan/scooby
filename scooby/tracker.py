@@ -2,16 +2,16 @@
 
 from __future__ import annotations
 
-from types import ModuleType
-from typing import List
-from typing import Mapping
-from typing import Optional
-from typing import Sequence
-from typing import Set
-from typing import Union
+from typing import TYPE_CHECKING
 
 from scooby.knowledge import get_standard_lib_modules
 from scooby.report import Report
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+    from collections.abc import Sequence
+    from types import ModuleType
+
 
 TRACKING_SUPPORTED = False
 SUPPORT_MESSAGE = (
@@ -26,7 +26,7 @@ except (ImportError, AttributeError):
     pass
 
 # The variable we track all imports in
-TRACKED_IMPORTS: List[Union[str, ModuleType]] = ['scooby']
+TRACKED_IMPORTS: list[str | ModuleType] = ['scooby']
 
 MODULES_TO_IGNORE = {
     'pyMKL',
@@ -36,7 +36,7 @@ MODULES_TO_IGNORE = {
 }
 
 
-STDLIB_PKGS: Optional[Set[str]] = None
+STDLIB_PKGS: set[str] | None = None
 
 
 def _criterion(name: str) -> bool:
@@ -54,8 +54,8 @@ if TRACKING_SUPPORTED:
 
     def scooby_import(
         name: str,
-        globals: Optional[Mapping[str, object]] = None,  # noqa: A002
-        locals: Optional[Mapping[str, object]] = None,  # noqa: A002
+        globals: Mapping[str, object] | None = None,  # noqa: A002
+        locals: Mapping[str, object] | None = None,  # noqa: A002
         fromlist: Sequence[str] = (),
         level: int = 0,
     ) -> ModuleType:
@@ -97,7 +97,7 @@ class TrackedReport(Report):
 
     def __init__(
         self,
-        additional: Optional[List[Union[str, ModuleType]]] = None,
+        additional: list[str | ModuleType] | None = None,
         ncol: int = 3,
         text_width: int = 80,
         sort: bool = False,

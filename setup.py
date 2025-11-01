@@ -1,12 +1,11 @@
-# coding=utf-8
 from __future__ import annotations
 
-import io
 import os
+import pathlib
 
 import setuptools
 
-with io.open('README.md', 'r', encoding='utf-8') as f:
+with pathlib.Path('README.md').open('r', encoding='utf-8') as f:
     long_description = f.read()
 
 setuptools.setup(

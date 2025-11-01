@@ -8,13 +8,16 @@ import re
 import subprocess
 import sys
 from types import SimpleNamespace
+from typing import TYPE_CHECKING
 
 from bs4 import BeautifulSoup
 import numpy as np
 import pytest
-from pytest_console_scripts import ScriptRunner
 
 import scooby
+
+if TYPE_CHECKING:
+    from pytest_console_scripts import ScriptRunner
 
 # Write a package `dummy_module` without version number.
 ppath = Path('tests') / 'dummy_module'
@@ -205,12 +208,12 @@ def test_extra_meta() -> None:
 def test_tracking() -> None:
     scooby.track_imports()
     # import a float value which should not be tracked
-    from scipy.constants import mu_0  # noqa: F401, PLC0415
+    from scipy.constants import mu_0  # noqa: F401
 
     report = scooby.TrackedReport()
     scooby.untrack_imports()
-    import dummy_module  # noqa: F401, PLC0415
-    import no_version  # noqa: F401, PLC0415
+    import dummy_module  # noqa: F401
+    import no_version  # noqa: F401
 
     assert 'numpy' in report.packages
     assert 'scipy' in report.packages
@@ -254,7 +257,7 @@ def test_import_os_error() -> None:
     # We don't have this on CI, so this should throw an error on import
     # Make sure scooby can handle it.
     with pytest.raises(OSError, match='cannot load'):
-        import pyvips  # noqa: F401, PLC0415
+        import pyvips  # noqa: F401
     assert scooby.Report(['pyvips'])
 
 

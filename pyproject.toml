@@ -56,21 +56,23 @@ extend-select = [
   'PT',
   'PTH',
   'PYI',
-]
 #   'Q',
-#   'RET',
-#   'RSE',
-#   'RUF',
-#   'SIM',
-#   'T10',
-#   'T20',
-#   'TCH',
-#   'TID',
-#   'TRY',
-#   'UP',
-#   'W',
-#   'YTT',
-# ]
+  'RET',
+  'RSE',
+  # 'RUF',
+  # 'SIM',
+  'T10',
+  # 'T20',
+  'TCH',
+  'TID',
+  'TRY',
+  'UP',
+  'W',
+  'YTT',
+]
+ignore = [
+  'COM812', # May cause conflicts when used with the formatter
+]
 
 [tool.ruff.lint.isort]
 combine-as-imports = true # Combines 'as' imports on the same line

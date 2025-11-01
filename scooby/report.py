@@ -109,7 +109,7 @@ class PlatformInfo:
                 import psutil  # lazy-load see PR#85
 
                 tmem = psutil.virtual_memory().total
-                self._total_ram = '{:.1f} GiB'.format(tmem / (1024.0**3))
+                self._total_ram = f'{tmem / (1024.0**3):.1f} GiB'
             except ImportError:
                 self._total_ram = 'unknown'
 
@@ -137,9 +137,9 @@ class PlatformInfo:
 
             # Get mkl info from numexpr or mkl, if available
             if mkl:
-                self._mkl_info = cast(str, mkl.get_version_string())
+                self._mkl_info = cast('str', mkl.get_version_string())
             elif numexpr:
-                self._mkl_info = cast(str, numexpr.get_vml_version())
+                self._mkl_info = cast('str', numexpr.get_vml_version())
             else:
                 self._mkl_info = None
 
@@ -210,7 +210,7 @@ class PythonInfo:
         """Return the python environment."""
         if in_ipykernel():
             return 'Jupyter'
-        elif in_ipython():
+        if in_ipython():
             return 'IPython'
         return 'Python'
 
@@ -446,10 +446,10 @@ class Report(PlatformInfo, PythonInfo):
 
             align = 'left' if ncol == 1 else 'right'
             html += f"    <td style='text-align: {align};"
-            html += ' ' + border + '>%s</td>\n' % name
+            html += ' ' + border + f'>{name}</td>\n'
 
             html += "    <td style='text-align: left; "
-            html += border + '>%s</td>\n' % version
+            html += border + f'>{version}</td>\n'
 
             return html, i + 1
 
@@ -559,7 +559,7 @@ class AutoReport(Report):
     ) -> None:
         """Initialize."""
         if not isinstance(module, (str, ModuleType)):
-            msg = 'Cannot generate report for type ({})'.format(type(module))
+            msg = f'Cannot generate report for type ({type(module)})'
             raise TypeError(msg)
 
         if isinstance(module, ModuleType):
@@ -605,7 +605,7 @@ def get_version(module: str | ModuleType) -> tuple[str, str | None]:
     """
     # module is (1) a module or (2) a string.
     if not isinstance(module, (str, ModuleType)):
-        msg = 'Cannot fetch version from type ({})'.format(type(module))
+        msg = f'Cannot fetch version from type ({type(module)})'
         raise TypeError(msg)
 
     # module is module; get name

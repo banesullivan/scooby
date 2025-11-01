@@ -13,13 +13,11 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 import sysconfig
-from typing import Callable
-from typing import Dict
-from typing import List
+from typing import TYPE_CHECKING
 from typing import Literal
-from typing import Set
-from typing import Tuple
-from typing import Union
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 PACKAGE_ALIASES = {
     'vtkmodules': 'vtk',
@@ -43,7 +41,7 @@ def get_pyqt5_version() -> str:
     return PYQT_VERSION_STR
 
 
-VERSION_METHODS: Dict[str, Callable[[], str]] = {
+VERSION_METHODS: dict[str, Callable[[], str]] = {
     'PyQt5': get_pyqt5_version,
 }
 
@@ -60,9 +58,10 @@ def in_ipython() -> bool:
     """
     try:
         __IPYTHON__  # noqa: B018
-        return True
     except NameError:
         return False
+    else:
+        return True
 
 
 def in_ipykernel() -> bool:
@@ -90,7 +89,7 @@ def in_ipykernel() -> bool:
     return ipykernel
 
 
-def get_standard_lib_modules() -> Set[str]:
+def get_standard_lib_modules() -> set[str]:
     """Return a set of the names of all modules in the standard library."""
     site_path = Path(sysconfig.get_path('stdlib'))
     if getattr(sys, 'frozen', False):  # within pyinstaller
@@ -105,7 +104,7 @@ def get_standard_lib_modules() -> Set[str]:
         names = site_path.iterdir()
         stdlib_pkgs = {p.stem if p.suffix == '.py' else p.name for p in names}
 
-    stdlib_pkgs = {
+    return {
         'python',
         'sys',
         '__builtin__',
@@ -124,10 +123,9 @@ def get_standard_lib_modules() -> Set[str]:
         'unicodedata',
         'mmap',
     }.union(stdlib_pkgs)
-    return stdlib_pkgs
 
 
-def version_tuple(v: str) -> Tuple[int, ...]:
+def version_tuple(v: str) -> tuple[int, ...]:
     """Convert a version string to a tuple containing ints.
 
     Non-numeric version strings will be converted to 0.  For example:
@@ -148,7 +146,7 @@ def version_tuple(v: str) -> Tuple[int, ...]:
         msg = 'Version strings containing more than three parts cannot be parsed'
         raise ValueError(msg)
 
-    vals: List[int] = []
+    vals: list[int] = []
     for item in split_v:
         if item.isnumeric():
             vals.append(int(item))
@@ -198,14 +196,14 @@ def meets_version(version: str, meets: str) -> bool:
     for i in range(len(va)):
         if va[i] > vb[i]:
             return True
-        elif va[i] < vb[i]:
+        if va[i] < vb[i]:
             return False
 
     # Arrived here if same version
     return True
 
 
-def get_filesystem_type() -> Union[str, Literal[False]]:
+def get_filesystem_type() -> str | Literal[False]:
     """Get the type of the file system at the path of the scooby package."""
     try:
         import psutil  # lazy-load see PR#85
@@ -215,7 +213,7 @@ def get_filesystem_type() -> Union[str, Literal[False]]:
     import platform  # lazy-load see PR#85
 
     # Skip Windows due to https://github.com/banesullivan/scooby/issues/75
-    fs_type: Union[str, Literal[False]]
+    fs_type: str | Literal[False]
     if psutil and platform.system() != 'Windows':
         # Code by https://stackoverflow.com/a/35291824/10504481
         my_path = str(Path(__file__).resolve())

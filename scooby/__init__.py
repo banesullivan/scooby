@@ -37,9 +37,9 @@ __all__ = [
     'TrackedReport',
     'doo',
     'get_standard_lib_modules',
-    'in_ipython',
-    'in_ipykernel',
     'get_version',
+    'in_ipykernel',
+    'in_ipython',
     'track_imports',
     'untrack_imports',
 ]

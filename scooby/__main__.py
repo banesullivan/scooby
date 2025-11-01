@@ -7,16 +7,13 @@ import importlib
 from importlib.metadata import PackageNotFoundError
 import sys
 from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
 
 import scooby
 from scooby.report import Report
 from scooby.report import get_distribution_dependencies
 
 
-def main(args: Optional[List[str]] = None) -> None:
+def main(args: list[str] | None = None) -> None:
     """Parse command line inputs of CLI interface."""
     # If not explicitly called, catch arguments
     if args is None:
@@ -73,7 +70,7 @@ def main(args: Optional[List[str]] = None) -> None:
     act(vars(parser.parse_args(args)))
 
 
-def act(args_dict: Dict[str, Any]) -> None:
+def act(args_dict: dict[str, Any]) -> None:
     """Act upon CLI inputs."""
     # Quick exit if only scooby version.
     if args_dict.pop('version'):
@@ -99,9 +96,10 @@ def act(args_dict: Dict[str, Any]) -> None:
         else:
             try:
                 print(module.Report())
-                return
             except AttributeError:
                 pass
+            else:
+                return
 
         try:
             dist_deps = get_distribution_dependencies(report)
