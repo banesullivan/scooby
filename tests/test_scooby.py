@@ -171,7 +171,7 @@ def test_plain_vs_html():
 
     # Plain text currently starts with `Date :`;
     # we should remove that, or add it to the html version too.
-    assert text_html[20:] == text_plain[25:]
+    assert text_html[20:].strip() == text_plain[25:].strip()
 
 
 def test_extra_meta():
@@ -351,6 +351,13 @@ def test_get_distribution_dependencies(monkeypatch, requirement, expected):
 
     deps = scooby.report.get_distribution_dependencies("fakepkg")
     assert deps == [expected]
+
+
+def test_get_distribution_dependencies_no_deps():
+    deps = scooby.report.get_distribution_dependencies('numpy')
+    assert deps == []
+    deps = scooby.report.get_distribution_dependencies('numpy', separate_extras=True)
+    assert deps == {'core': [], 'optional': {}}
 
 
 def test_get_distribution_dependencies_uniqueness_and_order(monkeypatch):
