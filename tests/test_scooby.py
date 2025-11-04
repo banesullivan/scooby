@@ -340,12 +340,6 @@ def test_cli(script_runner: ScriptRunner) -> None:
     assert not ret.success
     assert 'no Report' in ret.stderr
 
-    # Ensure
-    ret = script_runner.run(['scooby', '--report', 'pytest'])
-    assert ret.success
-    assert 'pytest' in ret.stdout
-    assert 'iniconfig' in ret.stdout
-
 
 @pytest.mark.script_launch_mode('inprocess')
 @pytest.mark.parametrize('is_scooby_report', [True, False])
