@@ -340,6 +340,41 @@ def test_cli(script_runner: ScriptRunner) -> None:
     assert not ret.success
     assert 'no Report' in ret.stderr
 
+    # Ensure
+    ret = script_runner.run(['scooby', '--report', 'pytest'])
+    assert ret.success
+    assert 'pytest' in ret.stdout
+    assert 'iniconfig' in ret.stdout
+
+
+@pytest.mark.script_launch_mode('inprocess')
+@pytest.mark.parametrize('is_scooby_report', [True, False])
+def test_cli_report_subclass(
+    script_runner: ScriptRunner, monkeypatch: pytest.MonkeyPatch, is_scooby_report: bool
+) -> None:
+    """Test that module.Report is only printed if the Report is a scooby report."""
+    dummy_report_str = 'DummyReport'
+    if is_scooby_report:
+
+        class DummyReport(scooby.Report): ...
+
+        expected_str_in_report = dummy_report_str
+    else:
+
+        class DummyReport: ...
+
+        expected_str_in_report = 'numpy'
+
+    DummyReport.__repr__ = lambda _: dummy_report_str
+
+    assert str(DummyReport()) == dummy_report_str
+    monkeypatch.setattr(np, 'Report', DummyReport, raising=False)
+    assert hasattr(np, 'Report')
+
+    ret = script_runner.run(['scooby', '--report', 'numpy'])
+    assert ret.success
+    assert expected_str_in_report in ret.stdout
+
 
 def test_auto_report() -> None:
     report = scooby.AutoReport('pytest')

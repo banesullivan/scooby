@@ -94,11 +94,13 @@ def act(args_dict: dict[str, Any]) -> None:
             pass
         else:
             try:
-                print(module.Report())
+                report_obj = module.Report()
             except AttributeError:
                 pass
             else:
-                return
+                if isinstance(report_obj, Report):
+                    print(report_obj)
+                    return
 
         try:
             print(AutoReport(report))
