@@ -94,11 +94,13 @@ def act(args_dict: dict[str, Any]) -> None:
             pass
         else:
             try:
-                print(module.Report())
+                report_cls = module.Report
             except AttributeError:
                 pass
             else:
-                return
+                if issubclass(report_cls, Report):
+                    print(report_cls())
+                    return
 
         try:
             print(AutoReport(report))
