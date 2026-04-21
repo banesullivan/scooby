@@ -47,7 +47,7 @@ __author__ = 'Dieter Werthmüller, Bane Sullivan, Alex Kaszynski, and contributo
 __license__ = 'MIT'
 __copyright__ = '2019, Dieter Werthmüller & Bane Sullivan'
 try:
-    from scooby.version import version as __version__
+    from scooby._version import version as __version__
 except ImportError:  # Only happens if not properly installed.
     from datetime import datetime, timezone
 

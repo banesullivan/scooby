@@ -6,11 +6,10 @@
 [![Conda Status](https://img.shields.io/conda/vn/conda-forge/scooby.svg)](https://anaconda.org/conda-forge/scooby)
 [![codecov](https://codecov.io/gh/banesullivan/scooby/branch/main/graph/badge.svg?token=eJqZ700tqH)](https://codecov.io/gh/banesullivan/scooby)
 
-*Great Dane turned Python environment detective*
+_Great Dane turned Python environment detective_
 
 This is a lightweight tool for easily reporting your Python environment's
 package versions and hardware resources.
-
 
 Install from [PyPI](https://pypi.org/project/scooby/)
 
@@ -60,6 +59,7 @@ text representation of the script.
 >>> import scooby
 >>> scooby.Report()
 ```
+
 ```
 --------------------------------------------------------------------------------
   Date: Wed Feb 12 15:35:43 2020 W. Europe Standard Time
@@ -92,6 +92,7 @@ can oh-so satisfyingly do:
 >>> import scooby
 >>> scooby.doo()
 ```
+
 ```
 --------------------------------------------------------------------------------
   Date: Thu Nov 25 09:47:50 2021 MST
@@ -123,11 +124,13 @@ from scooby import doo as doobiedoo
 
 On top of the default (optional) packages you can provide additional packages,
 either as strings or give already imported packages:
+
 ```py
 >>> import pyvista
 >>> import scooby
 >>> scooby.Report(additional=[pyvista, 'vtk', 'no_version', 'does_not_exist'])
 ```
+
 ```
 --------------------------------------------------------------------------------
   Date: Wed Feb 12 16:15:15 2020 W. Europe Standard Time
@@ -170,7 +173,6 @@ Besides `additional` there are two more lists, `core` and `optional`, which
 can be used to provide package names. However, they are mostly useful for
 package maintainers wanting to use scooby to create their reporting system
 (see below).
-
 
 ### Implementing scooby in your project
 
@@ -245,6 +247,7 @@ class Report(ScoobyReport):
                                text_width=text_width, sort=sort)
 
 ```
+
 If a user has scooby installed, all works as expected. If scooby is not
 installed, it will raise the following exception:
 
@@ -266,6 +269,7 @@ distribution requirements with the `AutoReport` class:
 >>> import scooby
 >>> scooby.AutoReport('matplotlib')
 ```
+
 ```
 --------------------------------------------------------------------------------
   Date: Fri Oct 20 16:49:34 2023 PDT
@@ -317,6 +321,7 @@ A couple of locations are checked, and we are happy to implement more if
 needed, just open an issue!
 
 Currently, it looks in the following places:
+
 - `__version__`
 - `version`
 - lookup `VERSION_ATTRIBUTES` in the scooby knowledge base
@@ -350,14 +355,13 @@ scooby as well. A few examples:
 
 Note that modules can be provided as already loaded ones or as strings.
 
-
 ### Tracking Imports in a Session
 
 Scooby has the ability to track all imported modules during a Python session
-such that *any* imported, non-standard lib package that is used in the session
+such that _any_ imported, non-standard lib package that is used in the session
 is reported by a `TrackedReport`. For instance, start a session by importing
 scooby and enabling tracking with the `track_imports()` function.
-Then *all* subsequent packages that are imported during the session will be
+Then _all_ subsequent packages that are imported during the session will be
 tracked and scooby can report their versions.
 Once you are ready to generate a `Report`, instantiate a `TrackedReport` object.
 
@@ -373,6 +377,7 @@ the versions of `scipy` and `numpy` as both packages are loaded in the session
 
 >>> scooby.TrackedReport()
 ```
+
 ```
 --------------------------------------------------------------------------------
   Date: Thu Apr 16 15:33:11 2020 MDT
