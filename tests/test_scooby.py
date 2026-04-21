@@ -8,7 +8,7 @@ import re
 import subprocess
 import sys
 from types import SimpleNamespace
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 from bs4 import BeautifulSoup
 import numpy as np
@@ -394,7 +394,7 @@ def test_get_distribution_dependencies(
     expected: str,
 ) -> None:
     class FakeDist:
-        requires = [requirement]
+        requires: ClassVar[list[str]] = [requirement]
 
     def fake_distribution(_dist_name: str) -> None:
         return FakeDist()
@@ -416,7 +416,7 @@ def test_get_distribution_dependencies_uniqueness_and_order(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     class FakeDist:
-        requires = ['y==0.42', 'x<1.5', 'x>1.0']
+        requires: ClassVar[list[str]] = ['y==0.42', 'x<1.5', 'x>1.0']
 
     def fake_distribution(_dist_name: str) -> None:
         return FakeDist()

@@ -53,19 +53,19 @@ class PlatformInfo:
                     f' ({platform().freedesktop_os_release()["NAME"]} '
                     f'{platform().freedesktop_os_release()["VERSION_ID"]})'
                 )
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001, S110
                 pass
         elif s == 'Windows':
             try:
                 release, version, csd, ptype = platform().win32_ver()
                 s += f' ({release} {version} {csd} {ptype})'
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001, S110
                 pass
         elif s == 'Darwin':
             try:
                 release, _, _ = platform().mac_ver()
                 s += f' (macOS {release})'
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001, S110
                 pass
         elif s == 'Java':
             # TODO: parse platform().java_ver()
