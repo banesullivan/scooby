@@ -1,37 +1,49 @@
-# Compiled source #
-###################
+# Compiled source
 *.pyc
 *.pyd
 *.so
 *.o
+__pycache__/
 
-# Pip generated folders #
-#########################
+# Setuptools_scm version file
+scooby/_version.py
+
+# Build / dist artifacts
 *.egg-info/
 build/
 dist/
-scooby/version.py
 
-# Mac
-.DS_Store
-
-# testing coverage and cache
+# Testing / coverage
 .pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+*,cover
+
+# Tooling caches
+.ruff_cache/
+.mypy_cache/
+.tox/
+
+# Virtual environments
+.venv/
+venv/
+
+# uv
+uv.lock
+
+# Jupyter
+**/.ipynb_checkpoints
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+*~
+*.swp
+
+# Project-local test detritus
 tests/.coverage
 tests/htmlcov/
 tests/dummy_module/
-
-# windows
 test.bat
-
-# Jupyter notebook cache
-**/.ipynb_checkpoints
-
-# Code coverage results
-htmlcov
-.coverage
-coverage.xml
-*,cover
-
-.tox
-venv

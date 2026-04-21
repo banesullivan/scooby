@@ -1,5 +1,88 @@
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ['setuptools>=77.0.3', 'setuptools_scm[toml]>=8']
+
+[project]
+authors = [
+  { name = 'Dieter Werthmüller, Bane Sullivan, Alex Kaszynski, and contributors', email = 'info@pyvista.org' },
+]
+classifiers = [
+  'Development Status :: 5 - Production/Stable',
+  'Intended Audience :: Science/Research',
+  'Natural Language :: English',
+  'Operating System :: OS Independent',
+  'Programming Language :: Python :: 3',
+  'Programming Language :: Python :: 3.10',
+  'Programming Language :: Python :: 3.11',
+  'Programming Language :: Python :: 3.12',
+  'Programming Language :: Python :: 3.13',
+  'Programming Language :: Python :: 3.14',
+]
+dependencies = []
+description = 'A Great Dane turned Python environment detective'
+dynamic = ['version']
+keywords = ['environment', 'reporting', 'versioning']
+license = 'MIT'
+name = 'scooby'
+readme = 'README.md'
+requires-python = '>=3.10'
+
+[project.optional-dependencies]
+cpu = ["mkl; platform_system != 'Darwin'", 'psutil']
+
+[project.scripts]
+scooby = 'scooby.__main__:main'
+
+[project.urls]
+'Bug Reports' = 'https://github.com/banesullivan/scooby/issues'
+Homepage = 'https://github.com/banesullivan/scooby'
+'Source Code' = 'https://github.com/banesullivan/scooby'
+
+[dependency-groups]
+test = [
+  "mkl; platform_system != 'Darwin'",
+  'beautifulsoup4',
+  'no-version',
+  'numpy',
+  'psutil',
+  'pytest',
+  'pytest-console-scripts',
+  'pytest-cov',
+  'pyvips',
+  'scipy',
+]
+
+dev = ['pre-commit', { include-group = 'test' }]
+
+[tool.setuptools.packages.find]
+include = ['scooby', 'scooby.*']
+
+[tool.setuptools.package-data]
+scooby = ['py.typed']
+
+[tool.setuptools_scm]
+version_file = 'scooby/_version.py'
+version_scheme = 'release-branch-semver'
+
+[tool.codespell]
+quiet-level = 3
+skip = '*.pyc,*.txt,*.gif,*.png,*.jpg,*.ply,*.vtk,*.vti,*.js,*.html,*.doctree,*.ttf,*.woff,*.woff2,*.eot,*.mp4,*.inv,*.pickle,*.ipynb,flycheck*,./.git/*,./.hypothesis/*,*.yml,./dist/*,*~,.hypothesis*,*.mypy_cache/*,*cover'
+
+[tool.coverage.run]
+branch = true
+source = ['scooby']
+
+[tool.coverage.report]
+exclude_also = ['^\s*@overload.*\n\s*def .*\(.*$', '^\s*if TYPE_CHECKING:']
+
+[tool.pytest.ini_options]
+addopts = ['--strict-config', '--strict-markers', '-ra']
+minversion = '7'
+testpaths = ['tests']
+xfail_strict = true
+
 [tool.ruff]
-exclude = ['.git', 'build', 'dist', 'pycache__']
+exclude = ['.git', '__pycache__', 'build', 'dist']
 indent-width = 4
 line-length = 99
 
@@ -10,7 +93,6 @@ docstring-code-format = true
 # The length of docstring lines should be kept to 75 characters to facilitate
 # reading the docstrings in text terminals.
 docstring-code-line-length = 75
-
 quote-style = 'single'
 
 [tool.ruff.lint]
@@ -64,9 +146,13 @@ extend-select = [
 ]
 ignore = [
   'COM812', # May cause conflicts when used with the formatter
+  'ISC001', # May cause conflicts when used with the formatter
   'SIM105', # contextlib.suppress is slower and try/except seems more Pythonic
-  'SIM108', # long ternery operators are sometimes confusing
+  'SIM108', # long ternary operators are sometimes confusing
 ]
+
+[tool.ruff.lint.per-file-ignores]
+'tests/*' = ['ANN', 'S101', 'T20']
 
 [tool.ruff.lint.isort]
 combine-as-imports = true # Combines 'as' imports on the same line

@@ -1,2 +1,0 @@
-psutil
-mkl; platform_system != 'Darwin'

@@ -1,33 +1,35 @@
 # Simple makefile to simplify repetitive build env management tasks under posix
 
-CODESPELL_DIRS ?= ./
-CODESPELL_SKIP ?= "*.pyc,*.txt,*.gif,*.png,*.jpg,*.ply,*.vtk,*.vti,*.js,*.html,*.doctree,*.ttf,*.woff,*.woff2,*.eot,*.mp4,*.inv,*.pickle,*.ipynb,flycheck*,./.git/*,./.hypothesis/*,*.yml,./doc/_build/*,./doc/images/*,./dist/*,*~,.hypothesis*,./doc/examples/*,*.mypy_cache/*,*cover,./tests/tinypages/_build/*,*/_autosummary/*"
+.DEFAULT_GOAL := test
 
+.PHONY: all clean sync-deps lint test doctest coverage build
 
-stylecheck: codespell lint
-test: apitest doctest
+all: test
 
-codespell:
-	@echo "Running codespell"
-	@codespell $(CODESPELL_DIRS) -S $(CODESPELL_SKIP)
+clean:
+	@echo "Cleaning build and coverage artifacts"
+	@rm -rf build dist .pytest_cache .ruff_cache htmlcov coverage*.xml coverage*.html .coverage *.egg-info
 
-pydocstyle:
-	@echo "Running pydocstyle"
-	@pydocstyle scooby --match='(?!coverage).*.py'
+sync-deps:
+	@echo "Installing dev dependencies"
+	@uv sync --group dev
 
 lint:
-	@echo "Linting with flake8"
-	flake8 --ignore=E501,W503,D10,E123,E203 scooby tests
+	@echo "Running pre-commit"
+	@uv run pre-commit run --all-files
+
+test:
+	@echo "Running tests"
+	@uv run pytest -v --cov scooby --cov-report xml
 
 doctest:
-	@echo "Running module doctesting"
-	pytest -v --doctest-modules scooby
+	@echo "Running doctests"
+	@uv run pytest -v --doctest-modules scooby
 
-apitest:
-	@echo "Running full API tests"
-	pytest -v --cov scooby --cov-report xml
+coverage:
+	@echo "Running coverage with HTML report"
+	@uv run pytest -v --cov scooby --cov-report html
 
-format:
-	@echo "Formatting"
-	black .
-	isort .
+build:
+	@echo "Building distribution"
+	@uv build
