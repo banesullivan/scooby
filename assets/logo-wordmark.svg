@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 400" width="1400" height="400">
+  <title>scooby</title>
+  <desc>Python environment detective</desc>
+
+  <style>
+    .wordmark    { fill: #2A1810; }
+    .tagline     { fill: #7A5A3F; }
+    .glass-fill  { fill: #2A1810; }
+    .glass-ring  { fill: none; stroke: #2A1810; stroke-width: 26; }
+    @media (prefers-color-scheme: dark) {
+      .wordmark    { fill: #F5EDD8; }
+      .tagline     { fill: #C99A5E; }
+      .glass-fill  { fill: #F5EDD8; }
+      .glass-ring  { stroke: #F5EDD8; }
+    }
+  </style>
+
+  <!-- Icon: magnifying glass + paw -->
+  <g>
+    <!-- Handle -->
+    <g transform="translate(180 180) rotate(-45)">
+      <rect x="-20" y="125" width="40" height="150" rx="20" class="glass-fill"/>
+    </g>
+    <!-- Ring -->
+    <circle cx="180" cy="180" r="125" class="glass-ring"/>
+
+    <!-- Paw -->
+    <g fill="#C99A5E">
+      <ellipse cx="180" cy="216" rx="42" ry="33"/>
+      <ellipse cx="128" cy="168" rx="16" ry="23" transform="rotate(-18 128 168)"/>
+      <ellipse cx="158" cy="132" rx="16" ry="23" transform="rotate(-7 158 132)"/>
+      <ellipse cx="202" cy="132" rx="16" ry="23" transform="rotate(7 202 132)"/>
+      <ellipse cx="232" cy="168" rx="16" ry="23" transform="rotate(18 232 168)"/>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <g transform="translate(410 120)">
+    <text x="0" y="150"
+          font-family="Quicksand, 'Nunito', 'Trebuchet MS', 'Helvetica Neue', sans-serif"
+          font-size="200"
+          font-weight="800"
+          class="wordmark"
+          letter-spacing="-4">scooby</text>
+
+    <text x="4" y="215"
+          font-family="Quicksand, 'Nunito', 'Trebuchet MS', 'Helvetica Neue', sans-serif"
+          font-size="36"
+          font-weight="500"
+          class="tagline"
+          letter-spacing="2">Python environment detective</text>
+  </g>
+</svg>

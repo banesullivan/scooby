@@ -1,4 +1,6 @@
-# 🐶🕵️ Scooby
+<p align="center">
+  <img src="https://github.com/banesullivan/scooby/raw/main/assets/logo-wordmark.svg" alt="scooby — Python environment detective"  />
+</p>
 
 [![Downloads](https://img.shields.io/pypi/dm/scooby.svg?label=PyPI%20downloads)](https://pypi.org/project/scooby/)
 [![Tests](https://github.com/banesullivan/scooby/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/banesullivan/scooby/actions/workflows/pythonpackage.yml)
