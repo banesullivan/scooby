@@ -79,13 +79,21 @@ def in_ipykernel() -> bool:
     bool : True if using an ipykernel
 
     """
-    ipykernel = False
-    if in_ipython():
-        try:
-            ipykernel: bool = type(get_ipython()).__module__.startswith('ipykernel.')
-        except NameError:
-            pass
-    return ipykernel
+    if not in_ipython():
+        return False
+    try:
+        shell = get_ipython()
+    except NameError:
+        return False
+    for cls in type(shell).__mro__:
+        mod = getattr(cls, '__module__', '') or ''
+        if mod.startswith('ipykernel.'):
+            return True
+    try:
+        from ipykernel.zmqshell import ZMQInteractiveShell
+    except ImportError:
+        return False
+    return isinstance(shell, ZMQInteractiveShell)
 
 
 def get_standard_lib_modules() -> set[str]:
