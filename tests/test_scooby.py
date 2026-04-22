@@ -438,6 +438,68 @@ def test_auto_report() -> None:
     assert 'iniconfig' in report.packages
 
 
+@pytest.mark.script_launch_mode('subprocess')
+def test_cli_grep(script_runner: ScriptRunner) -> None:
+    """--grep should list installed packages matching the pattern (issue #100)."""
+    # Substring match (case-insensitive)
+    ret = script_runner.run(['scooby', '--grep', 'pytest'])
+    assert ret.success
+    lines = [line for line in ret.stdout.splitlines() if line]
+    assert lines, 'expected at least one match for "pytest"'
+    assert all('==' in line for line in lines), 'output should be name==version'
+    assert any(line.startswith('pytest==') for line in lines)
+
+    # Glob match
+    ret = script_runner.run(['scooby', '--grep', 'pytest-*'])
+    assert ret.success
+    assert 'pytest-' in ret.stdout
+    # Glob should not match the bare "pytest" entry.
+    assert not any(
+        line == f'pytest=={m}'
+        for line in ret.stdout.splitlines()
+        for m in [line.split('==', 1)[1]]
+        if line.startswith('pytest==')
+    )
+
+    # Case-insensitive
+    ret = script_runner.run(['scooby', '--grep', 'PYTEST'])
+    assert ret.success
+    assert 'pytest==' in ret.stdout
+
+    # No match -> exit 1 (grep convention)
+    ret = script_runner.run(['scooby', '--grep', 'zzz_no_such_package_xyz'])
+    assert not ret.success
+    assert ret.stdout == ''
+
+    # Multiple patterns (repeatable flag), results are deduped and sorted
+    ret = script_runner.run(['scooby', '--grep', 'numpy', '--grep', 'scipy'])
+    assert ret.success
+    names = [line.split('==', 1)[0] for line in ret.stdout.splitlines() if line]
+    assert 'numpy' in names
+    assert 'scipy' in names
+    assert names == sorted(names, key=str.lower)
+
+
+@pytest.mark.script_launch_mode('subprocess')
+def test_cli_track(script_runner: ScriptRunner, tmp_path: Path) -> None:
+    """--track should run a script with import tracking and print a report (issue #100)."""
+    script = tmp_path / 'tracked_script.py'
+    script.write_text(
+        "import sys\nimport numpy  # noqa: F401\nprint('script argv:', sys.argv)\n",
+    )
+
+    ret = script_runner.run(['scooby', '--track', str(script), 'hello', 'world'])
+    assert ret.success, ret.stderr
+    # Script executed with forwarded argv
+    assert 'script argv:' in ret.stdout
+    assert 'hello' in ret.stdout
+    assert 'world' in ret.stdout
+    # Tracked report includes numpy (imported inside the script)
+    assert 'numpy' in ret.stdout
+    # Standard scooby report banner is present
+    assert 'Python' in ret.stdout
+
+
 @pytest.mark.parametrize(
     ('requirement', 'expected'),
     [

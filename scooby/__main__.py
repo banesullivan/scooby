@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import importlib
 from importlib.metadata import PackageNotFoundError
+import runpy
 import sys
 from typing import Any
 
@@ -65,6 +67,30 @@ def main(args: list[str] | None = None) -> None:
         help='only display scooby version',
     )
 
+    # arg: Grep installed packages (issue #100)
+    parser.add_argument(
+        '--grep',
+        '-g',
+        default=None,
+        metavar='PATTERN',
+        action='append',
+        help='list installed packages whose names match PATTERN '
+        '(case-insensitive substring match, or fnmatch glob if PATTERN '
+        "contains '*', '?', or '['). Repeatable.",
+    )
+
+    # arg: Track imports of a script (issue #100)
+    parser.add_argument(
+        '--track',
+        default=None,
+        metavar='SCRIPT',
+        help='run a Python SCRIPT with import tracking enabled, then print a '
+        'TrackedReport. Any additional positional arguments are forwarded to '
+        "the script as sys.argv[1:] (flags prefixed with '-' are consumed by "
+        'scooby itself; separate them with `--` if they should reach the '
+        'script).',
+    )
+
     # Call act with command line arguments as dict.
     act(vars(parser.parse_args(args)))
 
@@ -79,12 +105,24 @@ def act(args_dict: dict[str, Any]) -> None:
     report = args_dict.pop('report')
     no_opt = args_dict.pop('no_opt')
     packages = args_dict.pop('packages')
+    grep_patterns = args_dict.pop('grep')
+    track_script = args_dict.pop('track')
 
     if no_opt is None:
         if report is None:
             no_opt = False
         else:
             no_opt = True
+
+    # Grep installed packages.
+    if grep_patterns:
+        _grep(grep_patterns)
+        return
+
+    # Run a script with import tracking.
+    if track_script:
+        _track(track_script, packages or [], sort=args_dict['sort'])
+        return
 
     # Report of another package.
     if report:
@@ -123,6 +161,44 @@ def act(args_dict: dict[str, Any]) -> None:
 
     # Print the report.
     print(Report(**inp))
+
+
+def _grep(patterns: list[str]) -> None:
+    """Print installed packages whose names match any of ``patterns``."""
+    # Use Report's installed_packages — same source of truth as `other`.
+    installed = Report(optional=[]).installed_packages
+    lowered = {name.lower(): (name, version) for name, version in installed.items()}
+
+    matches: dict[str, str] = {}
+    for raw in patterns:
+        pattern = raw.lower()
+        is_glob = any(ch in pattern for ch in '*?[')
+        for lname, (name, version) in lowered.items():
+            hit = fnmatch.fnmatchcase(lname, pattern) if is_glob else pattern in lname
+            if hit:
+                matches[name] = version
+
+    if not matches:
+        # Non-zero exit mirrors `grep`'s convention for "no match".
+        sys.exit(1)
+
+    for name in sorted(matches, key=str.lower):
+        print(f'{name}=={matches[name]}')
+
+
+def _track(script: str, script_args: list[str], sort: bool) -> None:
+    """Run ``script`` with import tracking, then print a TrackedReport."""
+    scooby.track_imports()
+    # Preserve and restore sys.argv so the tracked script sees its own argv.
+    original_argv = sys.argv
+    sys.argv = [script, *script_args]
+    try:
+        runpy.run_path(script, run_name='__main__')
+        report = scooby.TrackedReport(sort=sort)
+    finally:
+        sys.argv = original_argv
+        scooby.untrack_imports()
+    print(report)
 
 
 if __name__ == '__main__':
