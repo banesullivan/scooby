@@ -236,9 +236,11 @@ class PythonInfo:
 
         .. versionadded:: 0.11
         """
-        # sort case-insensitively by name
+        # sort case-insensitively by name; skip distributions without a
+        # readable Name (e.g. Debian/Ubuntu strip duplicate METADATA files
+        # across Python versions, leaving partial .dist-info directories)
         installed = sorted(
-            (dist.metadata['Name'] for dist in distributions()),
+            (dist.name for dist in distributions() if dist.name),
             key=str.lower,
         )
         packages: dict[str, str] = {}
@@ -700,7 +702,9 @@ def get_distribution_dependencies(
         raise PackageNotFoundError(msg) from None
 
     def _package_name(requirement: str) -> str:
-        for sep in (' ', ';', '<', '=', '>', '!'):
+        # '[' strips an extras qualifier like "pyvista[colormaps,io,jupyter]"
+        # down to "pyvista" (see issue #129).
+        for sep in (' ', ';', '<', '=', '>', '!', '['):
             requirement = requirement.split(sep, 1)[0]
         return requirement.strip()
 
