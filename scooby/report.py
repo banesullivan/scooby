@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import html as _html
 import importlib
 from importlib.metadata import (
     PackageNotFoundError,
@@ -455,7 +456,8 @@ class Report(PlatformInfo, PythonInfo):
             return html, i + 1
 
         # Start html-table
-        html = "<table style='border: 1.5px solid;"
+        html = "<div class='scooby-report' style='display: inline-block;'>\n"
+        html += "<table style='border: 1.5px solid;"
         if self.max_width:
             html += f' max-width: {self.max_width}px;'
         html += "'>\n"
@@ -504,7 +506,37 @@ class Report(PlatformInfo, PythonInfo):
             html = colspan(html, self.mkl_info, self.ncol, 2)
 
         # Finish
-        html += '</table>'
+        html += '</table>\n'
+
+        # Hidden plain-text payload + copy button. Inline JS so no external
+        # assets are required; gracefully no-ops in renderers that strip
+        # scripts (nbviewer, GitHub). `this` is bound to the button.
+        plain_text = _html.escape(self.__repr__())
+        html += (
+            f"<textarea data-scooby-plain readonly aria-hidden='true' "
+            f"style='position: absolute; left: -9999px; width: 1px; "
+            f"height: 1px; opacity: 0;'>{plain_text}</textarea>\n"
+        )
+        html += (
+            "<button type='button' "
+            "style='margin-top: 4px; padding: 2px 8px; font-size: 0.85em; "
+            "cursor: pointer;' "
+            'onclick="(function(btn){'
+            "var root = btn.closest('.scooby-report');"
+            "var ta = root.querySelector('[data-scooby-plain]');"
+            'if (navigator.clipboard && navigator.clipboard.writeText) {'
+            'navigator.clipboard.writeText(ta.value);'
+            '} else {'
+            "ta.style.position='static'; ta.style.opacity='1'; "
+            "ta.select(); document.execCommand('copy'); "
+            "ta.style.position='absolute'; ta.style.opacity='0';"
+            '}'
+            'var label = btn.textContent;'
+            "btn.textContent = 'Copied!';"
+            'setTimeout(function(){btn.textContent = label;}, 1500);'
+            '})(this)">Copy as plain text</button>\n'
+        )
+        html += '</div>'
 
         return html
 

@@ -177,7 +177,12 @@ def test_get_version() -> None:
 
 def test_plain_vs_html() -> None:
     report = scooby.Report()
-    text_html = BeautifulSoup(report._repr_html_(), features='html.parser').get_text()
+    soup = BeautifulSoup(report._repr_html_(), features='html.parser')
+    # The copy-button scaffold (hidden <textarea> carrying the plain text and
+    # the <button> label itself) is not part of the visible table.
+    for tag in soup.find_all(['textarea', 'button']):
+        tag.decompose()
+    text_html = soup.get_text()
     text_plain = report.__repr__()
 
     text_plain = ' '.join(re.findall('[a-zA-Z1-9]+', text_plain))
@@ -186,6 +191,35 @@ def test_plain_vs_html() -> None:
     # Plain text currently starts with `Date :`;
     # we should remove that, or add it to the html version too.
     assert text_html[20:].strip() == text_plain[25:].strip()
+
+
+def test_html_copy_button() -> None:
+    """HTML output should embed a copy-to-plain-text button (issue #106)."""
+    report = scooby.Report()
+    html = report._repr_html_()
+    soup = BeautifulSoup(html, features='html.parser')
+
+    wrapper = soup.find('div', class_='scooby-report')
+    assert wrapper is not None, 'expected a .scooby-report wrapper div'
+
+    # Exactly one hidden textarea carrying the plain-text payload.
+    textareas = wrapper.find_all('textarea', attrs={'data-scooby-plain': True})
+    assert len(textareas) == 1
+    payload = textareas[0].get_text()
+    # It should contain the same content as __repr__ (HTML-unescaped by the
+    # parser on read), so a distinctive substring from the plain text must
+    # be present.
+    plain = report.__repr__()
+    distinctive = plain.splitlines()[-2].strip()  # last non-empty line
+    assert distinctive
+    assert distinctive in payload
+
+    # Exactly one copy button with clipboard wiring.
+    buttons = wrapper.find_all('button')
+    assert len(buttons) == 1
+    assert 'Copy as plain text' in buttons[0].get_text()
+    onclick = buttons[0].get('onclick') or ''
+    assert 'navigator.clipboard' in onclick
 
 
 def test_extra_meta() -> None:
