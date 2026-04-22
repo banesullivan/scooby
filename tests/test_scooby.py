@@ -414,6 +414,8 @@ def test_auto_report() -> None:
         ("z; python_version<'3.10'", 'z'),
         ('w >= 1.2', 'w'),
         ('x @ git+https://github.com/foo/bar.git@main', 'x'),
+        # issue #129: requirement pointing at another package's extras
+        ("pyvista[colormaps,io,jupyter]; extra == 'all'", 'pyvista'),
     ],
 )
 def test_get_distribution_dependencies(

@@ -702,7 +702,9 @@ def get_distribution_dependencies(
         raise PackageNotFoundError(msg) from None
 
     def _package_name(requirement: str) -> str:
-        for sep in (' ', ';', '<', '=', '>', '!'):
+        # '[' strips an extras qualifier like "pyvista[colormaps,io,jupyter]"
+        # down to "pyvista" (see issue #129).
+        for sep in (' ', ';', '<', '=', '>', '!', '['):
             requirement = requirement.split(sep, 1)[0]
         return requirement.strip()
 
