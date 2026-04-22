@@ -236,9 +236,11 @@ class PythonInfo:
 
         .. versionadded:: 0.11
         """
-        # sort case-insensitively by name
+        # sort case-insensitively by name; skip distributions without a
+        # readable Name (e.g. Debian/Ubuntu strip duplicate METADATA files
+        # across Python versions, leaving partial .dist-info directories)
         installed = sorted(
-            (dist.metadata['Name'] for dist in distributions()),
+            (dist.name for dist in distributions() if dist.name),
             key=str.lower,
         )
         packages: dict[str, str] = {}

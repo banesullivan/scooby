@@ -89,7 +89,10 @@ FAKE_INSTALLED_PACKAGES = {
 def fake_distributions() -> None:
     """Yield fake Distribution-like objects from the global dict."""
     for name, version in FAKE_INSTALLED_PACKAGES.items():
-        yield SimpleNamespace(metadata={'Name': name, 'Version': version})
+        yield SimpleNamespace(
+            name=name,
+            metadata={'Name': name, 'Version': version},
+        )
 
 
 def test_dict(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -112,6 +115,31 @@ def test_dict(monkeypatch: pytest.MonkeyPatch) -> None:
     other_dict = json.loads(other)
     for key in other_dict:
         assert key in report_repr
+
+
+def test_dist_info_without_metadata(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression test for issue #144.
+
+    Debian/Ubuntu's python helper strips duplicate METADATA files across
+    Python versions, leaving .dist-info directories where dist.name is None.
+    scooby should skip those instead of raising.
+    """
+
+    def distributions_with_partial_entry() -> None:
+        yield from fake_distributions()
+        # Partial .dist-info with no METADATA file -> name is None
+        yield SimpleNamespace(name=None, metadata={})
+
+    monkeypatch.setattr(
+        'importlib.metadata.distributions',
+        distributions_with_partial_entry,
+    )
+    report = scooby.Report(show_other=True)
+    # Should not raise on repr / to_dict (the original crash path).
+    assert repr(report)
+    assert 'numpy' in report.installed_packages
+    # to_dict() also exercises other_packages/installed_packages internally.
+    assert 'other' in report.to_dict()
 
 
 def test_inheritence_example() -> None:
