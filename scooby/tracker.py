@@ -58,7 +58,7 @@ if TRACKING_SUPPORTED:
     ) -> ModuleType:
         """Override of the import method to track package names."""
         m = CLASSIC_IMPORT(name, globals=globals, locals=locals, fromlist=fromlist, level=level)
-        name = name.split('.')[0]
+        name = name.split('.', maxsplit=1)[0]
         if level == 0 and _criterion(name):
             TRACKED_IMPORTS.append(name)
         return m

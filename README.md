@@ -192,9 +192,15 @@ class Report(scooby.Report):
         # Optional packages.
         optional = ['your_optional_packages', 'e.g.', 'matplotlib']
 
-        scooby.Report.__init__(self, additional=additional, core=core,
-                               optional=optional, ncol=ncol,
-                               text_width=text_width, sort=sort)
+        scooby.Report.__init__(
+            self,
+            additional=additional,
+            core=core,
+            optional=optional,
+            ncol=ncol,
+            text_width=text_width,
+            sort=sort,
+        )
 ```
 
 This makes it particularly easy for a user of your project to quickly generate
@@ -221,6 +227,7 @@ soft dependency. Instead of `import scooby` use the following snippet:
 try:
     from scooby import Report as ScoobyReport
 except ImportError:
+
     class ScoobyReport:
         def __init__(self, *args, **kwargs):
             message = (
@@ -244,10 +251,15 @@ class Report(ScoobyReport):
         # Optional packages.
         optional = ['your_optional_packages', 'e.g.', 'matplotlib']
 
-        scooby.Report.__init__(self, additional=additional, core=core,
-                               optional=optional, ncol=ncol,
-                               text_width=text_width, sort=sort)
-
+        scooby.Report.__init__(
+            self,
+            additional=additional,
+            core=core,
+            optional=optional,
+            ncol=ncol,
+            text_width=text_width,
+            sort=sort,
+        )
 ```
 
 If a user has scooby installed, all works as expected. If scooby is not
