@@ -183,6 +183,18 @@ def test_ipy() -> None:
     scooby.in_ipykernel()
 
 
+def test_in_ipykernel_shell_with_a_kernel(monkeypatch) -> None:
+    class Shell:
+        kernel = object()
+
+    monkeypatch.setattr(scooby.knowledge, 'in_ipython', lambda: True)
+    monkeypatch.setitem(scooby.knowledge.__builtins__, 'get_ipython', Shell)
+    assert scooby.in_ipykernel()
+
+    del Shell.kernel
+    assert not scooby.in_ipykernel()
+
+
 def test_get_version() -> None:
     name, version = scooby.get_version(np)
     assert version == np.__version__
