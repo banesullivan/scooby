@@ -92,8 +92,13 @@ def in_ipykernel() -> bool:
     try:
         from ipykernel.zmqshell import ZMQInteractiveShell
     except ImportError:
-        return False
-    return isinstance(shell, ZMQInteractiveShell)
+        pass
+    else:
+        if isinstance(shell, ZMQInteractiveShell):
+            return True
+    # JupyterLite's Pyodide kernel runs a plain IPython shell and attaches its
+    # kernel to it, so neither check above sees it.
+    return hasattr(shell, 'kernel')
 
 
 def get_standard_lib_modules() -> set[str]:
