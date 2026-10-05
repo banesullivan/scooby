@@ -745,7 +745,7 @@ def get_distribution_dependencies(
         # Use dict for ordered and unique keys
         return list({_package_name(pkg): None for pkg in requires}.keys())
 
-    deps_dict: dict[str, dict[str, None | dict[str, None]]] = {'core': {}, 'optional': {}}
+    deps_dict: dict[str, dict[str, dict[str, None] | None]] = {'core': {}, 'optional': {}}
 
     for req in requires:
         name = _package_name(req)
