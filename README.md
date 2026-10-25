@@ -303,8 +303,8 @@ distribution requirements with the `AutoReport` class:
 ### Solving Mysteries
 
 Are you struggling with the mystery of whether or not code is being executed in
-IPython, Jupyter, marimo, or normal Python? Try using some of scooby's investigative
-functions to solve these kinds of mysteries:
+IPython, Jupyter, marimo, or normal Python? Try using some of scooby's
+investigative functions to solve these kinds of mysteries:
 
 ```py
 import scooby

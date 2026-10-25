@@ -111,7 +111,7 @@ def in_marimo() -> bool:
         a marimo notebook runs as a plain Python script.
 
     """
-    # A marimo kernel has already imported marimo, so no import is needed here.
+    # Avoid importing marimo.
     running_in_notebook = getattr(sys.modules.get('marimo'), 'running_in_notebook', None)
     return running_in_notebook is not None and bool(running_in_notebook())
 
