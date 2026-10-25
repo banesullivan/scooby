@@ -210,6 +210,15 @@ def test_in_marimo(monkeypatch) -> None:
     assert not scooby.in_marimo()
 
 
+def test_report_environment_marimo(monkeypatch) -> None:
+    marimo = ModuleType('marimo')
+    marimo.running_in_notebook = lambda: True
+    monkeypatch.setitem(sys.modules, 'marimo', marimo)
+    report = scooby.Report()
+    assert report.python_environment == 'marimo'
+    assert 'Environment : marimo' in repr(report)
+
+
 def test_get_version() -> None:
     name, version = scooby.get_version(np)
     assert version == np.__version__
