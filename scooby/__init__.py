@@ -21,6 +21,7 @@ from scooby.knowledge import (
     get_standard_lib_modules,
     in_ipykernel,
     in_ipython,
+    in_marimo,
     meets_version,  # noqa: F401
     version_tuple,  # noqa: F401
 )
@@ -38,6 +39,7 @@ __all__ = [
     'get_version',
     'in_ipykernel',
     'in_ipython',
+    'in_marimo',
     'track_imports',
     'untrack_imports',
 ]

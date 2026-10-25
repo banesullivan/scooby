@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 from typing import TYPE_CHECKING, ClassVar
 
 from bs4 import BeautifulSoup
@@ -193,6 +193,21 @@ def test_in_ipykernel_shell_with_a_kernel(monkeypatch) -> None:
 
     del Shell.kernel
     assert not scooby.in_ipykernel()
+
+
+def test_in_marimo(monkeypatch) -> None:
+    marimo = ModuleType('marimo')
+    monkeypatch.setitem(sys.modules, 'marimo', marimo)
+    assert not scooby.in_marimo()
+
+    marimo.running_in_notebook = lambda: True
+    assert scooby.in_marimo()
+
+    marimo.running_in_notebook = lambda: False
+    assert not scooby.in_marimo()
+
+    monkeypatch.delitem(sys.modules, 'marimo')
+    assert not scooby.in_marimo()
 
 
 def test_get_version() -> None:
