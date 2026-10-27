@@ -315,14 +315,16 @@ distribution requirements with the `AutoReport` class:
 ### Solving Mysteries
 
 Are you struggling with the mystery of whether or not code is being executed in
-IPython, Jupyter, or normal Python? Try using some of scooby's investigative
-functions to solve these kinds of mysteries:
+IPython, Jupyter, marimo, or normal Python? Try using some of scooby's
+investigative functions to solve these kinds of mysteries:
 
 ```py
 import scooby
 
 if scooby.in_ipykernel():
     # Do Jupyter/IPyKernel stuff
+elif scooby.in_marimo():
+    # Do marimo notebook stuff
 elif scooby.in_ipython():
     # Do IPython stuff
 else:

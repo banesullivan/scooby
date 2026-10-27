@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 from typing import TYPE_CHECKING, ClassVar
 
 from bs4 import BeautifulSoup
@@ -195,6 +195,30 @@ def test_in_ipykernel_shell_with_a_kernel(monkeypatch) -> None:
     assert not scooby.in_ipykernel()
 
 
+def test_in_marimo(monkeypatch) -> None:
+    marimo = ModuleType('marimo')
+    monkeypatch.setitem(sys.modules, 'marimo', marimo)
+    assert not scooby.in_marimo()
+
+    marimo.running_in_notebook = lambda: True
+    assert scooby.in_marimo()
+
+    marimo.running_in_notebook = lambda: False
+    assert not scooby.in_marimo()
+
+    monkeypatch.delitem(sys.modules, 'marimo')
+    assert not scooby.in_marimo()
+
+
+def test_report_environment_marimo(monkeypatch) -> None:
+    marimo = ModuleType('marimo')
+    marimo.running_in_notebook = lambda: True
+    monkeypatch.setitem(sys.modules, 'marimo', marimo)
+    report = scooby.Report()
+    assert report.python_environment == 'marimo'
+    assert 'Environment : marimo' in repr(report)
+
+
 def test_get_version() -> None:
     name, version = scooby.get_version(np)
     assert version == np.__version__
@@ -215,7 +239,9 @@ def test_get_version() -> None:
     assert name == 'does_not_exist'
 
 
-def test_plain_vs_html() -> None:
+def test_plain_vs_html(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Each render reads the live clock, so the two can land on different seconds.
+    monkeypatch.setattr(scooby.Report, 'date', property(lambda _: 'Mon Jan 01 12:34:56 2024 UTC'))
     report = scooby.Report()
     soup = BeautifulSoup(report._repr_html_(), features='html.parser')
     # The copy-button scaffold (hidden <textarea> carrying the plain text and
@@ -225,12 +251,11 @@ def test_plain_vs_html() -> None:
     text_html = soup.get_text()
     text_plain = report.__repr__()
 
-    text_plain = ' '.join(re.findall('[a-zA-Z1-9]+', text_plain))
-    text_html = ' '.join(re.findall('[a-zA-Z1-9]+', text_html))
+    text_plain = ' '.join(re.findall('[a-zA-Z0-9]+', text_plain))
+    text_html = ' '.join(re.findall('[a-zA-Z0-9]+', text_html))
 
-    # Plain text currently starts with `Date :`;
-    # we should remove that, or add it to the html version too.
-    assert text_html[20:].strip() == text_plain[25:].strip()
+    # Only the plain text labels the date line.
+    assert text_plain == 'Date ' + text_html
 
 
 def test_html_copy_button() -> None:

@@ -101,6 +101,21 @@ def in_ipykernel() -> bool:
     return hasattr(shell, 'kernel')
 
 
+def in_marimo() -> bool:
+    """Check if in a marimo notebook, served by ``marimo edit`` or ``marimo run``.
+
+    Returns
+    -------
+    bool : True
+        ``True`` when marimo runs the code as notebook cells. ``False`` when
+        a marimo notebook runs as a plain Python script.
+
+    """
+    # Avoid importing marimo.
+    running_in_notebook = getattr(sys.modules.get('marimo'), 'running_in_notebook', None)
+    return running_in_notebook is not None and bool(running_in_notebook())
+
+
 def get_standard_lib_modules() -> set[str]:
     """Return a set of the names of all modules in the standard library."""
     site_path = Path(sysconfig.get_path('stdlib'))
