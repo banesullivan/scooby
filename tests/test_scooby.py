@@ -239,7 +239,11 @@ def test_get_version() -> None:
     assert name == 'does_not_exist'
 
 
-def test_plain_vs_html() -> None:
+def test_plain_vs_html(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Each render reads the live clock, so the two can land on different seconds.
+    monkeypatch.setattr(
+        scooby.Report, 'date', property(lambda _: 'Mon Jan 01 12:34:56 2024 UTC')
+    )
     report = scooby.Report()
     soup = BeautifulSoup(report._repr_html_(), features='html.parser')
     # The copy-button scaffold (hidden <textarea> carrying the plain text and
@@ -249,12 +253,11 @@ def test_plain_vs_html() -> None:
     text_html = soup.get_text()
     text_plain = report.__repr__()
 
-    text_plain = ' '.join(re.findall('[a-zA-Z1-9]+', text_plain))
-    text_html = ' '.join(re.findall('[a-zA-Z1-9]+', text_html))
+    text_plain = ' '.join(re.findall('[a-zA-Z0-9]+', text_plain))
+    text_html = ' '.join(re.findall('[a-zA-Z0-9]+', text_html))
 
-    # Plain text currently starts with `Date :`;
-    # we should remove that, or add it to the html version too.
-    assert text_html[20:].strip() == text_plain[25:].strip()
+    # Only the plain text labels the date line.
+    assert text_plain == 'Date ' + text_html
 
 
 def test_html_copy_button() -> None:
