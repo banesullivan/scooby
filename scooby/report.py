@@ -24,6 +24,7 @@ from .knowledge import (
     get_filesystem_type,
     in_ipykernel,
     in_ipython,
+    in_marimo,
 )
 
 MODULE_NOT_FOUND = 'Module not found'
@@ -208,10 +209,12 @@ class PythonInfo:
         return sys.version
 
     @property
-    def python_environment(self) -> Literal['Jupyter', 'IPython', 'Python']:
+    def python_environment(self) -> Literal['Jupyter', 'IPython', 'marimo', 'Python']:
         """Return the python environment."""
         if in_ipykernel():
             return 'Jupyter'
+        if in_marimo():
+            return 'marimo'
         if in_ipython():
             return 'IPython'
         return 'Python'
