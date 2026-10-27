@@ -241,9 +241,7 @@ def test_get_version() -> None:
 
 def test_plain_vs_html(monkeypatch: pytest.MonkeyPatch) -> None:
     # Each render reads the live clock, so the two can land on different seconds.
-    monkeypatch.setattr(
-        scooby.Report, 'date', property(lambda _: 'Mon Jan 01 12:34:56 2024 UTC')
-    )
+    monkeypatch.setattr(scooby.Report, 'date', property(lambda _: 'Mon Jan 01 12:34:56 2024 UTC'))
     report = scooby.Report()
     soup = BeautifulSoup(report._repr_html_(), features='html.parser')
     # The copy-button scaffold (hidden <textarea> carrying the plain text and
